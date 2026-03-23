@@ -1,5 +1,6 @@
 export * from './Card';
 export * from './Button';
+export * from './ProcedureCard';
 export * from './ProcedureCardHeader';
 export * from './PageHeader';
 export * from './BeforeAfter';

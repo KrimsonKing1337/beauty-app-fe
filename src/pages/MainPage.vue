@@ -1,51 +1,24 @@
 <script setup lang="ts">
-import type { ChipsProps } from '@/components';
 
 import { onMounted } from 'vue';
 
 import {
-  ProcedureCardHeader,
   PageHeader,
-  BeforeAfter,
+  ProcedureCard,
   BottomNav,
-  Notes,
-  Chips,
 } from '@/components';
 
 onMounted(() => {
   console.log('Main page mounted');
 });
 
-const chips: ChipsProps['chips'] = [
-  {
-    id: '1',
-    label: 'Чип 1',
-    isActive: true,
-  },
-  {
-    id: '2',
-    label: 'Чип 2',
-  },
-  {
-    id: '3',
-    label: 'Чип 3',
-  }
-];
 </script>
 
 <template>
   <div class="MainPage">
     <div class="MainPageContent">
       <PageHeader />
-      <ProcedureCardHeader />
-      <BeforeAfter />
-
-      <Notes>
-        Обновили покрытие, использовали новый оттенок
-      </Notes>
-
-      <Chips :chips="chips" />
-
+      <ProcedureCard />
       <BottomNav />
     </div>
   </div>
