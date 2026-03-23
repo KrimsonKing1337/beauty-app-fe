@@ -1,21 +1,23 @@
 <script setup lang="ts">
+import type { ProcedureCardHeaderProps } from './ProcedureCardHeader.types.ts';
 
+const props = defineProps<ProcedureCardHeaderProps>();
 </script>
 
 <template>
   <div class="ProcedureCardHeader">
     <div class="ProcedureCardHeaderTitleWrapper">
       <h2 class="ProcedureCardHeaderTitle">
-        Маникюр
+        {{ props.title }}
       </h2>
 
       <div class="ProcedureCardHeaderMeta">
-        20 марта · салон · 90 мин
+        {{ props.meta }}
       </div>
     </div>
 
     <div class="ProcedureCardHeaderPrice">
-      1 500 ₽
+      {{ props.price }}
     </div>
   </div>
 </template>
