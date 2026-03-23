@@ -44,11 +44,10 @@ const props = defineProps<{
 
 .BottomNavItem {
   min-height: 52px;
-  border: none;
   border-radius: 16px;
   background: transparent;
   color: var(--text-secondary);
-  font: inherit;
+  cursor: pointer;
 
   &.isActive {
     background: var(--accent-soft);
