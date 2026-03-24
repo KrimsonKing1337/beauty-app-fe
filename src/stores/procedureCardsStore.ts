@@ -56,9 +56,10 @@ const defaultCards = [
   },
 ];
 
-export const useProcedureCardStore = defineStore('procedureCard', () => {
+export const useProcedureCardsStore = defineStore('procedureCard', () => {
   const cards = ref<ProcedureCard[]>(defaultCards);
   const editingCardId = ref<string | null>(null);
+  const draftCard = ref<ProcedureCard | null>(null)
 
   const editingCard = computed(() => {
     if (!editingCardId.value) {
@@ -79,35 +80,66 @@ export const useProcedureCardStore = defineStore('procedureCard', () => {
     return newCard;
   };
 
-  const updateCard = (id: string, payload: Partial<Omit<ProcedureCard, 'id'>>) => {
+  const startCreateCard = () => {
+    editingCardId.value = null;
+    draftCard.value = createEmptyProcedureCard();
+  }
+
+  const startEditCard = (id: string) => {
     const card = cards.value.find((item) => item.id === id);
 
     if (!card) {
-      return
+      return;
     }
 
-    Object.assign(card, payload);
-  };
+    editingCardId.value = id;
+    draftCard.value = { ...card };
+  }
+
+  const cancelEdit = () => {
+    editingCardId.value = null;
+    draftCard.value = null;
+  }
+
+  const saveDraft = () => {
+    if (!draftCard.value) {
+      return;
+    }
+
+    if (editingCardId.value) {
+      const index = cards.value.findIndex((card) => card.id === editingCardId.value);
+
+      if (index === -1) {
+        return;
+      }
+
+      cards.value[index] = { ...draftCard.value };
+    } else {
+      cards.value.push({ ...draftCard.value });
+    }
+
+    editingCardId.value = null;
+    draftCard.value = null;
+  }
 
   const removeCard = (id: string) => {
     cards.value = cards.value.filter((card) => card.id !== id);
 
     if (editingCardId.value === id) {
-      editingCardId.value = null;
+      cancelEdit();
     }
-  }
-
-  const setEditingCardId = (id: string | null) => {
-    editingCardId.value = id;
   }
 
   return {
     cards,
     editingCardId,
+    draftCard,
     editingCard,
     addCard,
-    updateCard,
+    startCreateCard,
+    startEditCard,
+    cancelEdit,
+    saveDraft,
     removeCard,
-    setEditingCardId,
   }
 });

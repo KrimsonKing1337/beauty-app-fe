@@ -2,9 +2,9 @@
 import { ref } from 'vue';
 import { Button, Menu } from 'primevue';
 
-import { useProcedureCardStore } from '@/stores/procedureCardStore';
+import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
 
-const procedureCardsStore = useProcedureCardStore();
+const procedureCardsStore = useProcedureCardsStore();
 
 import type { ProcedureCardHeaderProps } from './ProcedureCardHeader.types.ts';
 
@@ -17,7 +17,7 @@ const menuItems = ref([
     label: 'Редактировать',
     icon: 'pi pi-pencil',
     command: () => {
-      procedureCardsStore.setEditingCardId(props.cardId);
+      procedureCardsStore.startEditCard(props.cardId);
     },
   },
   {

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { Button } from 'primevue';
 
@@ -10,85 +9,20 @@ import {
   FileUpload,
 } from 'primevue';
 
-import { useProcedureCardStore } from '@/stores/procedureCardStore';
+import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
 
-const procedureCardsStore = useProcedureCardStore();
-const { editingCard } = storeToRefs(procedureCardsStore);
-
-const procedureName = computed({
-  get: () => editingCard.value?.procedureName ?? '',
-  set: (value: string) => {
-    if (!editingCard.value) {
-      return;
-    }
-
-    procedureCardsStore.updateCard(editingCard.value.id, {
-      procedureName: value,
-    });
-  },
-});
-
-const date = computed({
-  get: () => editingCard.value?.date ?? null,
-  set: (value: Date | null) => {
-    if (!editingCard.value) {
-      return;
-    }
-
-    procedureCardsStore.updateCard(editingCard.value.id, {
-      date: value,
-    });
-  },
-});
-
-const place = computed({
-  get: () => editingCard.value?.place ?? '',
-  set: (value: string) => {
-    if (!editingCard.value) {
-      return;
-    }
-
-    procedureCardsStore.updateCard(editingCard.value.id, {
-      place: value,
-    });
-  },
-});
-
-const duration = computed({
-  get: () => editingCard.value?.duration ?? '',
-  set: (value: string) => {
-    if (!editingCard.value) {
-      return;
-    }
-
-    procedureCardsStore.updateCard(editingCard.value.id, {
-      duration: value,
-    });
-  },
-});
-
-const notes = computed({
-  get: () => editingCard.value?.notes ?? '',
-  set: (value: string) => {
-    if (!editingCard.value) {
-      return;
-    }
-
-    procedureCardsStore.updateCard(editingCard.value.id, {
-      notes: value,
-    });
-  },
-});
+const procedureCardsStore = useProcedureCardsStore();
+const { draftCard } = storeToRefs(procedureCardsStore);
 </script>
 
-<template v-if="!!editingCard">
+<template v-if="!!draftCard">
   <div class="ProcedureCardEdit">
     <FloatLabel class="ProcedureCardEditItem">
       <label for="input-title">
         Название процедуры
       </label>
 
-      <InputText id="input-title" v-model="procedureName" />
+      <InputText id="input-title" v-model="draftCard!.procedureName" />
     </FloatLabel>
 
     <FloatLabel class="ProcedureCardEditItem">
@@ -96,7 +30,7 @@ const notes = computed({
         Дата
       </label>
 
-      <DatePicker id="input-date" placeholder="Дата" v-model="date" />
+      <DatePicker id="input-date" placeholder="Дата" v-model="draftCard!.date" />
     </FloatLabel>
 
 
@@ -105,7 +39,7 @@ const notes = computed({
         Место проведения
       </label>
 
-      <InputText id="input-place" v-model="place" />
+      <InputText id="input-place" v-model="draftCard!.place" />
     </FloatLabel>
 
     <FloatLabel class="ProcedureCardEditItem">
@@ -113,7 +47,7 @@ const notes = computed({
         Длительность
       </label>
 
-      <InputText id="input-duration" v-model="duration" />
+      <InputText id="input-duration" v-model="draftCard!.duration" />
     </FloatLabel>
 
     <FloatLabel class="ProcedureCardEditItem">
@@ -121,7 +55,7 @@ const notes = computed({
         Описание
       </label>
 
-      <InputText id="input-note" v-model="notes" />
+      <InputText id="input-note" v-model="draftCard!.notes" />
     </FloatLabel>
 
     <div class="ProcedureCardEditItem">
@@ -143,11 +77,11 @@ const notes = computed({
     </div>
 
     <div class="BottomNav">
-      <Button severity="success" @click="procedureCardsStore.setEditingCardId(null)">
+      <Button severity="success" @click="procedureCardsStore.saveDraft();">
         Сохранить
       </Button>
 
-      <Button severity="secondary" @click="procedureCardsStore.setEditingCardId(null)">
+      <Button severity="secondary" @click="procedureCardsStore.cancelEdit();">
         Отменить
       </Button>
     </div>

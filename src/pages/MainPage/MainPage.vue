@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 
-import { type ProcedureCard as ProcedureCardType, useProcedureCardStore } from '@/stores/procedureCardStore';
+import { type ProcedureCard as ProcedureCardType, useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
 
 import {
   PageHeader,
@@ -10,7 +10,7 @@ import {
   ProcedureCardEdit,
 } from '@/components';
 
-const procedureCardStore = useProcedureCardStore();
+const procedureCardStore = useProcedureCardsStore();
 const { cards } = storeToRefs(procedureCardStore);
 
 const getCardInfo = (card: ProcedureCardType) => {
