@@ -10,3 +10,5 @@ export * from './BottomNav';
 export * from './Chip';
 export * from './Chips';
 export * from './Divider';
+export * from './ProcedureCards';
+export * from './Reminders';

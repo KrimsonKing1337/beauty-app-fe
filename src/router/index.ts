@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+
 import { MainPage } from '@/pages';
 
 const router = createRouter({

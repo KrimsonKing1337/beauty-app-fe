@@ -1,19 +1,39 @@
 <script setup lang="ts">
+import { useRouter, useRoute } from 'vue-router';
 import { Button } from 'primevue';
 
 import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
 
+const router = useRouter();
+const route = useRoute();
+
 const procedureCardsStore = useProcedureCardsStore();
+
+const buttonProceduresClickHandler = () => {
+  router.push('/');
+};
+
+const buttonRemindersClickHandler = () => {
+  router.push('/reminders');
+};
 </script>
 
 <template>
  <nav class="BottomNav">
    <div class="BottomNavInner">
-     <Button class="BottomNavItem isActive">
+     <Button
+       class="BottomNavItem"
+       :class="{ isActive: route.path === '/' }"
+       @click="buttonProceduresClickHandler"
+     >
        Процедуры
      </Button>
 
-     <Button class="BottomNavItem">
+     <Button
+       class="BottomNavItem"
+       :class="{ isActive: route.path === '/reminders' }"
+       @click="buttonRemindersClickHandler"
+     >
        Напоминания
      </Button>
 
