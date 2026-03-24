@@ -48,7 +48,7 @@ const menuTriggerClickHandler = (e: MouseEvent) => {
 
     <Button
       class="ProcedureCardHeaderMenuTrigger"
-      icon="pi pi-ellipsis-h"
+      icon="pi pi-ellipsis-v"
       ariaHaspopup="true"
       ariaControls="procedureCardHeaderMenu"
       @click="menuTriggerClickHandler"
@@ -93,19 +93,25 @@ const menuTriggerClickHandler = (e: MouseEvent) => {
 }
 
 .ProcedureCardHeaderPrice {
-  margin-left: auto;
   white-space: nowrap;
   font-size: var(--fs-title);
   font-weight: var(--fw-semibold);
+  margin-left: auto;
+  margin-right: 20px;
 }
 
 .ProcedureCardHeaderMenuTrigger {
+  position: absolute;
+  z-index: 1;
+  top: -5px;
+  right: -10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 24px;
-  font-size: 24px;
+  align-self: flex-start;
+  width: 24px;
+  height: 32px;
+  font-size: 32px;
   color: var(--text-primary);
   background: transparent;
   border-color: transparent;
