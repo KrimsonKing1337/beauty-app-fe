@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 
 import { type ProcedureCard as ProcedureCardType, useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
@@ -11,17 +12,17 @@ import {
 } from '@/components';
 
 const procedureCardStore = useProcedureCardsStore();
-const { cards } = storeToRefs(procedureCardStore);
+const { cards, draftCard } = storeToRefs(procedureCardStore);
+
+const isEditing = computed(() => draftCard.value !== null);
 
 const getCardInfo = (card: ProcedureCardType) => {
   const meta = `${card.date} - ${card.place} - ${card.duration};`
   const price = card.price ? `${card.price} Р` : '0 Р';
-  const isEditing = procedureCardStore.editingCardId === card.id;
 
   return {
     meta,
     price,
-    isEditing
   }
 };
 </script>
@@ -31,19 +32,20 @@ const getCardInfo = (card: ProcedureCardType) => {
     <div class="MainPageContent">
       <PageHeader />
 
-      <div class="ProcedureCardsWrapper">
-        <div v-for="cardCur in cards" :key="cardCur.id" class="ProcedureCardWrapper">
-          <ProcedureCard
-            v-if="!getCardInfo(cardCur).isEditing"
-            :cardId="cardCur.id"
-            :title="cardCur.procedureName"
-            :meta="getCardInfo(cardCur).meta"
-            :price="getCardInfo(cardCur).price"
-            :notes="cardCur.notes"
-          />
-
-          <ProcedureCardEdit v-else />
+      <div class="FullWidth">
+        <div v-if="!isEditing" class="ProcedureCardsWrapper">
+          <div v-for="cardCur in cards" :key="cardCur.id" class="FullWidth">
+            <ProcedureCard
+              :cardId="cardCur.id"
+              :title="cardCur.procedureName"
+              :meta="getCardInfo(cardCur).meta"
+              :price="getCardInfo(cardCur).price"
+              :notes="cardCur.notes"
+            />
+          </div>
         </div>
+
+        <ProcedureCardEdit v-if="isEditing" class="FullWidth" />
       </div>
 
       <BottomNav />
@@ -70,9 +72,10 @@ const getCardInfo = (card: ProcedureCardType) => {
   align-items: center;
   justify-content: center;
   gap: var(--space-16);
+  width: 100%;
 }
 
-.ProcedureCardWrapper {
+.FullWidth {
   width: 100%;
 }
 </style>

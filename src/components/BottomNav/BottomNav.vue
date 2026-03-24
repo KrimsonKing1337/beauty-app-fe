@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import { Button } from 'primevue';
+
+import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
+
+const procedureCardsStore = useProcedureCardsStore();
 </script>
 
 <template>
@@ -13,8 +17,8 @@ import { Button } from 'primevue';
        Напоминания
      </Button>
 
-     <Button class="BottomNavItem">
-       <i class="pi pi-plus"/>
+     <Button class="BottomNavItem" @click="procedureCardsStore.startCreateCard();">
+       <i class="pi pi-plus" />
      </Button>
    </div>
  </nav>
