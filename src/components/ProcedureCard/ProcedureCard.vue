@@ -41,7 +41,7 @@ const chips: ChipsProps['chips'] = [
       {{ props.notes }}
     </Notes>
 
-    <Chips :chips="chips" />
+    <Chips v-if="false" :chips="chips" />
   </div>
 </template>
 

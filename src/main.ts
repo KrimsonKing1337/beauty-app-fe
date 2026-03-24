@@ -1,14 +1,44 @@
 import 'reset-css/reset.css';
+import 'primeicons/primeicons.css';
+
 import './styles/styles.scss';
 
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
+import PrimeVue from 'primevue/config';
+import Aura from '@primeuix/themes/aura';
+import { definePreset } from '@primeuix/themes';
 
 import App from './App.vue';
 import router from './router';
 
 const app = createApp(App);
 
+const MyPreset = definePreset(Aura, {
+  semantic: {
+    primary: {
+      50: '#fdf2f5',
+      100: '#f9e3ea',
+      200: '#f3c5d1',
+      300: '#eda7b8',
+      400: '#e789a0',
+      500: '#d98ea1',
+      600: '#c97b90',
+      700: '#a86374',
+      800: '#874c58',
+      900: '#66363c',
+    },
+  },
+});
+
+app.use(PrimeVue, {
+  theme: {
+    preset: MyPreset,
+    options: {
+      darkModeSelector: false,
+    },
+  },
+});
 app.use(createPinia());
 app.use(router);
 

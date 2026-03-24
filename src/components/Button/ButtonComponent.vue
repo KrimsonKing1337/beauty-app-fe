@@ -36,13 +36,13 @@ const props = defineProps<{
     transform: translateY(1px);
   }
 
-  .secondary {
+  &.secondary {
     color: var(--text-primary);
     background: var(--surface);
     border: 1px solid var(--border);
   }
 
-  .ghost {
+  &.ghost {
     color: var(--accent);
     background: transparent;
   }

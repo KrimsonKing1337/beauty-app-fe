@@ -2,6 +2,7 @@ export * from './Card';
 export * from './Button';
 export * from './ProcedureCard';
 export * from './ProcedureCardHeader';
+export * from './ProcedureCardEdit';
 export * from './PageHeader';
 export * from './BeforeAfter';
 export * from './Notes';

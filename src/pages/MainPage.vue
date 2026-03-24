@@ -1,17 +1,16 @@
 <script setup lang="ts">
-
 import { onMounted } from 'vue';
 
 import {
   PageHeader,
   ProcedureCard,
   BottomNav,
+  ProcedureCardEdit,
 } from '@/components';
 
 onMounted(() => {
   console.log('Main page mounted');
 });
-
 </script>
 
 <template>
@@ -33,6 +32,8 @@ onMounted(() => {
           price="2 500 Р"
           :beforeAfter="false"
         />
+
+        <ProcedureCardEdit />
       </div>
       <BottomNav />
     </div>
@@ -40,23 +41,23 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
-  .MainPage {
-    min-height: 100vh;
-    padding: 20px;
-    background: var(--bg);
-  }
+.MainPage {
+  min-height: 100vh;
+  padding: 20px;
+  background: var(--bg);
+}
 
-  .MainPageContent {
-    width: 100%;
-    max-width: 720px;
-    margin: 0 auto;
-  }
+.MainPageContent {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+}
 
-  .ProcedureCardsWrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-16);
-  }
+.ProcedureCardsWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-16);
+}
 </style>
