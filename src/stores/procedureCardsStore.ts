@@ -96,6 +96,25 @@ export const useProcedureCardsStore = defineStore('procedureCard', () => {
     draftCard.value = { ...card };
   }
 
+  const duplicateCard = (id: string) => {
+    const index = cards.value.findIndex((card) => card.id === id);
+
+    if (index === -1) {
+      return;
+    }
+
+    const newId = crypto.randomUUID();
+
+    const duplicatedCard = {
+      ...cards.value[index],
+      id: newId,
+    } as ProcedureCard;
+
+    cards.value.splice(index, 0, duplicatedCard);
+
+    startEditCard(newId);
+  };
+
   const cancelEdit = () => {
     editingCardId.value = null;
     draftCard.value = null;
@@ -141,5 +160,6 @@ export const useProcedureCardsStore = defineStore('procedureCard', () => {
     cancelEdit,
     saveDraft,
     removeCard,
+    duplicateCard,
   }
 });

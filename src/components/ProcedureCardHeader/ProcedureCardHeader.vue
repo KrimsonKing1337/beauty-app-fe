@@ -23,11 +23,17 @@ const menuItems = ref([
   {
     label: 'Дублировать',
     icon: 'pi pi-clone',
+    command: () => {
+      procedureCardsStore.duplicateCard(props.cardId);
+    },
   },
   {
     label: 'Удалить',
     icon: 'pi pi-trash',
     class: 'ProcedureCardHeaderMenuDelete',
+    command: () => {
+      procedureCardsStore.removeCard(props.cardId);
+    },
   },
 ]);
 
