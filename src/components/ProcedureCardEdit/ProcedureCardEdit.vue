@@ -1,10 +1,17 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia';
+
 import {
   InputText,
   FloatLabel,
   DatePicker,
   FileUpload,
 } from 'primevue';
+
+import { useProcedureCardStore } from '@/stores/procedureCardStore';
+
+const procedureCardStore = useProcedureCardStore();
+const { card } = storeToRefs(procedureCardStore);
 </script>
 
 <template>
@@ -13,25 +20,17 @@ import {
       Название процедуры
     </label>
 
-    <InputText id="input-title" />
+    <InputText id="input-title" v-model="card.name" />
   </FloatLabel>
 
-  <DatePicker placeholder="Дата" />
-
-  <FloatLabel>
-    <label for="input-time">
-      Время
-    </label>
-
-    <InputText id="input-time" />
-  </FloatLabel>
+  <DatePicker placeholder="Дата" v-model="card.date" />
 
   <FloatLabel>
     <label for="input-place">
       Место проведения
     </label>
 
-    <InputText id="input-place" />
+    <InputText id="input-place" v-model="card.place" />
   </FloatLabel>
 
   <FloatLabel>
@@ -39,7 +38,7 @@ import {
       Длительность
     </label>
 
-    <InputText id="input-duration" />
+    <InputText id="input-duration" v-model="card.duration" />
   </FloatLabel>
 
   <FloatLabel>
@@ -47,7 +46,7 @@ import {
       Описание
     </label>
 
-    <InputText id="input-note" />
+    <InputText id="input-note" v-model="card.notes" />
   </FloatLabel>
 
   <FileUpload

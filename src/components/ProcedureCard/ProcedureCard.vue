@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
+
 import {
   type ChipsProps,
   type ProcedureCardHeaderProps,
@@ -7,6 +9,7 @@ import {
   Notes,
   ProcedureCardHeader,
 } from '@/components';
+import { useProcedureCardStore } from '@/stores/procedureCardStore.ts';
 
 const props = withDefaults(defineProps<ProcedureCardHeaderProps & {
   beforeAfter?: boolean;
@@ -30,15 +33,21 @@ const chips: ChipsProps['chips'] = [
     label: 'Чип 3',
   }
 ];
+
+const procedureCardStore = useProcedureCardStore();
+const { card } = storeToRefs(procedureCardStore);
+
+const meta = `${card.value.date} - ${card.value.place} - ${card.value.duration};`
+const price = card.value.price ? `${card.value.price} Р` : '0 Р';
 </script>
 
 <template>
   <div class="ProcedureCard">
-    <ProcedureCardHeader :title="props.title" :meta="props.meta" :price="props.price" />
-    <BeforeAfter v-if="props.beforeAfter" />
+    <ProcedureCardHeader :title="card.name" :meta="meta" :price="price" />
+    <BeforeAfter v-if="card.beforeAfter.length" />
 
-    <Notes v-if="props.notes">
-      {{ props.notes }}
+    <Notes v-if="card.notes">
+      {{ card.notes }}
     </Notes>
 
     <Chips v-if="false" :chips="chips" />

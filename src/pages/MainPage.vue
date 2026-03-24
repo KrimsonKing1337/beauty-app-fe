@@ -35,6 +35,7 @@ onMounted(() => {
 
         <ProcedureCardEdit />
       </div>
+
       <BottomNav />
     </div>
   </div>

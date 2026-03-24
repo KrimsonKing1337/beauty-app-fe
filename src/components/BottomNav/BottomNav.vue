@@ -1,23 +1,21 @@
 <script setup lang="ts">
-const props = defineProps<{
-  isActive?: boolean;
-}>();
+import { Button } from 'primevue';
 </script>
 
 <template>
- <nav class="BottomNav" :class="{ isActive: props.isActive }">
+ <nav class="BottomNav">
    <div class="BottomNavInner">
-     <button class="BottomNavItem">
-       Кнопка один
-     </button>
+     <Button class="BottomNavItem isActive">
+       Процедуры
+     </Button>
 
-     <button class="BottomNavItem">
-       Кнопка два
-     </button>
+     <Button class="BottomNavItem">
+       Напоминания
+     </Button>
 
-     <button class="BottomNavItem">
-       Кнопка три
-     </button>
+     <Button class="BottomNavItem">
+       <i class="pi pi-plus"/>
+     </Button>
    </div>
  </nav>
 </template>
@@ -31,8 +29,9 @@ const props = defineProps<{
 }
 
 .BottomNavInner {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
   gap: 8px;
   padding: 10px;
   background: rgba(255, 255, 255, 0.88);
@@ -43,11 +42,17 @@ const props = defineProps<{
 }
 
 .BottomNavItem {
-  min-height: 52px;
+  height: 52px;
+  min-width: 52px;
   border-radius: 16px;
   background: transparent;
   color: var(--text-secondary);
   cursor: pointer;
+
+  &:nth-last-child(1) {
+    margin-left: auto;
+    border-color: transparent;
+  }
 
   &.isActive {
     background: var(--accent-soft);
