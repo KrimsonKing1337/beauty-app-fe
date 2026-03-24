@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { nextTick } from 'vue';
 import { storeToRefs } from 'pinia';
 import { Button } from 'primevue';
 
@@ -13,6 +14,14 @@ import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
 
 const procedureCardsStore = useProcedureCardsStore();
 const { draftCard } = storeToRefs(procedureCardsStore);
+
+const saveButtonClickHandler = () => {
+  procedureCardsStore.saveDraft();
+};
+
+const cancelButtonClickHandler = () => {
+  procedureCardsStore.cancelEdit();
+};
 </script>
 
 <template v-if="!!draftCard">
@@ -77,11 +86,11 @@ const { draftCard } = storeToRefs(procedureCardsStore);
     </div>
 
     <div class="BottomNav">
-      <Button severity="success" @click="procedureCardsStore.saveDraft();">
+      <Button severity="success" @click="saveButtonClickHandler();">
         Сохранить
       </Button>
 
-      <Button severity="secondary" @click="procedureCardsStore.cancelEdit();">
+      <Button severity="secondary" @click="cancelButtonClickHandler();">
         Отменить
       </Button>
     </div>

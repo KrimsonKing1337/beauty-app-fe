@@ -59,7 +59,8 @@ const defaultCards = [
 export const useProcedureCardsStore = defineStore('procedureCard', () => {
   const cards = ref<ProcedureCard[]>(defaultCards);
   const editingCardId = ref<string | null>(null);
-  const draftCard = ref<ProcedureCard | null>(null)
+  const draftCard = ref<ProcedureCard | null>(null);
+  const lastTouchedCardId = ref<string | null>(null);
 
   const editingCard = computed(() => {
     if (!editingCardId.value) {
@@ -76,6 +77,8 @@ export const useProcedureCardsStore = defineStore('procedureCard', () => {
     }
 
     cards.value.push(newCard);
+
+    lastTouchedCardId.value = newCard.id;
 
     return newCard;
   };
@@ -111,11 +114,14 @@ export const useProcedureCardsStore = defineStore('procedureCard', () => {
     } as ProcedureCard;
 
     cards.value.splice(index, 0, duplicatedCard);
+    lastTouchedCardId.value = newId;
 
     startEditCard(newId);
   };
 
   const cancelEdit = () => {
+    lastTouchedCardId.value = editingCardId.value;
+
     editingCardId.value = null;
     draftCard.value = null;
   }
@@ -137,23 +143,40 @@ export const useProcedureCardsStore = defineStore('procedureCard', () => {
       cards.value.push({ ...draftCard.value });
     }
 
+    lastTouchedCardId.value = draftCard.value.id;
+
     editingCardId.value = null;
     draftCard.value = null;
   }
 
   const removeCard = (id: string) => {
+    const index = cards.value.findIndex((card) => card.id === id);
+
+    if (index === -1) {
+      return;
+    }
+
+    const prevId = cards.value[index - 1]?.id ?? null;
+    const nextId = cards.value[index + 1]?.id ?? null;
+
     cards.value = cards.value.filter((card) => card.id !== id);
 
     if (editingCardId.value === id) {
-      cancelEdit();
+      editingCardId.value = null;
+      draftCard.value = null;
     }
-  }
+
+    if (lastTouchedCardId.value === id) {
+      lastTouchedCardId.value = nextId ?? prevId;
+    }
+  };
 
   return {
     cards,
     editingCardId,
     draftCard,
     editingCard,
+    lastTouchedCardId,
     addCard,
     startCreateCard,
     startEditCard,
