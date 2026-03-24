@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { storeToRefs } from 'pinia';
+
+import { type ProcedureCard as ProcedureCardType, useProcedureCardStore } from '@/stores/procedureCardStore';
 
 import {
   PageHeader,
@@ -8,9 +10,18 @@ import {
   ProcedureCardEdit,
 } from '@/components';
 
-onMounted(() => {
-  console.log('Main page mounted');
-});
+const procedureCardStore = useProcedureCardStore();
+const { cards } = storeToRefs(procedureCardStore);
+
+function getCardInfo(card: ProcedureCardType) {
+  const meta = `${card.date} - ${card.place} - ${card.duration};`
+  const price = card.price ? `${card.price} Р` : '0 Р';
+
+  return {
+    meta,
+    price,
+  }
+}
 </script>
 
 <template>
@@ -20,17 +31,12 @@ onMounted(() => {
 
       <div class="ProcedureCardsWrapper">
         <ProcedureCard
-          title="Маникюр"
-          meta="20 марта 2026 - салон - 90 мин"
-          price="1 500 Р"
-          notes="Обновили покрытие, использовали новый оттенок"
-        />
-
-        <ProcedureCard
-          title="Педикюр"
-          meta="21 марта 2026 - салон - 90 мин"
-          price="2 500 Р"
-          :beforeAfter="false"
+          v-for="cardCur in cards" :key="cardCur.id"
+          :cardId="cardCur.id"
+          :title="cardCur.procedureName"
+          :meta="getCardInfo(cardCur).meta"
+          :price="getCardInfo(cardCur).price"
+          :notes="cardCur.notes"
         />
 
         <ProcedureCardEdit />

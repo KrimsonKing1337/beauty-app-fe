@@ -1,20 +1,15 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia'
-
 import {
   type ChipsProps,
-  type ProcedureCardHeaderProps,
   BeforeAfter,
   Chips,
   Notes,
   ProcedureCardHeader,
 } from '@/components';
-import { useProcedureCardStore } from '@/stores/procedureCardStore.ts';
 
-const props = withDefaults(defineProps<ProcedureCardHeaderProps & {
-  beforeAfter?: boolean;
-  notes?: string;
-}>(), {
+import type { ProcedureCardProps } from './ProcedureCard.types.ts';
+
+const props = withDefaults(defineProps<ProcedureCardProps>(), {
   beforeAfter: true,
 });
 
@@ -33,21 +28,21 @@ const chips: ChipsProps['chips'] = [
     label: 'Чип 3',
   }
 ];
-
-const procedureCardStore = useProcedureCardStore();
-const { card } = storeToRefs(procedureCardStore);
-
-const meta = `${card.value.date} - ${card.value.place} - ${card.value.duration};`
-const price = card.value.price ? `${card.value.price} Р` : '0 Р';
 </script>
 
 <template>
   <div class="ProcedureCard">
-    <ProcedureCardHeader :title="card.name" :meta="meta" :price="price" />
-    <BeforeAfter v-if="card.beforeAfter.length" />
+    <ProcedureCardHeader
+      :cardId="props.cardId"
+      :title="props.title"
+      :meta="props.meta"
+      :price="props.price"
+    />
 
-    <Notes v-if="card.notes">
-      {{ card.notes }}
+    <BeforeAfter v-if="props.beforeAfter" />
+
+    <Notes v-if="props.notes">
+      {{ props.notes }}
     </Notes>
 
     <Chips v-if="false" :chips="chips" />

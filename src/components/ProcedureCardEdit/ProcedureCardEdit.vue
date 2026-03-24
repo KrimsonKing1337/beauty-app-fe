@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 
 import {
@@ -10,27 +11,92 @@ import {
 
 import { useProcedureCardStore } from '@/stores/procedureCardStore';
 
-const procedureCardStore = useProcedureCardStore();
-const { card } = storeToRefs(procedureCardStore);
+const procedureCardsStore = useProcedureCardStore();
+const { editingCard } = storeToRefs(procedureCardsStore);
+
+const procedureName = computed({
+  get: () => editingCard.value?.procedureName ?? '',
+  set: (value: string) => {
+    if (!editingCard.value) {
+      return;
+    }
+
+    procedureCardsStore.updateCard(editingCard.value.id, {
+      procedureName: value,
+    });
+  },
+});
+
+const date = computed({
+  get: () => editingCard.value?.date ?? null,
+  set: (value: Date | null) => {
+    if (!editingCard.value) {
+      return;
+    }
+
+    procedureCardsStore.updateCard(editingCard.value.id, {
+      date: value,
+    });
+  },
+});
+
+const place = computed({
+  get: () => editingCard.value?.place ?? '',
+  set: (value: string) => {
+    if (!editingCard.value) {
+      return;
+    }
+
+    procedureCardsStore.updateCard(editingCard.value.id, {
+      place: value,
+    });
+  },
+});
+
+const duration = computed({
+  get: () => editingCard.value?.duration ?? '',
+  set: (value: string) => {
+    if (!editingCard.value) {
+      return;
+    }
+
+    procedureCardsStore.updateCard(editingCard.value.id, {
+      duration: value,
+    });
+  },
+});
+
+const notes = computed({
+  get: () => editingCard.value?.notes ?? '',
+  set: (value: string) => {
+    if (!editingCard.value) {
+      return;
+    }
+
+    procedureCardsStore.updateCard(editingCard.value.id, {
+      notes: value,
+    });
+  },
+});
 </script>
 
-<template>
+<template v-if="!!editingCard">
   <FloatLabel>
     <label for="input-title">
       Название процедуры
     </label>
 
-    <InputText id="input-title" v-model="card.name" />
+    <InputText id="input-title" v-model="procedureName" />
   </FloatLabel>
 
-  <DatePicker placeholder="Дата" v-model="card.date" />
+  <DatePicker placeholder="Дата" v-model="date" />
 
   <FloatLabel>
     <label for="input-place">
       Место проведения
     </label>
 
-    <InputText id="input-place" v-model="card.place" />
+    <InputText id="input-place" v-model="place" />
   </FloatLabel>
 
   <FloatLabel>
@@ -38,7 +104,7 @@ const { card } = storeToRefs(procedureCardStore);
       Длительность
     </label>
 
-    <InputText id="input-duration" v-model="card.duration" />
+    <InputText id="input-duration" v-model="duration" />
   </FloatLabel>
 
   <FloatLabel>
@@ -46,7 +112,7 @@ const { card } = storeToRefs(procedureCardStore);
       Описание
     </label>
 
-    <InputText id="input-note" v-model="card.notes" />
+    <InputText id="input-note" v-model="notes" />
   </FloatLabel>
 
   <FileUpload
