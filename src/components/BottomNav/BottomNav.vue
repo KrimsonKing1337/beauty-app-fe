@@ -23,9 +23,12 @@ import { Button } from 'primevue';
 <style scoped lang="scss">
 .BottomNav {
   position: sticky;
+  width: 90%;
   bottom: 12px;
   z-index: 10;
   margin-top: 24px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .BottomNavInner {
@@ -42,7 +45,7 @@ import { Button } from 'primevue';
 }
 
 .BottomNavItem {
-  height: 52px;
+  height: 32px;
   min-width: 52px;
   border-radius: 16px;
   background: transparent;

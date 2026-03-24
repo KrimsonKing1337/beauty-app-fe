@@ -13,15 +13,17 @@ import {
 const procedureCardStore = useProcedureCardStore();
 const { cards } = storeToRefs(procedureCardStore);
 
-function getCardInfo(card: ProcedureCardType) {
+const getCardInfo = (card: ProcedureCardType) => {
   const meta = `${card.date} - ${card.place} - ${card.duration};`
   const price = card.price ? `${card.price} Р` : '0 Р';
+  const isEditing = procedureCardStore.editingCardId === card.id;
 
   return {
     meta,
     price,
+    isEditing
   }
-}
+};
 </script>
 
 <template>
@@ -30,16 +32,18 @@ function getCardInfo(card: ProcedureCardType) {
       <PageHeader />
 
       <div class="ProcedureCardsWrapper">
-        <ProcedureCard
-          v-for="cardCur in cards" :key="cardCur.id"
-          :cardId="cardCur.id"
-          :title="cardCur.procedureName"
-          :meta="getCardInfo(cardCur).meta"
-          :price="getCardInfo(cardCur).price"
-          :notes="cardCur.notes"
-        />
+        <div v-for="cardCur in cards" :key="cardCur.id" class="ProcedureCardWrapper">
+          <ProcedureCard
+            v-if="!getCardInfo(cardCur).isEditing"
+            :cardId="cardCur.id"
+            :title="cardCur.procedureName"
+            :meta="getCardInfo(cardCur).meta"
+            :price="getCardInfo(cardCur).price"
+            :notes="cardCur.notes"
+          />
 
-        <ProcedureCardEdit />
+          <ProcedureCardEdit v-else />
+        </div>
       </div>
 
       <BottomNav />
@@ -66,5 +70,9 @@ function getCardInfo(card: ProcedureCardType) {
   align-items: center;
   justify-content: center;
   gap: var(--space-16);
+}
+
+.ProcedureCardWrapper {
+  width: 100%;
 }
 </style>
