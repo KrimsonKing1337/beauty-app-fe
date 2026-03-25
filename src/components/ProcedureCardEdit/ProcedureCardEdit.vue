@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { nextTick } from 'vue';
 import { storeToRefs } from 'pinia';
-import { Button } from 'primevue';
 
 import {
-  InputText,
+  Button,
   FloatLabel,
   DatePicker,
   FileUpload,
 } from 'primevue';
 
 import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
+
+import { Input } from '@/components';
 
 const procedureCardsStore = useProcedureCardsStore();
 const { draftCard } = storeToRefs(procedureCardsStore);
@@ -26,15 +26,15 @@ const cancelButtonClickHandler = () => {
 
 <template v-if="!!draftCard">
   <div class="ProcedureCardEdit">
-    <FloatLabel class="ProcedureCardEditItem">
-      <label for="input-title">
-        Название процедуры
-      </label>
+    <Input
+      v-model="draftCard!.procedureName"
+      id="input-title"
+      class="ProcedureCardEditItem"
+    >
+      Название процедуры
+    </Input>
 
-      <InputText id="input-title" v-model="draftCard!.procedureName" />
-    </FloatLabel>
-
-    <FloatLabel class="ProcedureCardEditItem">
+    <FloatLabel class="ProcedureCardEditItem isDatepicker">
       <label for="input-date">
         Дата
       </label>
@@ -42,30 +42,29 @@ const cancelButtonClickHandler = () => {
       <DatePicker id="input-date" placeholder="Дата" v-model="draftCard!.date" />
     </FloatLabel>
 
+    <Input
+      v-model="draftCard!.place"
+      id="input-place"
+      class="ProcedureCardEditItem"
+    >
+      Название процедуры
+    </Input>
 
-    <FloatLabel class="ProcedureCardEditItem">
-      <label for="input-place">
-        Место проведения
-      </label>
+    <Input
+      v-model="draftCard!.duration"
+      id="input-duration"
+      class="ProcedureCardEditItem"
+    >
+      Длительность
+    </Input>
 
-      <InputText id="input-place" v-model="draftCard!.place" />
-    </FloatLabel>
-
-    <FloatLabel class="ProcedureCardEditItem">
-      <label for="input-duration">
-        Длительность
-      </label>
-
-      <InputText id="input-duration" v-model="draftCard!.duration" />
-    </FloatLabel>
-
-    <FloatLabel class="ProcedureCardEditItem">
-      <label for="input-note">
-        Описание
-      </label>
-
-      <InputText id="input-note" v-model="draftCard!.notes" />
-    </FloatLabel>
+    <Input
+      v-model="draftCard!.notes"
+      id="input-note"
+      class="ProcedureCardEditItem"
+    >
+      Описание
+    </Input>
 
     <div class="ProcedureCardEditItem">
       <FileUpload
@@ -86,11 +85,11 @@ const cancelButtonClickHandler = () => {
     </div>
 
     <div class="BottomNav">
-      <Button severity="success" @click="saveButtonClickHandler();">
+      <Button severity="success" @click="saveButtonClickHandler">
         Сохранить
       </Button>
 
-      <Button severity="secondary" @click="cancelButtonClickHandler();">
+      <Button severity="secondary" @click="cancelButtonClickHandler">
         Отменить
       </Button>
     </div>
@@ -112,12 +111,12 @@ const cancelButtonClickHandler = () => {
 }
 
 .ProcedureCardEditItem {
-  width: 100%;
   margin-top: var(--space-32);
 
-  span,
-  input {
-    width: 100%;
+  &.isDatepicker {
+    span {
+      width: 100%;
+    }
   }
 }
 

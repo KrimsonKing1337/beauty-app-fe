@@ -1,6 +1,7 @@
 export * from './Card';
 export * from './CardHeader';
 export * from './Button';
+export * from './Input';
 export * from './ProcedureCard';
 export * from './ProcedureCardHeader';
 export * from './ProcedureCardEdit';
