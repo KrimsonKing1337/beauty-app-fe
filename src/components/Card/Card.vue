@@ -1,7 +1,9 @@
 <script setup lang="ts">
 const props = defineProps<{
-  isArchived?: boolean;
-  isCompleted?: boolean;
+  isSuccess?: boolean;
+  isWarning?: boolean;
+  isDanger?: boolean;
+  isDisabled?: boolean;
 }>();
 </script>
 
@@ -9,8 +11,10 @@ const props = defineProps<{
   <div
     class="Card"
     :class="{
-      isArchived: props.isArchived,
-      isCompleted: props.isCompleted,
+      isSuccess: props.isSuccess,
+      isWarning: props.isWarning,
+      isDanger: props.isDanger,
+      isDisabled: props.isDisabled,
      }">
     <slot />
   </div>
@@ -29,11 +33,19 @@ const props = defineProps<{
   padding: 20px;
   box-shadow: 0 8px 20px rgba(43, 24, 31, 0.04);
 
-  &.isCompleted {
+  &.isSuccess {
     background-color: var(--success);
   }
 
-  &.isArchived {
+  &.isWarning {
+    background-color: var(--warning);
+  }
+
+  &.isDanger {
+    background-color: var(--danger);
+  }
+
+  &.isDisabled {
     background-color: var(--surface-muted);
     color: var(--text-secondary);
   }
