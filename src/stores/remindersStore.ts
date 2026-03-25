@@ -12,10 +12,11 @@ export type Reminder = {
   id: string;
   name: string;
   description: string;
+  dateTime: Date;
   repeat: ReminderRepeat;
   notifications: {
     enabled: boolean;
-    minutesBefore?: number[];
+    minutesBefore: number[];
   };
   isCompleted: boolean;
   isArchived: boolean;
@@ -25,21 +26,32 @@ const createEmptyReminder = (): Reminder => ({
   id: crypto.randomUUID(),
   name: '',
   description: '',
+  dateTime: new Date(),
   repeat: {
     type: 'none',
   },
   notifications: {
     enabled: false,
+    minutesBefore: [],
   },
   isCompleted: false,
   isArchived: false,
 });
+
+const shiftDate = (base: Date, days: number) => {
+  const d = new Date(base);
+  d.setDate(d.getDate() + days);
+  return d;
+};
+
+const todayDate = new Date();
 
 const defaultReminders: Reminder[] = [
   {
     id: crypto.randomUUID(),
     name: 'Маникюр',
     description: 'Обновить гель-лак',
+    dateTime: todayDate,
     repeat: {
       type: 'none',
     },
@@ -54,6 +66,7 @@ const defaultReminders: Reminder[] = [
     id: crypto.randomUUID(),
     name: 'Окрашивание волос',
     description: 'В салоне "Светлана"',
+    dateTime: shiftDate(todayDate, 1),
     repeat: {
       type: 'monthly',
     },
@@ -68,6 +81,7 @@ const defaultReminders: Reminder[] = [
     id: crypto.randomUUID(),
     name: 'Электроэпиляция',
     description: '',
+    dateTime: shiftDate(todayDate, -1),
     repeat: {
       type: 'custom',
     },
@@ -75,8 +89,8 @@ const defaultReminders: Reminder[] = [
       enabled: false,
       minutesBefore: [10],
     },
-    isCompleted: true,
-    isArchived: true,
+    isCompleted: false,
+    isArchived: false,
   },
 ];
 

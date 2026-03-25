@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
+import { formatDate } from '@/utils';
 
 const route = useRoute();
+
+const date = formatDate(new Date());
 
 const title = computed(() => {
   return route.path !== '/reminders' ? 'Мои процедуры' : 'Мои напоминания';
@@ -16,7 +19,7 @@ const subTitle = computed(() => {
 <template>
   <header class="PageHeader">
     <div class="PageHeaderDate">
-      Сегодня, 22 марта
+      Сегодня, {{ date }}
     </div>
 
     <h1 class="PageHeaderTitle">

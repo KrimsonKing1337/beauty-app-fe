@@ -12,6 +12,8 @@ import {
   ProcedureCardEdit,
 } from '@/components';
 
+import { formatDate } from '@/utils';
+
 const procedureCardStore = useProcedureCardsStore();
 const { cards, draftCard, lastTouchedCardId } = storeToRefs(procedureCardStore);
 
@@ -37,20 +39,6 @@ watch(lastTouchedCardId, (id) => {
     });
   });
 });
-
-const formatDate = (date: Date | null) => {
-  if (!date) {
-    return '';
-  }
-
-  return new Intl.DateTimeFormat('ru-RU', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  })
-    .format(date)
-    .replace(' г.', '');
-}
 
 const getCardInfo = (card: ProcedureCardType) => {
   const date = formatDate(card.date);

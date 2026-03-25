@@ -4,6 +4,7 @@ import { computed, ref } from 'vue';
 import { type Reminder, useRemindersStore } from '@/stores/remindersStore.ts';
 
 import { CardHeader } from '@/components';
+import { formatReminderDate } from '@/components/Reminders/utils';
 
 const props = defineProps<{
   reminder: Reminder;
@@ -36,16 +37,16 @@ const menuItems = ref([
   },
 ]);
 
+const formattedDate = computed(() => {
+  return formatReminderDate(props.reminder.dateTime);
+});
+
 const rightTop = computed(() => {
-  return `Повтор: ${props.reminder.repeat.type}`;
+  return formattedDate.value.main;
 });
 
 const rightBottom = computed(() => {
-  let result = 'Напоминание: ';
-
-  result += props.reminder.notifications.enabled ? 'Включено' : 'Выключено';
-
-  return result;
+  return formattedDate.value.relative;
 });
 
 </script>
