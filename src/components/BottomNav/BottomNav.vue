@@ -2,12 +2,14 @@
 import { useRouter, useRoute } from 'vue-router';
 import { Button } from 'primevue';
 
-import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
+import { useProcedureCardsStore } from '@/stores/procedureCardsStore';
+import { useRemindersStore } from '@/stores/remindersStore';
 
 const router = useRouter();
 const route = useRoute();
 
 const procedureCardsStore = useProcedureCardsStore();
+const remindersStore = useRemindersStore();
 
 const buttonProceduresClickHandler = () => {
   router.push('/');
@@ -16,6 +18,14 @@ const buttonProceduresClickHandler = () => {
 const buttonRemindersClickHandler = () => {
   router.push('/reminders');
 };
+
+const buttonCreateClickHandler = () => {
+  if (route.path === '/reminders') {
+    remindersStore.startCreateReminder();
+  } else {
+    procedureCardsStore.startCreateCard();
+  }
+}
 </script>
 
 <template>
@@ -37,7 +47,7 @@ const buttonRemindersClickHandler = () => {
        Напоминания
      </Button>
 
-     <Button class="BottomNavItem" @click="procedureCardsStore.startCreateCard();">
+     <Button class="BottomNavItem" @click="buttonCreateClickHandler">
        <i class="pi pi-plus" />
      </Button>
    </div>
