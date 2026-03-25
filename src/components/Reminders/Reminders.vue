@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { Card } from '@/components';
 import { useRemindersStore } from '@/stores/remindersStore';
+
+import { Reminder } from './components';
 
 const remindersStore = useRemindersStore();
 const { reminders } = storeToRefs(remindersStore);
@@ -9,9 +10,11 @@ const { reminders } = storeToRefs(remindersStore);
 
 <template>
   <div class="RemindersWrapper">
-    <Card v-for="reminderCur in reminders" :key="reminderCur.id">
-      {{ reminderCur.name }}
-    </Card>
+    <Reminder
+      v-for="reminderCur in reminders"
+      :key="reminderCur.id"
+      :reminder="reminderCur"
+    />
   </div>
 </template>
 

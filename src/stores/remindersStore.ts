@@ -6,7 +6,7 @@ export type ReminderRepeat = {
   interval?: number;
   daysOfWeek?: number[];
   endDate?: string;
-}
+};
 
 export type Reminder = {
   id: string;
@@ -19,7 +19,7 @@ export type Reminder = {
   };
   isCompleted: boolean;
   isArchived: boolean;
-}
+};
 
 const createEmptyReminder = (): Reminder => ({
   id: crypto.randomUUID(),
