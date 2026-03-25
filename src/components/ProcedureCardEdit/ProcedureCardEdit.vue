@@ -25,7 +25,7 @@ const cancelButtonClickHandler = () => {
 </script>
 
 <template v-if="!!draftCard">
-  <div class="ProcedureCardEdit">
+  <div class="ProcedureCardEditItem">
     <Input
       v-model="draftCard!.procedureName"
       id="input-title"
@@ -34,7 +34,7 @@ const cancelButtonClickHandler = () => {
       Название процедуры
     </Input>
 
-    <FloatLabel class="ReminderEditItem isDatepicker">
+    <FloatLabel class="ProcedureCardEditItem isDatepicker">
       <label for="input-date">
         Дата
       </label>
@@ -45,7 +45,7 @@ const cancelButtonClickHandler = () => {
     <Input
       v-model="draftCard!.place"
       id="input-place"
-      class="ReminderEditItem"
+      class="ProcedureCardEditItem"
     >
       Название процедуры
     </Input>
@@ -53,7 +53,7 @@ const cancelButtonClickHandler = () => {
     <Input
       v-model="draftCard!.duration"
       id="input-duration"
-      class="ReminderEditItem"
+      class="ProcedureCardEditItem"
     >
       Длительность
     </Input>
@@ -61,12 +61,12 @@ const cancelButtonClickHandler = () => {
     <Input
       v-model="draftCard!.notes"
       id="input-note"
-      class="ReminderEditItem"
+      class="ProcedureCardEditItem"
     >
       Описание
     </Input>
 
-    <div class="ReminderEditItem">
+    <div class="ProcedureCardEditItem">
       <FileUpload
         accept="image/*"
         chooseLabel="Фото до"
@@ -75,7 +75,7 @@ const cancelButtonClickHandler = () => {
       />
     </div>
 
-    <div class="ReminderEditItem">
+    <div class="ProcedureCardEditItem">
       <FileUpload
         accept="image/*"
         chooseLabel="Фото после"
@@ -110,7 +110,7 @@ const cancelButtonClickHandler = () => {
   box-shadow: 0 8px 20px rgba(43, 24, 31, 0.04);
 }
 
-.ReminderEditItem {
+.ProcedureCardEditItem {
   margin-top: var(--space-32);
 
   &.isDatepicker {

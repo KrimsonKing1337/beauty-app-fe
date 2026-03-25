@@ -1,6 +1,7 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import { storeToRefs } from 'pinia';
-import { Button } from 'primevue';
+import { type DatePickerState, Button, DatePicker, FloatLabel } from 'primevue';
 
 import { useRemindersStore } from '@/stores/remindersStore.ts';
 
@@ -9,6 +10,8 @@ import { Input } from '@/components';
 const remindersStore = useRemindersStore();
 const { draftReminder } = storeToRefs(remindersStore);
 
+const calendarRef = ref<DatePickerState | null>(null);
+
 const saveButtonClickHandler = () => {
   remindersStore.saveDraft();
 };
@@ -16,10 +19,16 @@ const saveButtonClickHandler = () => {
 const cancelButtonClickHandler = () => {
   remindersStore.cancelEdit();
 };
+
+const saveDateTimeButtonClickHandler = () => {
+  if (calendarRef.value) {
+    calendarRef.value.overlayVisible = false;
+  }
+};
 </script>
 
 <template v-if="!!draftReminder">
-  <div class="ProcedureCardEdit">
+  <div class="ProcedureCardEdit" id="test">
     <Input
       v-model="draftReminder!.name"
       id="input-name"
@@ -35,6 +44,31 @@ const cancelButtonClickHandler = () => {
     >
       Описание
     </Input>
+
+    <FloatLabel class="ReminderEditItem isDatepicker">
+      <label for="input-date-time">
+        Дата
+      </label>
+
+      <DatePicker
+        ref="calendarRef"
+        v-model="draftReminder!.dateTime"
+        id="input-date-time"
+        dateFormat="dd-mm-yy"
+        showTime
+        fluid
+        showButtonBar
+        placeholder="Дата"
+      >
+        <template #buttonbar>
+          <div class="ButtonBar">
+            <Button severity="success" @click="saveDateTimeButtonClickHandler">
+              Закрыть
+            </Button>
+          </div>
+        </template>
+      </DatePicker>
+    </FloatLabel>
 
     <div class="BottomNav">
       <Button severity="success" @click="saveButtonClickHandler">
@@ -78,5 +112,12 @@ const cancelButtonClickHandler = () => {
   justify-content: center;
   gap: 18px;
   margin-top: var(--space-32);
+}
+
+.ButtonBar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 </style>

@@ -135,14 +135,14 @@ export const useRemindersStore = defineStore('reminders', () => {
     draftReminder.value = { ...reminder };
   };
 
-  const completeReminder = (id: string) => {
+  const completeReminder = (id: string, value: boolean = true) => {
     const index = reminders.value.findIndex((r) => r.id === id);
 
     if (index === -1 || !reminders.value[index]) {
       return;
     }
 
-    reminders.value[index].isCompleted = true;
+    reminders.value[index].isCompleted = value;
   };
 
   const duplicateReminder = (id: string) => {

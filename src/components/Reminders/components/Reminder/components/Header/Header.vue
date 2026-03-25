@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed } from 'vue';
 
-import { useRemindersStore } from '@/stores/remindersStore.ts';
+import { type Reminder, useRemindersStore } from '@/stores/remindersStore.ts';
 
 import { CardHeader } from '@/components';
 
 const props = defineProps<{
-  id: string;
+  reminder: Reminder;
   leftTop: string;
   leftBottom: string;
   rightTop: string;
@@ -15,19 +15,26 @@ const props = defineProps<{
 
 const remindersStore = useRemindersStore();
 
-const menuItems = ref([
+const completed = computed(() => {
+  return {
+    label: props.reminder.isCompleted ? 'Отменить' : 'Завершить',
+    value: !props.reminder.isCompleted,
+  };
+});
+
+const menuItems = computed(() => [
   {
-    label: 'Завершить',
+    label: completed.value.label,
     icon: 'pi pi-check',
     command: () => {
-      remindersStore.completeReminder(props.id);
+      remindersStore.completeReminder(props.reminder.id, completed.value.value);
     },
   },
   {
     label: 'Редактировать',
     icon: 'pi pi-pencil',
     command: () => {
-      remindersStore.startEditReminder(props.id);
+      remindersStore.startEditReminder(props.reminder.id);
     },
   },
   {
@@ -35,7 +42,7 @@ const menuItems = ref([
     icon: 'pi pi-trash',
     class: 'MenuDeleteButton',
     command: () => {
-      remindersStore.removeReminder(props.id);
+      remindersStore.removeReminder(props.reminder.id);
     },
   },
 ]);

@@ -35,7 +35,7 @@ const rightBottom = computed(() => {
     :isDanger="formattedDate.isPast"
   >
     <Header
-      :id="reminder.id"
+      :reminder="reminder"
       :leftTop="leftTop"
       :leftBottom="leftBottom"
       :rightTop="rightTop"
