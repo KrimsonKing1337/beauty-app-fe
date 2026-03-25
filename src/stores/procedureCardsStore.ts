@@ -62,14 +62,6 @@ export const useProcedureCardsStore = defineStore('procedureCard', () => {
   const draftCard = ref<ProcedureCard | null>(null);
   const lastTouchedCardId = ref<string | null>(null);
 
-  const editingCard = computed(() => {
-    if (!editingCardId.value) {
-      return null;
-    }
-
-    return cards.value.find((card) => card.id === editingCardId.value) ?? null;
-  });
-
   const addCard = (payload?: Partial<Omit<ProcedureCard, 'id'>>) => {
     const newCard: ProcedureCard = {
       ...createEmptyProcedureCard(),
@@ -175,7 +167,6 @@ export const useProcedureCardsStore = defineStore('procedureCard', () => {
     cards,
     editingCardId,
     draftCard,
-    editingCard,
     lastTouchedCardId,
     addCard,
     startCreateCard,

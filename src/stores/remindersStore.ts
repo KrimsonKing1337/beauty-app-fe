@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
 export type ReminderRepeat = {
@@ -83,39 +83,122 @@ const defaultReminders: Reminder[] = [
 export const useRemindersStore = defineStore('reminders', () => {
   const reminders = ref<Reminder[]>(defaultReminders);
 
-  const addReminder = () => {
-    const newReminder = createEmptyReminder();
+  const editingReminderId = ref<string | null>(null);
+  const draftReminder = ref<Reminder | null>(null);
+  const lastTouchedReminderId = ref<string | null>(null);
+
+  const addReminder = (payload?: Partial<Omit<Reminder, 'id'>>) => {
+    const newReminder: Reminder = {
+      ...createEmptyReminder(),
+      ...payload,
+    }
 
     reminders.value.push(newReminder);
+
+    lastTouchedReminderId.value = newReminder.id;
+
+    return newReminder;
   };
 
-  const updateReminder = (id: string, patch: Partial<Reminder>) => {
-    const index = reminders.value.findIndex(r => r.id === id);
-    if (index !== -1 && reminders.value[index]) {
-      reminders.value[index] = {
-        ...reminders.value[index],
-        ...patch,
-      };
+  const startCreateReminder = () => {
+    editingReminderId.value = null;
+    draftReminder.value = createEmptyReminder();
+  };
+
+  const startEditReminder = (id: string) => {
+    const reminder = reminders.value.find((item) => item.id === id);
+
+    if (!reminder) {
+      return;
     }
+
+    editingReminderId.value = id;
+    draftReminder.value = { ...reminder };
   };
 
-  const deleteReminder = (id: string) => {
-    reminders.value = reminders.value.filter(r => r.id !== id);
+  const duplicateReminder = (id: string) => {
+    const index = reminders.value.findIndex((r) => r.id === id);
+
+    if (index === -1) {
+      return;
+    }
+
+    const newId = crypto.randomUUID();
+
+    const duplicatedCard = {
+      ...reminders.value[index],
+      id: newId,
+    } as Reminder;
+
+    reminders.value.splice(index, 0, duplicatedCard);
+    lastTouchedReminderId.value = newId;
+
+    startEditReminder(newId);
   };
 
-  const toggleCompleted = (id: string) => {
-    const r = reminders.value.find(r => r.id === id);
+  const cancelEdit = () => {
+    lastTouchedReminderId.value = editingReminderId.value;
 
-    if (r) {
-      r.isCompleted = !r.isCompleted;
+    editingReminderId.value = null;
+    draftReminder.value = null;
+  };
+
+  const saveDraft = () => {
+    if (!draftReminder.value) {
+      return;
+    }
+
+    if (editingReminderId.value) {
+      const index = reminders.value.findIndex((r) => r.id === editingReminderId.value);
+
+      if (index === -1) {
+        return;
+      }
+
+      reminders.value[index] = { ...draftReminder.value };
+    } else {
+      reminders.value.push({ ...draftReminder.value });
+    }
+
+    lastTouchedReminderId.value = draftReminder.value.id;
+
+    editingReminderId.value = null;
+    draftReminder.value = null;
+  };
+
+  const removeReminder = (id: string) => {
+    const index = reminders.value.findIndex((r) => r.id === id);
+
+    if (index === -1) {
+      return;
+    }
+
+    const prevId = reminders.value[index - 1]?.id ?? null;
+    const nextId = reminders.value[index + 1]?.id ?? null;
+
+    reminders.value = reminders.value.filter((r) => r.id !== id);
+
+    if (editingReminderId.value === id) {
+      editingReminderId.value = null;
+      draftReminder.value = null;
+    }
+
+    if (lastTouchedReminderId.value === id) {
+      lastTouchedReminderId.value = nextId ?? prevId;
     }
   };
 
   return {
     reminders,
+    editingReminderId,
+    draftReminder,
+    lastTouchedReminderId,
     addReminder,
-    updateReminder,
-    deleteReminder,
-    toggleCompleted,
+    startCreateReminder,
+    startEditReminder,
+    duplicateReminder,
+    cancelEdit,
+    saveDraft,
+    removeReminder,
   };
 });

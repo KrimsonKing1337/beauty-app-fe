@@ -1,5 +1,16 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
 
+const route = useRoute();
+
+const title = computed(() => {
+  return route.path !== '/reminders' ? 'Мои процедуры' : 'Мои напоминания';
+});
+
+const subTitle = computed(() => {
+  return route.path !== '/reminders' ? 'История ухода и результат по фото' : '';
+});
 </script>
 
 <template>
@@ -9,11 +20,11 @@
     </div>
 
     <h1 class="PageHeaderTitle">
-      Мои процедуры
+      {{ title }}
     </h1>
 
     <p class="PageHeaderSubtitle">
-      История ухода и результат по фото
+      {{ subTitle }}
     </p>
   </header>
 </template>

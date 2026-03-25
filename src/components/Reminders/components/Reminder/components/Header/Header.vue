@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 
-import { type Reminder } from '@/stores/remindersStore.ts';
+import { type Reminder, useRemindersStore } from '@/stores/remindersStore.ts';
 
 import { CardHeader } from '@/components';
 
@@ -9,19 +9,30 @@ const props = defineProps<{
   reminder: Reminder;
 }>();
 
+const remindersStore = useRemindersStore();
+
 const menuItems = ref([
   {
     label: 'Редактировать',
     icon: 'pi pi-pencil',
+    command: () => {
+      remindersStore.startEditReminder(props.reminder.id);
+    },
   },
   {
     label: 'Дублировать',
     icon: 'pi pi-clone',
+    command: () => {
+      remindersStore.duplicateReminder(props.reminder.id);
+    },
   },
   {
     label: 'Удалить',
     icon: 'pi pi-trash',
     class: 'MenuDeleteButton',
+    command: () => {
+      remindersStore.removeReminder(props.reminder.id);
+    },
   },
 ]);
 
