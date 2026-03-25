@@ -38,8 +38,24 @@ watch(lastTouchedCardId, (id) => {
   });
 });
 
+const formatDate = (date: Date | null) => {
+  if (!date) {
+    return '';
+  }
+
+  return new Intl.DateTimeFormat('ru-RU', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
+    .format(date)
+    .replace(' г.', '');
+}
+
 const getCardInfo = (card: ProcedureCardType) => {
-  const meta = `${card.date} - ${card.place} - ${card.duration};`
+  const date = formatDate(card.date);
+
+  const meta = `${date} - ${card.place} - ${card.duration};`
   const price = card.price ? `${card.price} Р` : '0 Р';
 
   return {
