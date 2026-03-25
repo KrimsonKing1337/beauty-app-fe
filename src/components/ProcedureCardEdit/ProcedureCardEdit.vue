@@ -34,12 +34,18 @@ const cancelButtonClickHandler = () => {
       Название процедуры
     </Input>
 
-    <FloatLabel class="ProcedureCardEditItem isDatepicker">
+    <FloatLabel class="ProcedureCardEditItem">
       <label for="input-date">
         Дата
       </label>
 
-      <DatePicker id="input-date" placeholder="Дата" v-model="draftCard!.date" />
+      <DatePicker
+        v-model="draftCard!.date"
+        id="input-date"
+        placeholder="Дата"
+        dateFormat="dd-mm-yy"
+        fluid
+      />
     </FloatLabel>
 
     <Input
@@ -112,12 +118,6 @@ const cancelButtonClickHandler = () => {
 
 .ProcedureCardEditItem {
   margin-top: var(--space-32);
-
-  &.isDatepicker {
-    span {
-      width: 100%;
-    }
-  }
 }
 
 .BottomNav {

@@ -1,11 +1,18 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 
+export type ReminderType = 'none' | 'daily' | 'weekly' | 'monthly' | 'custom';
+
 export type ReminderRepeat = {
-  type: 'none' | 'daily' | 'weekly' | 'monthly' | 'custom';
+  type: ReminderType;
   interval?: number;
   daysOfWeek?: number[];
   endDate?: string;
+};
+
+export type ReminderNotifications = {
+  enabled: boolean;
+  minutesBefore: number;
 };
 
 export type Reminder = {
@@ -14,10 +21,7 @@ export type Reminder = {
   description: string;
   dateTime: Date;
   repeat: ReminderRepeat;
-  notifications: {
-    enabled: boolean;
-    minutesBefore: number[];
-  };
+  notifications: ReminderNotifications;
   isCompleted: boolean;
 };
 
@@ -31,7 +35,7 @@ const createEmptyReminder = (): Reminder => ({
   },
   notifications: {
     enabled: false,
-    minutesBefore: [],
+    minutesBefore: 0,
   },
   isCompleted: false,
 });
@@ -55,7 +59,7 @@ const defaultReminders: Reminder[] = [
     },
     notifications: {
       enabled: true,
-      minutesBefore: [10, 60],
+      minutesBefore: 10,
     },
     isCompleted: false,
   },
@@ -69,7 +73,7 @@ const defaultReminders: Reminder[] = [
     },
     notifications: {
       enabled: true,
-      minutesBefore: [10],
+      minutesBefore: 120,
     },
     isCompleted: false,
   },
@@ -83,7 +87,7 @@ const defaultReminders: Reminder[] = [
     },
     notifications: {
       enabled: false,
-      minutesBefore: [10],
+      minutesBefore: 0,
     },
     isCompleted: false,
   },

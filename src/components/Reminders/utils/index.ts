@@ -1,3 +1,5 @@
+import type { ReminderType } from '@/stores/remindersStore.ts';
+
 export const formatReminderDate = (date: Date) => {
   const now = new Date();
 
@@ -73,4 +75,21 @@ export const formatReminderDate = (date: Date) => {
     relative: relativeText,
     isPast,
   };
+};
+
+export const getHumanReadableReminderType = (type: ReminderType) => {
+  switch (type) {
+    case 'none':
+      return '';
+    case 'daily':
+      return 'Ежедневно';
+    case 'weekly':
+      return 'Еженедельно';
+    case 'monthly':
+      return 'Ежемесячно';
+    case 'custom':
+      return 'Пользовательское';
+    default:
+      return '';
+  }
 };

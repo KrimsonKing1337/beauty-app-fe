@@ -4,7 +4,7 @@ import { computed } from 'vue';
 import type { Reminder } from '@/stores/remindersStore.ts';
 
 import { Card } from '@/components';
-import { formatReminderDate } from '@/components/Reminders/utils';
+import { formatReminderDate, getHumanReadableReminderType } from '@/components/Reminders/utils';
 
 import { Header } from './components';
 
@@ -16,7 +16,17 @@ const formattedDate = computed(() => {
   return formatReminderDate(props.reminder.dateTime);
 });
 
-const leftTop = computed(() => props.reminder.name);
+const leftTop = computed(() => {
+  const humanReadableType = getHumanReadableReminderType(props.reminder.repeat.type);
+  let label = props.reminder.name;
+
+  if (humanReadableType) {
+    label += ` (${humanReadableType})`;
+  }
+
+  return label;
+});
+
 const leftBottom = computed(() => props.reminder.description);
 const rightTop = computed(() => formattedDate.value.main);
 
@@ -25,7 +35,7 @@ const rightBottom = computed(() => {
     return 'Завершено';
   }
 
-  return formattedDate.value.relative
+  return formattedDate.value.relative;
 });
 </script>
 
