@@ -35,6 +35,7 @@ const props = defineProps<{
 
   &.isArchived {
     background-color: var(--surface-muted);
+    color: var(--text-secondary);
   }
 }
 </style>
