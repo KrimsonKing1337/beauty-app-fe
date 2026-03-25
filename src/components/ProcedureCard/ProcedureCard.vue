@@ -5,6 +5,7 @@ import {
   Chips,
   Notes,
   ProcedureCardHeader,
+  Card,
 } from '@/components';
 
 import type { ProcedureCardProps } from './ProcedureCard.types.ts';
@@ -31,7 +32,7 @@ const chips: ChipsProps['chips'] = [
 </script>
 
 <template>
-  <div class="ProcedureCard">
+  <Card>
     <ProcedureCardHeader
       :cardId="props.cardId"
       :title="props.title"
@@ -46,20 +47,9 @@ const chips: ChipsProps['chips'] = [
     </Notes>
 
     <Chips v-if="false" :chips="chips" />
-  </div>
+  </Card>
 </template>
 
 <style scoped lang="scss">
-  .ProcedureCard {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: flex-start;
-    width: 100%;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 20px;
-    box-shadow: 0 8px 20px rgba(43, 24, 31, 0.04);
-  }
+
 </style>
