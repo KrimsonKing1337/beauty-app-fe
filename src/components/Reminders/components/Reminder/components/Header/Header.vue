@@ -17,17 +17,17 @@ const remindersStore = useRemindersStore();
 
 const menuItems = ref([
   {
+    label: 'Завершить',
+    icon: 'pi pi-check',
+    command: () => {
+      remindersStore.completeReminder(props.id);
+    },
+  },
+  {
     label: 'Редактировать',
     icon: 'pi pi-pencil',
     command: () => {
       remindersStore.startEditReminder(props.id);
-    },
-  },
-  {
-    label: 'Дублировать',
-    icon: 'pi pi-clone',
-    command: () => {
-      remindersStore.duplicateReminder(props.id);
     },
   },
   {

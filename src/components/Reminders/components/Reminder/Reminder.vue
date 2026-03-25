@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+
 import type { Reminder } from '@/stores/remindersStore.ts';
 
 import { Card } from '@/components';
@@ -18,12 +19,19 @@ const formattedDate = computed(() => {
 const leftTop = computed(() => props.reminder.name);
 const leftBottom = computed(() => props.reminder.description);
 const rightTop = computed(() => formattedDate.value.main);
-const rightBottom = computed(() => formattedDate.value.relative);
+
+const rightBottom = computed(() => {
+  if (props.reminder.isCompleted) {
+    return 'Завершено';
+  }
+
+  return formattedDate.value.relative
+});
 </script>
 
 <template>
   <Card
-    :isDisabled="reminder.isArchived"
+    :isDisabled="reminder.isCompleted"
     :isDanger="formattedDate.isPast"
   >
     <Header

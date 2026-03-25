@@ -6,7 +6,7 @@ import { useRemindersStore } from '@/stores/remindersStore';
 import { Reminder, ReminderEdit } from './components';
 
 const remindersStore = useRemindersStore();
-const { reminders, draftReminder, lastTouchedReminderId } = storeToRefs(remindersStore);
+const { remindersSorted, draftReminder, lastTouchedReminderId } = storeToRefs(remindersStore);
 
 const isEditing = computed(() => draftReminder.value !== null);
 
@@ -36,7 +36,7 @@ watch(lastTouchedReminderId, (id) => {
   <div class="FullWidth">
     <div v-if="!isEditing" class="RemindersWrapper">
       <div
-        v-for="reminderCur in reminders"
+        v-for="reminderCur in remindersSorted"
         :key="reminderCur.id"
         :ref="(el) => setReminderRef(reminderCur.id, el as HTMLElement)"
         class="FullWidth"

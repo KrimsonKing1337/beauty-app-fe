@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 
 export type ReminderRepeat = {
@@ -19,7 +19,6 @@ export type Reminder = {
     minutesBefore: number[];
   };
   isCompleted: boolean;
-  isArchived: boolean;
 };
 
 const createEmptyReminder = (): Reminder => ({
@@ -35,7 +34,6 @@ const createEmptyReminder = (): Reminder => ({
     minutesBefore: [],
   },
   isCompleted: false,
-  isArchived: false,
 });
 
 const shiftDate = (base: Date, days: number) => {
@@ -60,7 +58,6 @@ const defaultReminders: Reminder[] = [
       minutesBefore: [10, 60],
     },
     isCompleted: false,
-    isArchived: false,
   },
   {
     id: crypto.randomUUID(),
@@ -74,8 +71,7 @@ const defaultReminders: Reminder[] = [
       enabled: true,
       minutesBefore: [10],
     },
-    isCompleted: true,
-    isArchived: false,
+    isCompleted: false,
   },
   {
     id: crypto.randomUUID(),
@@ -90,7 +86,6 @@ const defaultReminders: Reminder[] = [
       minutesBefore: [10],
     },
     isCompleted: false,
-    isArchived: false,
   },
 ];
 
@@ -100,6 +95,16 @@ export const useRemindersStore = defineStore('reminders', () => {
   const editingReminderId = ref<string | null>(null);
   const draftReminder = ref<Reminder | null>(null);
   const lastTouchedReminderId = ref<string | null>(null);
+
+  const remindersSorted = computed(() => {
+    return [...reminders.value].sort((a, b) => {
+      if (a.isCompleted !== b.isCompleted) {
+        return a.isCompleted ? 1 : -1;
+      }
+
+      return new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime();
+    });
+  });
 
   const addReminder = (payload?: Partial<Omit<Reminder, 'id'>>) => {
     const newReminder: Reminder = {
@@ -128,6 +133,16 @@ export const useRemindersStore = defineStore('reminders', () => {
 
     editingReminderId.value = id;
     draftReminder.value = { ...reminder };
+  };
+
+  const completeReminder = (id: string) => {
+    const index = reminders.value.findIndex((r) => r.id === id);
+
+    if (index === -1 || !reminders.value[index]) {
+      return;
+    }
+
+    reminders.value[index].isCompleted = true;
   };
 
   const duplicateReminder = (id: string) => {
@@ -204,6 +219,7 @@ export const useRemindersStore = defineStore('reminders', () => {
 
   return {
     reminders,
+    remindersSorted,
     editingReminderId,
     draftReminder,
     lastTouchedReminderId,
@@ -214,5 +230,6 @@ export const useRemindersStore = defineStore('reminders', () => {
     cancelEdit,
     saveDraft,
     removeReminder,
+    completeReminder,
   };
 });

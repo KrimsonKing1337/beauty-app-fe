@@ -15,7 +15,8 @@ const props = defineProps<{
       isWarning: props.isWarning,
       isDanger: props.isDanger,
       isDisabled: props.isDisabled,
-     }">
+    }"
+  >
     <slot />
   </div>
 </template>
