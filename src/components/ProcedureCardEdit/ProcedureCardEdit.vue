@@ -43,7 +43,7 @@ const cancelButtonClickHandler = () => {
         v-model="draftCard!.date"
         id="input-date"
         placeholder="Дата"
-        dateFormat="dd-mm-yy"
+        dateFormat="dd.mm.yy"
         fluid
       />
     </FloatLabel>
