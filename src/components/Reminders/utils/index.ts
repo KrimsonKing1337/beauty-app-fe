@@ -106,3 +106,73 @@ export const repeatStoreToUi = (repeat: ReminderRepeat) => {
     repeatCustomUnitRef: repeat.unit,
   };
 };
+
+export const repeatUiToStore = ({
+ repeatRef,
+ daysOfWeekRef,
+ repeatCustomIntervalRef,
+ repeatCustomUnitRef,
+}: {
+  repeatRef: RepeatPreset;
+  daysOfWeekRef: number[];
+  repeatCustomIntervalRef: number;
+  repeatCustomUnitRef: 'day' | 'week' | 'month' | 'year';
+}): ReminderRepeat => {
+  switch (repeatRef) {
+    case 'none':
+      return {
+        preset: 'none',
+        interval: 1,
+        unit: 'day',
+        daysOfWeek: [],
+      };
+
+    case 'daily':
+      return {
+        preset: 'daily',
+        interval: 1,
+        unit: 'day',
+        daysOfWeek: [],
+      };
+
+    case 'weekly':
+      return {
+        preset: 'weekly',
+        interval: 1,
+        unit: 'week',
+        daysOfWeek: [],
+      };
+
+    case 'daysOfWeek':
+      return {
+        preset: 'daysOfWeek',
+        interval: 1,
+        unit: 'week',
+        daysOfWeek: [...daysOfWeekRef].sort((a, b) => a - b),
+      };
+
+    case 'monthly':
+      return {
+        preset: 'monthly',
+        interval: 1,
+        unit: 'month',
+        daysOfWeek: [],
+      };
+
+    case 'yearly':
+      return {
+        preset: 'yearly',
+        interval: 1,
+        unit: 'year',
+        daysOfWeek: [],
+      };
+
+    case 'custom':
+      return {
+        preset: 'custom',
+        interval: repeatCustomIntervalRef,
+        unit: repeatCustomUnitRef,
+        daysOfWeek: [],
+      };
+  }
+};

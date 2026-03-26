@@ -16,28 +16,10 @@ import type { RepeatPreset } from '@/components/Reminders/@types.ts';
 import { useRemindersStore } from '@/stores/remindersStore.ts';
 
 import { Input } from '@/components';
-import { repeatStoreToUi } from '@/components/Reminders/utils';
+import { repeatStoreToUi, repeatUiToStore } from '@/components/Reminders/utils';
 
 const remindersStore = useRemindersStore();
 const { draftReminder } = storeToRefs(remindersStore);
-
-const calendarRef = ref<DatePickerState | null>(null);
-
-const saveButtonClickHandler = () => {
-  // todo: draftReminder save value
-
-  remindersStore.saveDraft();
-};
-
-const cancelButtonClickHandler = () => {
-  remindersStore.cancelEdit();
-};
-
-const saveDateTimeButtonClickHandler = () => {
-  if (calendarRef.value) {
-    calendarRef.value.overlayVisible = false;
-  }
-};
 
 const repeatValues = repeatStoreToUi(draftReminder.value!.repeat);
 
@@ -51,12 +33,7 @@ const repeatOptions = [
   { label: 'Другое', value: 'custom' },
 ];
 
-type NotificationMinutesBeforeOption = {
-  label: string;
-  value: number;
-};
-
-const notificationMinutesBeforeOptions: NotificationMinutesBeforeOption[] = [
+const notificationMinutesBeforeOptions = [
   { label: 'Не напоминать', value: 0 },
   { label: '5 минут', value: 5 },
   { label: '15 минут', value: 15 },
@@ -67,8 +44,6 @@ const notificationMinutesBeforeOptions: NotificationMinutesBeforeOption[] = [
   { label: '4 часа', value: 240 },
 ];
 
-const repeatRef = ref<RepeatPreset>(repeatValues.repeatRef);
-
 const repeatCustomUnitOptions = [
   { label: 'День', value: 'day' },
   { label: 'Неделя', value: 'week' },
@@ -76,10 +51,7 @@ const repeatCustomUnitOptions = [
   { label: 'Год', value: 'year' },
 ];
 
-const repeatCustomIntervalRef = ref(repeatValues.repeatCustomIntervalRef);
-const repeatCustomUnitRef = ref<'day' | 'week' | 'month' | 'year'>('day');
-
-const daysOfWeek = [
+const daysOfWeekOptions = [
   { label: 'Понедельник', value: 1 },
   { label: 'Вторник', value: 2 },
   { label: 'Среда', value: 3 },
@@ -89,7 +61,34 @@ const daysOfWeek = [
   { label: 'Воскресенье', value: 7 },
 ];
 
+const calendarRef = ref<DatePickerState | null>(null);
+const repeatRef = ref<RepeatPreset>(repeatValues.repeatRef);
+const repeatCustomIntervalRef = ref(repeatValues.repeatCustomIntervalRef);
+const repeatCustomUnitRef = ref<'day' | 'week' | 'month' | 'year'>('day');
 const daysOfWeekRef = ref<number[]>(repeatValues.daysOfWeekRef);
+
+const saveButtonClickHandler = () => {
+  const valuesToSave = repeatUiToStore({
+    repeatRef: repeatRef.value,
+    repeatCustomIntervalRef: repeatCustomIntervalRef.value,
+    repeatCustomUnitRef: repeatCustomUnitRef.value,
+    daysOfWeekRef: daysOfWeekRef.value,
+  })
+
+  draftReminder.value!.repeat = valuesToSave;
+
+  remindersStore.saveDraft();
+};
+
+const cancelButtonClickHandler = () => {
+  remindersStore.cancelEdit();
+};
+
+const saveDateTimeButtonClickHandler = () => {
+  if (calendarRef.value) {
+    calendarRef.value.overlayVisible = false;
+  }
+};
 </script>
 
 <template v-if="!!draftReminder">
@@ -155,7 +154,7 @@ const daysOfWeekRef = ref<number[]>(repeatValues.daysOfWeekRef);
       </FloatLabel>
 
       <div v-if="repeatRef === 'daysOfWeek'">
-        <div v-for="dayCur of daysOfWeek" :key="dayCur.value">
+        <div v-for="dayCur of daysOfWeekOptions" :key="dayCur.value">
           <Checkbox
             v-model="daysOfWeekRef"
             :inputId="`input-repeat-days-of-week-${dayCur.value}`"

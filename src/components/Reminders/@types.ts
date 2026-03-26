@@ -9,7 +9,6 @@ export type RepeatPreset = 'none'
 export type RepeatCustomUnit = 'day' | 'week' | 'month' | 'year';
 
 export type ReminderRepeat = {
-  enabled: boolean;
   preset: RepeatPreset;
   interval: number;
   unit: RepeatCustomUnit;

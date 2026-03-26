@@ -24,7 +24,6 @@ const createEmptyReminder = (): Reminder => ({
   description: '',
   dateTime: new Date(),
   repeat: {
-    enabled: false,
     unit: 'day',
     interval: 0,
     daysOfWeek: [],
@@ -52,7 +51,6 @@ const defaultReminders: Reminder[] = [
     description: 'Обновить гель-лак',
     dateTime: todayDate,
     repeat: {
-      enabled: false,
       unit: 'day',
       interval: 0,
       daysOfWeek: [],
@@ -70,7 +68,6 @@ const defaultReminders: Reminder[] = [
     description: 'В салоне "Светлана"',
     dateTime: shiftDate(todayDate, 1),
     repeat: {
-      enabled: false,
       unit: 'day',
       interval: 0,
       daysOfWeek: [1, 5],
@@ -88,7 +85,6 @@ const defaultReminders: Reminder[] = [
     description: '',
     dateTime: shiftDate(todayDate, -1),
     repeat: {
-      enabled: false,
       unit: 'day',
       interval: 2,
       daysOfWeek: [],
