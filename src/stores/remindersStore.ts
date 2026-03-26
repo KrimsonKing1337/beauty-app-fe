@@ -1,13 +1,10 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 
-export type ReminderType = 'none' | 'daily' | 'weekly' | 'monthly' | 'custom';
+import type { RepeatNormalized } from '@/components/Reminders/@types.ts';
 
-export type ReminderRepeat = {
-  type: ReminderType;
-  interval?: number;
+export type ReminderRepeat = RepeatNormalized & {
   daysOfWeek?: number[];
-  endDate?: string;
 };
 
 export type ReminderNotifications = {
@@ -31,7 +28,9 @@ const createEmptyReminder = (): Reminder => ({
   description: '',
   dateTime: new Date(),
   repeat: {
-    type: 'none',
+    unitOrNone: 'none',
+    interval: 0,
+    daysOfWeek: [],
   },
   notifications: {
     enabled: false,
@@ -55,7 +54,9 @@ const defaultReminders: Reminder[] = [
     description: 'Обновить гель-лак',
     dateTime: todayDate,
     repeat: {
-      type: 'none',
+      unitOrNone: 'none',
+      interval: 0,
+      daysOfWeek: [],
     },
     notifications: {
       enabled: true,
@@ -69,7 +70,9 @@ const defaultReminders: Reminder[] = [
     description: 'В салоне "Светлана"',
     dateTime: shiftDate(todayDate, 1),
     repeat: {
-      type: 'monthly',
+      unitOrNone: 'month',
+      interval: 2,
+      daysOfWeek: [],
     },
     notifications: {
       enabled: true,
@@ -83,7 +86,9 @@ const defaultReminders: Reminder[] = [
     description: '',
     dateTime: shiftDate(todayDate, -1),
     repeat: {
-      type: 'custom',
+      unitOrNone: 'day',
+      interval: 1,
+      daysOfWeek: [],
     },
     notifications: {
       enabled: false,

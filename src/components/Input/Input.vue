@@ -9,7 +9,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <FloatLabel class="InputFloatLabel">
+  <FloatLabel variant="on" class="InputFloatLabel">
     <label :for="props.id">
       <slot />
     </label>

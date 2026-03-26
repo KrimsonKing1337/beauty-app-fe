@@ -1,4 +1,4 @@
-import type { ReminderType } from '@/stores/remindersStore.ts';
+import type { RepeatNormalized, RepeatPreset } from '../@types.ts';
 
 export const formatReminderDate = (date: Date) => {
   const now = new Date();
@@ -77,7 +77,7 @@ export const formatReminderDate = (date: Date) => {
   };
 };
 
-export const getHumanReadableReminderType = (type: ReminderType) => {
+export const getHumanReadableRepeatPreset = (type: RepeatPreset) => {
   switch (type) {
     case 'none':
       return '';
@@ -87,9 +87,44 @@ export const getHumanReadableReminderType = (type: ReminderType) => {
       return 'Еженедельно';
     case 'monthly':
       return 'Ежемесячно';
+    case 'yearly':
+      return 'Ежемесячно';
     case 'custom':
       return 'Пользовательское';
     default:
       return '';
   }
+};
+
+export const presetToNormalized = (
+  preset: RepeatPreset,
+): RepeatNormalized | null => {
+  switch (preset) {
+    case 'daily':
+      return { interval: 1, unitOrNone: 'day' };
+    case 'weekly':
+      return { interval: 1, unitOrNone: 'week' };
+    case 'monthly':
+      return { interval: 1, unitOrNone: 'month' };
+    case 'yearly':
+      return { interval: 1, unitOrNone: 'year' };
+    case 'none':
+    default:
+      return null;
+  }
+};
+
+export const normalizedToPreset = (
+  repeat: RepeatNormalized | null,
+): RepeatPreset => {
+  if (!repeat) return 'none';
+
+  const { interval, unitOrNone } = repeat;
+
+  if (interval === 1 && unitOrNone === 'day') return 'daily';
+  if (interval === 1 && unitOrNone === 'week') return 'weekly';
+  if (interval === 1 && unitOrNone === 'month') return 'monthly';
+  if (interval === 1 && unitOrNone === 'year') return 'yearly';
+
+  return 'custom';
 };

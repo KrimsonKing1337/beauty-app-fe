@@ -4,7 +4,11 @@ import { computed } from 'vue';
 import type { Reminder } from '@/stores/remindersStore.ts';
 
 import { Card } from '@/components';
-import { formatReminderDate, getHumanReadableReminderType } from '@/components/Reminders/utils';
+import {
+  formatReminderDate,
+  getHumanReadableRepeatPreset,
+  normalizedToPreset
+} from '@/components/Reminders/utils';
 
 import { Header } from './components';
 
@@ -17,11 +21,13 @@ const formattedDate = computed(() => {
 });
 
 const leftTop = computed(() => {
-  const humanReadableType = getHumanReadableReminderType(props.reminder.repeat.type);
+  const preset = normalizedToPreset(props.reminder.repeat);
+  const humanReadablePreset = getHumanReadableRepeatPreset(preset);
+
   let label = props.reminder.name;
 
-  if (humanReadableType) {
-    label += ` (${humanReadableType})`;
+  if (humanReadablePreset) {
+    label += ` (${humanReadablePreset})`;
   }
 
   return label;

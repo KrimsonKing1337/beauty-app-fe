@@ -8,9 +8,12 @@ import {
   DatePicker,
   FloatLabel,
   Select,
+  InputNumber,
+  Checkbox,
 } from 'primevue';
 
-import { type ReminderType, useRemindersStore } from '@/stores/remindersStore.ts';
+import type { RepeatPreset } from '@/components/Reminders/@types.ts';
+import { useRemindersStore } from '@/stores/remindersStore.ts';
 
 import { Input } from '@/components';
 
@@ -33,16 +36,14 @@ const saveDateTimeButtonClickHandler = () => {
   }
 };
 
-type RepeatOption = {
-  label: string;
-  value: ReminderType;
-};
-
-const repeatOptions: RepeatOption[] = [
+const repeatOptions = [
   { label: 'Не повторять', value: 'none' },
   { label: 'Каждый день', value: 'daily' },
   { label: 'Каждую неделю', value: 'weekly' },
+  { label: 'Дни недели', value: 'daysOfWeek' },
   { label: 'Каждый месяц', value: 'monthly' },
+  { label: 'Каждый год', value: 'yearly' },
+  { label: 'Другое', value: 'custom' },
 ];
 
 type NotificationMinutesBeforeOption = {
@@ -60,6 +61,36 @@ const notificationMinutesBeforeOptions: NotificationMinutesBeforeOption[] = [
   { label: '3 часа', value: 180 },
   { label: '4 часа', value: 240 },
 ];
+
+const repeatRef = ref<RepeatPreset>('none');
+
+type RepeatCustomOption = {
+  label: string;
+  value: number;
+};
+
+const repeatCustomRef = ref<Record<string, RepeatCustomOption>>({
+  years: { label: 'Лет', value: 0 },
+  months: { label: 'Месяцев', value: 0 },
+  weeks: { label: 'Недель', value: 0 },
+  days: { label: 'Дней', value: 0 },
+  hours: { label: 'Часов', value: 0 },
+  minutes: { label: 'Минут', value: 0 },
+});
+
+const repeatCustomOptions = Object.keys(repeatCustomRef.value);
+
+const daysOfWeek = [
+  { label: 'Понедельник', value: 1 },
+  { label: 'Вторник', value: 2 },
+  { label: 'Среда', value: 3 },
+  { label: 'Четверг', value: 4 },
+  { label: 'Пятница', value: 5 },
+  { label: 'Суббота', value: 6 },
+  { label: 'Воскресенье', value: 7 },
+];
+
+const daysOfWeekRef = ref<number[]>([]);
 </script>
 
 <template v-if="!!draftReminder">
@@ -80,20 +111,20 @@ const notificationMinutesBeforeOptions: NotificationMinutesBeforeOption[] = [
       Описание
     </Input>
 
-    <FloatLabel class="ReminderEditItem">
+    <FloatLabel class="ReminderEditItem" variant="on">
       <label for="input-date-time">
-        Дата
+        Дата напоминания
       </label>
 
       <DatePicker
         ref="calendarRef"
         v-model="draftReminder!.dateTime"
         id="input-date-time"
-        dateFormat="dd-mm-yy"
+        dateFormat="dd.mm.yy"
         showTime
         fluid
         showButtonBar
-        placeholder="Дата"
+        placeholder="Дата напоминания"
       >
         <template #buttonbar>
           <div class="ButtonBar">
@@ -105,20 +136,61 @@ const notificationMinutesBeforeOptions: NotificationMinutesBeforeOption[] = [
       </DatePicker>
     </FloatLabel>
 
-    <FloatLabel class="ReminderEditItem">
-      <label for="input-repeat">
-        Повторять
-      </label>
+    <!-- отображать стили только если выбраны "дни недели" или "другое" -->
+    <div style="border: 1px #ccc solid; padding: 20px;" class="ReminderEditItem">
+      <FloatLabel variant="on">
+        <label for="input-repeat">
+          Повторять
+        </label>
 
-      <Select
-        v-model="draftReminder!.repeat.type"
-        :options="repeatOptions"
-        optionLabel="label"
-        optionValue="value"
-        fluid
-        inputId="input-repeat"
-      />
-    </FloatLabel>
+        <Select
+          v-model="repeatRef"
+          :options="repeatOptions"
+          optionLabel="label"
+          optionValue="value"
+          fluid
+          inputId="input-repeat"
+        />
+      </FloatLabel>
+
+      <div v-if="repeatRef === 'daysOfWeek'">
+        <div v-for="dayCur of daysOfWeek" :key="dayCur.value">
+          <Checkbox
+            v-model="daysOfWeekRef"
+            :inputId="`daysOfWeek-${dayCur.value}`"
+            name="category"
+            :value="dayCur.value" />
+          <label :for="`daysOfWeek-${dayCur.value}`">
+            {{ dayCur.label }}
+          </label>
+        </div>
+      </div>
+
+      <div v-if="repeatRef === 'custom'" class="ReminderEditItemNumbersWrapper">
+        Ведите количество
+
+        <div
+          v-for="optionCur of repeatCustomOptions"
+          :key="optionCur"
+          class="ReminderEditItemNumber"
+        >
+          <FloatLabel variant="on">
+            <label :for="`input-repeat-custom-${optionCur}`">
+              {{ repeatCustomRef[optionCur]!.label }}
+            </label>
+
+            <InputNumber
+              v-model="repeatCustomRef[optionCur]!.value"
+              :inputId="`input-repeat-custom-${optionCur}`"
+              showButtons
+              :min="0"
+              :max="999"
+              :allowEmpty="false"
+            />
+          </FloatLabel>
+        </div>
+      </div>
+    </div>
 
     <FloatLabel class="ReminderEditItem">
       <label for="input-notifications-minutes-before">
@@ -163,6 +235,35 @@ const notificationMinutesBeforeOptions: NotificationMinutesBeforeOption[] = [
 
 .ReminderEditItem {
   margin-top: var(--space-32);
+
+  label {
+    z-index: 1;
+  }
+}
+
+.ReminderEditItemSibling {
+  margin-top: var(--space-12);
+}
+
+.ReminderEditItemNumbersWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: var(--space-24);
+}
+
+.ReminderEditItemNumber {
+  width: 16.5%;
+
+  &:global(.p-inputnumber),
+  &:global(.p-inputtext) {
+    width: 100%;
+  }
+
+  label {
+    z-index: 1;
+  }
 }
 
 .BottomNav {
