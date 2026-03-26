@@ -16,6 +16,7 @@ import type { RepeatPreset } from '@/components/Reminders/@types.ts';
 import { useRemindersStore } from '@/stores/remindersStore.ts';
 
 import { Input } from '@/components';
+import { repeatStoreToUi } from '@/components/Reminders/utils';
 
 const remindersStore = useRemindersStore();
 const { draftReminder } = storeToRefs(remindersStore);
@@ -23,6 +24,8 @@ const { draftReminder } = storeToRefs(remindersStore);
 const calendarRef = ref<DatePickerState | null>(null);
 
 const saveButtonClickHandler = () => {
+  // todo: draftReminder save value
+
   remindersStore.saveDraft();
 };
 
@@ -35,6 +38,8 @@ const saveDateTimeButtonClickHandler = () => {
     calendarRef.value.overlayVisible = false;
   }
 };
+
+const repeatValues = repeatStoreToUi(draftReminder.value!.repeat);
 
 const repeatOptions = [
   { label: 'Не повторять', value: 'none' },
@@ -62,23 +67,17 @@ const notificationMinutesBeforeOptions: NotificationMinutesBeforeOption[] = [
   { label: '4 часа', value: 240 },
 ];
 
-const repeatRef = ref<RepeatPreset>('none');
+const repeatRef = ref<RepeatPreset>(repeatValues.repeatRef);
 
-type RepeatCustomOption = {
-  label: string;
-  value: number;
-};
+const repeatCustomUnitOptions = [
+  { label: 'День', value: 'day' },
+  { label: 'Неделя', value: 'week' },
+  { label: 'Месяц', value: 'month' },
+  { label: 'Год', value: 'year' },
+];
 
-const repeatCustomRef = ref<Record<string, RepeatCustomOption>>({
-  years: { label: 'Лет', value: 0 },
-  months: { label: 'Месяцев', value: 0 },
-  weeks: { label: 'Недель', value: 0 },
-  days: { label: 'Дней', value: 0 },
-  hours: { label: 'Часов', value: 0 },
-  minutes: { label: 'Минут', value: 0 },
-});
-
-const repeatCustomOptions = Object.keys(repeatCustomRef.value);
+const repeatCustomIntervalRef = ref(repeatValues.repeatCustomIntervalRef);
+const repeatCustomUnitRef = ref<'day' | 'week' | 'month' | 'year'>('day');
 
 const daysOfWeek = [
   { label: 'Понедельник', value: 1 },
@@ -90,7 +89,7 @@ const daysOfWeek = [
   { label: 'Воскресенье', value: 7 },
 ];
 
-const daysOfWeekRef = ref<number[]>([]);
+const daysOfWeekRef = ref<number[]>(repeatValues.daysOfWeekRef);
 </script>
 
 <template v-if="!!draftReminder">
@@ -136,8 +135,10 @@ const daysOfWeekRef = ref<number[]>([]);
       </DatePicker>
     </FloatLabel>
 
-    <!-- отображать стили только если выбраны "дни недели" или "другое" -->
-    <div style="border: 1px #ccc solid; padding: 20px;" class="ReminderEditItem">
+    <div
+      class="ReminderEditItem ReminderEditItemRepeat"
+      :class="{ isActive: repeatRef === 'daysOfWeek' || repeatRef === 'custom' }"
+    >
       <FloatLabel variant="on">
         <label for="input-repeat">
           Повторять
@@ -157,38 +158,47 @@ const daysOfWeekRef = ref<number[]>([]);
         <div v-for="dayCur of daysOfWeek" :key="dayCur.value">
           <Checkbox
             v-model="daysOfWeekRef"
-            :inputId="`daysOfWeek-${dayCur.value}`"
+            :inputId="`input-repeat-days-of-week-${dayCur.value}`"
             name="category"
-            :value="dayCur.value" />
-          <label :for="`daysOfWeek-${dayCur.value}`">
+            :value="dayCur.value"
+          />
+
+          <label :for="`input-repeat-days-of-week-${dayCur.value}`">
             {{ dayCur.label }}
           </label>
         </div>
       </div>
 
       <div v-if="repeatRef === 'custom'" class="ReminderEditItemNumbersWrapper">
-        Ведите количество
+        <FloatLabel variant="on">
+          <label for="input-repeat-custom-unit">
+            Единица времени
+          </label>
 
-        <div
-          v-for="optionCur of repeatCustomOptions"
-          :key="optionCur"
-          class="ReminderEditItemNumber"
-        >
-          <FloatLabel variant="on">
-            <label :for="`input-repeat-custom-${optionCur}`">
-              {{ repeatCustomRef[optionCur]!.label }}
-            </label>
+          <Select
+            v-model="repeatCustomUnitRef"
+            :options="repeatCustomUnitOptions"
+            optionLabel="label"
+            optionValue="value"
+            fluid
+            inputId="input-repeat-custom-unit"
+          />
+        </FloatLabel>
 
-            <InputNumber
-              v-model="repeatCustomRef[optionCur]!.value"
-              :inputId="`input-repeat-custom-${optionCur}`"
-              showButtons
-              :min="0"
-              :max="999"
-              :allowEmpty="false"
-            />
-          </FloatLabel>
-        </div>
+        <FloatLabel variant="on">
+          <label for="input-repeat-custom-interval">
+            Количество
+          </label>
+
+          <InputNumber
+            v-model="repeatCustomIntervalRef"
+            inputId="input-repeat-custom-interval"
+            showButtons
+            :min="0"
+            :max="999"
+            :allowEmpty="false"
+          />
+        </FloatLabel>
       </div>
     </div>
 
@@ -243,6 +253,18 @@ const daysOfWeekRef = ref<number[]>([]);
 
 .ReminderEditItemSibling {
   margin-top: var(--space-12);
+}
+
+.ReminderEditItemRepeat {
+  border: 0 transparent solid;
+  border-radius: 12px;
+  padding: 0;
+  transition: border 0.2s, padding 0.2s;
+
+  &.isActive {
+    border: 1px #ccc solid;
+    padding: 20px;
+  }
 }
 
 .ReminderEditItemNumbersWrapper {

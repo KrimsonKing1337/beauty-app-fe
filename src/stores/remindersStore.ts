@@ -1,11 +1,7 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 
-import type { RepeatNormalized } from '@/components/Reminders/@types.ts';
-
-export type ReminderRepeat = RepeatNormalized & {
-  daysOfWeek?: number[];
-};
+import type { ReminderRepeat } from '@/components/Reminders/@types.ts';
 
 export type ReminderNotifications = {
   enabled: boolean;
@@ -28,9 +24,11 @@ const createEmptyReminder = (): Reminder => ({
   description: '',
   dateTime: new Date(),
   repeat: {
-    unitOrNone: 'none',
+    enabled: false,
+    unit: 'day',
     interval: 0,
     daysOfWeek: [],
+    preset: 'none',
   },
   notifications: {
     enabled: false,
@@ -54,9 +52,11 @@ const defaultReminders: Reminder[] = [
     description: 'Обновить гель-лак',
     dateTime: todayDate,
     repeat: {
-      unitOrNone: 'none',
+      enabled: false,
+      unit: 'day',
       interval: 0,
       daysOfWeek: [],
+      preset: 'monthly',
     },
     notifications: {
       enabled: true,
@@ -70,9 +70,11 @@ const defaultReminders: Reminder[] = [
     description: 'В салоне "Светлана"',
     dateTime: shiftDate(todayDate, 1),
     repeat: {
-      unitOrNone: 'month',
-      interval: 2,
-      daysOfWeek: [],
+      enabled: false,
+      unit: 'day',
+      interval: 0,
+      daysOfWeek: [1, 5],
+      preset: 'daysOfWeek',
     },
     notifications: {
       enabled: true,
@@ -86,9 +88,11 @@ const defaultReminders: Reminder[] = [
     description: '',
     dateTime: shiftDate(todayDate, -1),
     repeat: {
-      unitOrNone: 'day',
-      interval: 1,
+      enabled: false,
+      unit: 'day',
+      interval: 2,
       daysOfWeek: [],
+      preset: 'custom',
     },
     notifications: {
       enabled: false,

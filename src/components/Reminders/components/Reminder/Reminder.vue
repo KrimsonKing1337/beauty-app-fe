@@ -7,7 +7,6 @@ import { Card } from '@/components';
 import {
   formatReminderDate,
   getHumanReadableRepeatPreset,
-  normalizedToPreset
 } from '@/components/Reminders/utils';
 
 import { Header } from './components';
@@ -21,7 +20,7 @@ const formattedDate = computed(() => {
 });
 
 const leftTop = computed(() => {
-  const preset = normalizedToPreset(props.reminder.repeat);
+  const preset = props.reminder.repeat.preset;
   const humanReadablePreset = getHumanReadableRepeatPreset(preset);
 
   let label = props.reminder.name;

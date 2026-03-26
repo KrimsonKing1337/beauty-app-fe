@@ -1,4 +1,4 @@
-import type { RepeatNormalized, RepeatPreset } from '../@types.ts';
+import type { ReminderRepeat, RepeatPreset } from '../@types.ts';
 
 export const formatReminderDate = (date: Date) => {
   const now = new Date();
@@ -89,6 +89,8 @@ export const getHumanReadableRepeatPreset = (type: RepeatPreset) => {
       return 'Ежемесячно';
     case 'yearly':
       return 'Ежемесячно';
+    case 'daysOfWeek':
+      return 'Дни недели';
     case 'custom':
       return 'Пользовательское';
     default:
@@ -96,35 +98,11 @@ export const getHumanReadableRepeatPreset = (type: RepeatPreset) => {
   }
 };
 
-export const presetToNormalized = (
-  preset: RepeatPreset,
-): RepeatNormalized | null => {
-  switch (preset) {
-    case 'daily':
-      return { interval: 1, unitOrNone: 'day' };
-    case 'weekly':
-      return { interval: 1, unitOrNone: 'week' };
-    case 'monthly':
-      return { interval: 1, unitOrNone: 'month' };
-    case 'yearly':
-      return { interval: 1, unitOrNone: 'year' };
-    case 'none':
-    default:
-      return null;
-  }
-};
-
-export const normalizedToPreset = (
-  repeat: RepeatNormalized | null,
-): RepeatPreset => {
-  if (!repeat) return 'none';
-
-  const { interval, unitOrNone } = repeat;
-
-  if (interval === 1 && unitOrNone === 'day') return 'daily';
-  if (interval === 1 && unitOrNone === 'week') return 'weekly';
-  if (interval === 1 && unitOrNone === 'month') return 'monthly';
-  if (interval === 1 && unitOrNone === 'year') return 'yearly';
-
-  return 'custom';
+export const repeatStoreToUi = (repeat: ReminderRepeat) => {
+  return {
+    repeatRef: repeat.preset,
+    daysOfWeekRef: [...repeat.daysOfWeek],
+    repeatCustomIntervalRef: repeat.interval,
+    repeatCustomUnitRef: repeat.unit,
+  };
 };

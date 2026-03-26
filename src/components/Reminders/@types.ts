@@ -1,6 +1,17 @@
-export type RepeatPreset = 'none' | 'daily' | 'weekly' | 'daysOfWeek' | 'monthly' | 'yearly' | 'custom';
+export type RepeatPreset = 'none'
+  | 'daily'
+  | 'weekly'
+  | 'daysOfWeek'
+  | 'monthly'
+  | 'yearly'
+  | 'custom';
 
-export type RepeatNormalized = {
+export type RepeatCustomUnit = 'day' | 'week' | 'month' | 'year';
+
+export type ReminderRepeat = {
+  enabled: boolean;
+  preset: RepeatPreset;
   interval: number;
-  unitOrNone: 'none' | 'day' | 'week' | 'month' | 'year';
+  unit: RepeatCustomUnit;
+  daysOfWeek: number[];
 };
