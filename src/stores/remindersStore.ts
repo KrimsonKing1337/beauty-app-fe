@@ -4,7 +4,6 @@ import { defineStore } from 'pinia'
 import type { ReminderRepeat } from '@/components/Reminders/@types.ts';
 
 export type ReminderNotifications = {
-  enabled: boolean;
   minutesBefore: number;
 };
 
@@ -30,7 +29,6 @@ const createEmptyReminder = (): Reminder => ({
     preset: 'none',
   },
   notifications: {
-    enabled: false,
     minutesBefore: 0,
   },
   isCompleted: false,
@@ -57,7 +55,6 @@ const defaultReminders: Reminder[] = [
       preset: 'monthly',
     },
     notifications: {
-      enabled: true,
       minutesBefore: 10,
     },
     isCompleted: false,
@@ -74,7 +71,6 @@ const defaultReminders: Reminder[] = [
       preset: 'daysOfWeek',
     },
     notifications: {
-      enabled: true,
       minutesBefore: 120,
     },
     isCompleted: false,
@@ -91,7 +87,6 @@ const defaultReminders: Reminder[] = [
       preset: 'custom',
     },
     notifications: {
-      enabled: false,
       minutesBefore: 0,
     },
     isCompleted: false,
