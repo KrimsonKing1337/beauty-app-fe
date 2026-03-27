@@ -8,8 +8,6 @@ import {
   DatePicker,
   FloatLabel,
   Select,
-  InputNumber,
-  Checkbox,
 } from 'primevue';
 
 import { useRemindersStore } from '@/stores/remindersStore.ts';
@@ -17,20 +15,12 @@ import { useRemindersStore } from '@/stores/remindersStore.ts';
 import { Input } from '@/components';
 import { repeatStoreToUi, repeatUiToStore } from '@/components/Reminders/utils';
 
+import { ItemRepeat } from './components';
+
 const remindersStore = useRemindersStore();
 const { draftReminder } = storeToRefs(remindersStore);
 
 const repeatValues = repeatStoreToUi(draftReminder.value!.repeat);
-
-const repeatOptions = [
-  { label: 'Не повторять', value: 'none' },
-  { label: 'Каждый день', value: 'daily' },
-  { label: 'Каждую неделю', value: 'weekly' },
-  { label: 'Дни недели', value: 'daysOfWeek' },
-  { label: 'Каждый месяц', value: 'monthly' },
-  { label: 'Каждый год', value: 'yearly' },
-  { label: 'Другое', value: 'custom' },
-];
 
 const notificationMinutesBeforeOptions = [
   { label: 'Не напоминать', value: 0 },
@@ -43,25 +33,7 @@ const notificationMinutesBeforeOptions = [
   { label: '4 часа', value: 240 },
 ];
 
-const repeatCustomUnitOptions = [
-  { label: 'День', value: 'day' },
-  { label: 'Неделя', value: 'week' },
-  { label: 'Месяц', value: 'month' },
-  { label: 'Год', value: 'year' },
-];
-
-const daysOfWeekOptions = [
-  { label: 'Понедельник', value: 1 },
-  { label: 'Вторник', value: 2 },
-  { label: 'Среда', value: 3 },
-  { label: 'Четверг', value: 4 },
-  { label: 'Пятница', value: 5 },
-  { label: 'Суббота', value: 6 },
-  { label: 'Воскресенье', value: 7 },
-];
-
 const calendarRef = ref<DatePickerState | null>(null);
-
 const repeatFormRef = ref(repeatValues);
 
 const saveButtonClickHandler = () => {
@@ -86,10 +58,6 @@ const saveDateTimeButtonClickHandler = () => {
     calendarRef.value.overlayVisible = false;
   }
 };
-
-const reminderEditItemRepeatIsActive = computed(() => {
-  return repeatFormRef.value.repeat === 'daysOfWeek' || repeatFormRef.value.repeat === 'custom';
-});
 </script>
 
 <template v-if="!!draftReminder">
@@ -135,72 +103,7 @@ const reminderEditItemRepeatIsActive = computed(() => {
       </DatePicker>
     </FloatLabel>
 
-    <div
-      class="ReminderEditItem ReminderEditItemRepeat"
-      :class="{ isActive: reminderEditItemRepeatIsActive }"
-    >
-      <FloatLabel variant="on">
-        <label for="input-repeat">
-          Повторять
-        </label>
-
-        <Select
-          v-model="repeatFormRef.repeat"
-          :options="repeatOptions"
-          optionLabel="label"
-          optionValue="value"
-          fluid
-          inputId="input-repeat"
-        />
-      </FloatLabel>
-
-      <div v-if="repeatFormRef.repeat === 'daysOfWeek'">
-        <div v-for="dayCur of daysOfWeekOptions" :key="dayCur.value">
-          <Checkbox
-            v-model="repeatFormRef.daysOfWeek"
-            :inputId="`input-repeat-days-of-week-${dayCur.value}`"
-            name="category"
-            :value="dayCur.value"
-          />
-
-          <label :for="`input-repeat-days-of-week-${dayCur.value}`">
-            {{ dayCur.label }}
-          </label>
-        </div>
-      </div>
-
-      <div v-if="repeatFormRef.repeat === 'custom'" class="ReminderEditItemNumbersWrapper">
-        <FloatLabel variant="on">
-          <label for="input-repeat-custom-unit">
-            Единица времени
-          </label>
-
-          <Select
-            v-model="repeatFormRef.customUnit"
-            :options="repeatCustomUnitOptions"
-            optionLabel="label"
-            optionValue="value"
-            fluid
-            inputId="input-repeat-custom-unit"
-          />
-        </FloatLabel>
-
-        <FloatLabel variant="on">
-          <label for="input-repeat-custom-interval">
-            Количество
-          </label>
-
-          <InputNumber
-            v-model="repeatFormRef.customInterval"
-            inputId="input-repeat-custom-interval"
-            showButtons
-            :min="0"
-            :max="999"
-            :allowEmpty="false"
-          />
-        </FloatLabel>
-      </div>
-    </div>
+    <ItemRepeat v-model="repeatFormRef" />
 
     <FloatLabel class="ReminderEditItem">
       <label for="input-notifications-minutes-before">
@@ -245,43 +148,6 @@ const reminderEditItemRepeatIsActive = computed(() => {
 
 .ReminderEditItem {
   margin-top: var(--space-32);
-
-  label {
-    z-index: 1;
-  }
-}
-
-.ReminderEditItemSibling {
-  margin-top: var(--space-12);
-}
-
-.ReminderEditItemRepeat {
-  border: 0 transparent solid;
-  border-radius: 12px;
-  padding: 0;
-  transition: border 0.2s, padding 0.2s;
-
-  &.isActive {
-    border: 1px #ccc solid;
-    padding: 20px;
-  }
-}
-
-.ReminderEditItemNumbersWrapper {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: var(--space-24);
-}
-
-.ReminderEditItemNumber {
-  width: 16.5%;
-
-  &:global(.p-inputnumber),
-  &:global(.p-inputtext) {
-    width: 100%;
-  }
 
   label {
     z-index: 1;
