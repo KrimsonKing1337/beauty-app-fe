@@ -92,7 +92,7 @@ export const getHumanReadableRepeatPreset = (type: RepeatPreset) => {
     case 'daysOfWeek':
       return 'Дни недели';
     case 'custom':
-      return 'Пользовательское';
+      return 'Другое';
     default:
       return '';
   }
