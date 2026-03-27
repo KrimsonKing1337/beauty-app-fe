@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { storeToRefs } from 'pinia';
 
 import {
-  type DatePickerState,
   Button,
-  DatePicker,
   FloatLabel,
   Select,
 } from 'primevue';
@@ -15,7 +13,7 @@ import { useRemindersStore } from '@/stores/remindersStore.ts';
 import { Input } from '@/components';
 import { repeatStoreToUi, repeatUiToStore } from '@/components/Reminders/utils';
 
-import { ItemRepeat } from './components';
+import { ItemRepeat, ItemDateTime } from './components';
 
 const remindersStore = useRemindersStore();
 const { draftReminder } = storeToRefs(remindersStore);
@@ -33,7 +31,6 @@ const notificationMinutesBeforeOptions = [
   { label: '4 часа', value: 240 },
 ];
 
-const calendarRef = ref<DatePickerState | null>(null);
 const repeatFormRef = ref(repeatValues);
 
 const saveButtonClickHandler = () => {
@@ -51,12 +48,6 @@ const saveButtonClickHandler = () => {
 
 const cancelButtonClickHandler = () => {
   remindersStore.cancelEdit();
-};
-
-const saveDateTimeButtonClickHandler = () => {
-  if (calendarRef.value) {
-    calendarRef.value.overlayVisible = false;
-  }
 };
 </script>
 
@@ -78,31 +69,7 @@ const saveDateTimeButtonClickHandler = () => {
       Описание
     </Input>
 
-    <FloatLabel class="ReminderEditItem" variant="on">
-      <label for="input-date-time">
-        Дата напоминания
-      </label>
-
-      <DatePicker
-        ref="calendarRef"
-        v-model="draftReminder!.dateTime"
-        id="input-date-time"
-        dateFormat="dd.mm.yy"
-        showTime
-        fluid
-        showButtonBar
-        placeholder="Дата напоминания"
-      >
-        <template #buttonbar>
-          <div class="ButtonBar">
-            <Button severity="success" @click="saveDateTimeButtonClickHandler">
-              Закрыть
-            </Button>
-          </div>
-        </template>
-      </DatePicker>
-    </FloatLabel>
-
+    <ItemDateTime v-model="draftReminder!.dateTime" />
     <ItemRepeat v-model="repeatFormRef" />
 
     <FloatLabel class="ReminderEditItem">
