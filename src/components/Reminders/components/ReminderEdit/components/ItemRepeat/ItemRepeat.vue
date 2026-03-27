@@ -63,8 +63,12 @@ const isActive = computed(() => {
       />
     </FloatLabel>
 
-    <div v-if="model.repeat === 'daysOfWeek'">
-      <div v-for="dayCur of daysOfWeekOptions" :key="dayCur.value">
+    <div v-if="model.repeat === 'daysOfWeek'" class="ReminderEditItemRepeatDaysOfWeek">
+      <div
+        v-for="dayCur of daysOfWeekOptions"
+        :key="dayCur.value"
+        class="ReminderEditItemRepeatDaysOfWeekItem"
+      >
         <Checkbox
           v-model="model.daysOfWeek"
           :inputId="`input-repeat-days-of-week-${dayCur.value}`"
@@ -149,5 +153,19 @@ const isActive = computed(() => {
   label {
     z-index: 1;
   }
+}
+
+.ReminderEditItemRepeatDaysOfWeek {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 20px;
+}
+
+.ReminderEditItemRepeatDaysOfWeekItem {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 6px;
 }
 </style>
