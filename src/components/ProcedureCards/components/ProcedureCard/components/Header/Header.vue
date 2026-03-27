@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import type { ProcedureCardHeaderProps } from './ProcedureCardHeader.types.ts';
+import type { HeaderProps } from './Header.types.ts';
 
 import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
 import { CardHeader } from '@/components';
 
 const procedureCardsStore = useProcedureCardsStore();
 
-const props = defineProps<ProcedureCardHeaderProps>();
+const props = defineProps<HeaderProps>();
 
 const menuItems = ref([
   {

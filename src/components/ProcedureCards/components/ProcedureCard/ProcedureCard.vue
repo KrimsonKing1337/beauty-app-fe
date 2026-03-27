@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import {
   type ChipsProps,
+
   BeforeAfter,
   Chips,
   Notes,
-  ProcedureCardHeader,
   Card,
 } from '@/components';
 
 import type { ProcedureCardProps } from './ProcedureCard.types.ts';
+
+import { Header } from './components';
 
 const props = withDefaults(defineProps<ProcedureCardProps>(), {
   beforeAfter: true,
@@ -33,7 +35,7 @@ const chips: ChipsProps['chips'] = [
 
 <template>
   <Card>
-    <ProcedureCardHeader
+    <Header
       :cardId="props.cardId"
       :title="props.title"
       :meta="props.meta"

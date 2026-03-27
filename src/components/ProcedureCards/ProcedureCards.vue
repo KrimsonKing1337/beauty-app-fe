@@ -7,12 +7,9 @@ import {
   useProcedureCardsStore,
 } from '@/stores/procedureCardsStore.ts';
 
-import {
-  ProcedureCard,
-  ProcedureCardEdit,
-} from '@/components';
-
 import { formatDate } from '@/utils';
+
+import { ProcedureCard, ProcedureCardEdit } from './components';
 
 const procedureCardStore = useProcedureCardsStore();
 const { cards, draftCard, lastTouchedCardId } = storeToRefs(procedureCardStore);
