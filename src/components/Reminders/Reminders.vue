@@ -33,7 +33,7 @@ watch(lastTouchedReminderId, (id) => {
 </script>
 
 <template>
-  <div class="FullWidth">
+  <div class="Reminders FullWidth">
     <div v-if="!isEditing" class="RemindersWrapper">
       <div
         v-for="reminderCur in remindersSorted"
@@ -50,6 +50,10 @@ watch(lastTouchedReminderId, (id) => {
 </template>
 
 <style scoped lang="scss">
+.Reminders {
+  height: 100%;
+}
+
 .RemindersWrapper {
   display: flex;
   flex-direction: column;

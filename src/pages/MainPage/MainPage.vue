@@ -13,7 +13,7 @@ const route = useRoute();
 
 <template>
   <div class="MainPage">
-    <div class="MainPageContent">
+    <div class="Content">
       <PageHeader />
 
       <ProcedureCards v-if="route.path === '/'" />
@@ -26,14 +26,21 @@ const route = useRoute();
 
 <style scoped lang="scss">
 .MainPage {
+  height: 100%;
   min-height: 100vh;
   padding: 20px;
   background: var(--bg);
 }
 
-.MainPageContent {
+.Content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
   width: 100%;
   max-width: 720px;
+  height: 100%;
+  min-height: calc(100vh - 40px);
   margin: 0 auto;
 }
 </style>

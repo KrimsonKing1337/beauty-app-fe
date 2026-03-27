@@ -30,9 +30,9 @@ const buttonCreateClickHandler = () => {
 
 <template>
  <nav class="BottomNav">
-   <div class="BottomNavInner">
+   <div class="Inner">
      <Button
-       class="BottomNavItem"
+       class="Item"
        :class="{ isActive: route.path === '/' }"
        @click="buttonProceduresClickHandler"
      >
@@ -40,14 +40,14 @@ const buttonCreateClickHandler = () => {
      </Button>
 
      <Button
-       class="BottomNavItem"
+       class="Item"
        :class="{ isActive: route.path === '/reminders' }"
        @click="buttonRemindersClickHandler"
      >
        Напоминания
      </Button>
 
-     <Button class="BottomNavItem" @click="buttonCreateClickHandler">
+     <Button class="Item" @click="buttonCreateClickHandler">
        <i class="pi pi-plus" />
      </Button>
    </div>
@@ -60,12 +60,11 @@ const buttonCreateClickHandler = () => {
   width: 90%;
   bottom: 12px;
   z-index: 10;
-  margin-top: 24px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: auto auto 0 auto;
+  padding-top: 20px;
 }
 
-.BottomNavInner {
+.Inner {
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -78,7 +77,7 @@ const buttonCreateClickHandler = () => {
   box-shadow: var(--shadow);
 }
 
-.BottomNavItem {
+.Item {
   height: 32px;
   min-width: 52px;
   border-radius: 16px;
