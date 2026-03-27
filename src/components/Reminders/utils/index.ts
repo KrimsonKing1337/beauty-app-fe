@@ -100,25 +100,28 @@ export const getHumanReadableRepeatPreset = (type: RepeatPreset) => {
 
 export const repeatStoreToUi = (repeat: ReminderRepeat) => {
   return {
-    repeatRef: repeat.preset,
-    daysOfWeekRef: [...repeat.daysOfWeek],
-    repeatCustomIntervalRef: repeat.interval,
-    repeatCustomUnitRef: repeat.unit,
+    repeat: repeat.preset,
+    daysOfWeek: [...repeat.daysOfWeek],
+    customInterval: repeat.interval,
+    customUnit: repeat.unit,
   };
 };
 
-export const repeatUiToStore = ({
- repeatRef,
- daysOfWeekRef,
- repeatCustomIntervalRef,
- repeatCustomUnitRef,
-}: {
-  repeatRef: RepeatPreset;
-  daysOfWeekRef: number[];
-  repeatCustomIntervalRef: number;
-  repeatCustomUnitRef: 'day' | 'week' | 'month' | 'year';
-}): ReminderRepeat => {
-  switch (repeatRef) {
+export type RepeatFormRef = {
+  preset: RepeatPreset;
+  daysOfWeek: number[];
+  customInterval: number;
+  customUnit: 'day' | 'week' | 'month' | 'year';
+};
+
+export const repeatUiToStore =
+  (repeatFormRef: RepeatFormRef): ReminderRepeat => {
+  const { preset, daysOfWeek, customUnit, customInterval } = repeatFormRef;
+
+  const sortedDaysOfWeek = [...daysOfWeek]
+    .sort((a, b) => a - b);
+
+  switch (preset) {
     case 'none':
       return {
         preset: 'none',
@@ -148,7 +151,7 @@ export const repeatUiToStore = ({
         preset: 'daysOfWeek',
         interval: 1,
         unit: 'week',
-        daysOfWeek: [...daysOfWeekRef].sort((a, b) => a - b),
+        daysOfWeek: sortedDaysOfWeek,
       };
 
     case 'monthly':
@@ -170,8 +173,8 @@ export const repeatUiToStore = ({
     case 'custom':
       return {
         preset: 'custom',
-        interval: repeatCustomIntervalRef,
-        unit: repeatCustomUnitRef,
+        interval: customInterval,
+        unit: customUnit,
         daysOfWeek: [],
       };
   }

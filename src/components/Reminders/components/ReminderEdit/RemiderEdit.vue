@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 
 import {
@@ -12,7 +12,6 @@ import {
   Checkbox,
 } from 'primevue';
 
-import type { RepeatPreset } from '@/components/Reminders/@types.ts';
 import { useRemindersStore } from '@/stores/remindersStore.ts';
 
 import { Input } from '@/components';
@@ -62,18 +61,16 @@ const daysOfWeekOptions = [
 ];
 
 const calendarRef = ref<DatePickerState | null>(null);
-const repeatRef = ref<RepeatPreset>(repeatValues.repeatRef);
-const repeatCustomIntervalRef = ref(repeatValues.repeatCustomIntervalRef);
-const repeatCustomUnitRef = ref<'day' | 'week' | 'month' | 'year'>('day');
-const daysOfWeekRef = ref<number[]>(repeatValues.daysOfWeekRef);
+
+const repeatFormRef = ref(repeatValues);
 
 const saveButtonClickHandler = () => {
   const valuesToSave = repeatUiToStore({
-    repeatRef: repeatRef.value,
-    repeatCustomIntervalRef: repeatCustomIntervalRef.value,
-    repeatCustomUnitRef: repeatCustomUnitRef.value,
-    daysOfWeekRef: daysOfWeekRef.value,
-  })
+    preset: repeatFormRef.value.repeat,
+    customInterval: repeatFormRef.value.customInterval,
+    customUnit: repeatFormRef.value.customUnit,
+    daysOfWeek: repeatFormRef.value.daysOfWeek,
+  });
 
   draftReminder.value!.repeat = valuesToSave;
 
@@ -89,6 +86,10 @@ const saveDateTimeButtonClickHandler = () => {
     calendarRef.value.overlayVisible = false;
   }
 };
+
+const reminderEditItemRepeatIsActive = computed(() => {
+  return repeatFormRef.value.repeat === 'daysOfWeek' || repeatFormRef.value.repeat === 'custom';
+});
 </script>
 
 <template v-if="!!draftReminder">
@@ -136,7 +137,7 @@ const saveDateTimeButtonClickHandler = () => {
 
     <div
       class="ReminderEditItem ReminderEditItemRepeat"
-      :class="{ isActive: repeatRef === 'daysOfWeek' || repeatRef === 'custom' }"
+      :class="{ isActive: reminderEditItemRepeatIsActive }"
     >
       <FloatLabel variant="on">
         <label for="input-repeat">
@@ -144,7 +145,7 @@ const saveDateTimeButtonClickHandler = () => {
         </label>
 
         <Select
-          v-model="repeatRef"
+          v-model="repeatFormRef.repeat"
           :options="repeatOptions"
           optionLabel="label"
           optionValue="value"
@@ -153,10 +154,10 @@ const saveDateTimeButtonClickHandler = () => {
         />
       </FloatLabel>
 
-      <div v-if="repeatRef === 'daysOfWeek'">
+      <div v-if="repeatFormRef.repeat === 'daysOfWeek'">
         <div v-for="dayCur of daysOfWeekOptions" :key="dayCur.value">
           <Checkbox
-            v-model="daysOfWeekRef"
+            v-model="repeatFormRef.daysOfWeek"
             :inputId="`input-repeat-days-of-week-${dayCur.value}`"
             name="category"
             :value="dayCur.value"
@@ -168,14 +169,14 @@ const saveDateTimeButtonClickHandler = () => {
         </div>
       </div>
 
-      <div v-if="repeatRef === 'custom'" class="ReminderEditItemNumbersWrapper">
+      <div v-if="repeatFormRef.repeat === 'custom'" class="ReminderEditItemNumbersWrapper">
         <FloatLabel variant="on">
           <label for="input-repeat-custom-unit">
             Единица времени
           </label>
 
           <Select
-            v-model="repeatCustomUnitRef"
+            v-model="repeatFormRef.customUnit"
             :options="repeatCustomUnitOptions"
             optionLabel="label"
             optionValue="value"
@@ -190,7 +191,7 @@ const saveDateTimeButtonClickHandler = () => {
           </label>
 
           <InputNumber
-            v-model="repeatCustomIntervalRef"
+            v-model="repeatFormRef.customInterval"
             inputId="input-repeat-custom-interval"
             showButtons
             :min="0"
