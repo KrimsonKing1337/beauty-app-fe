@@ -2,46 +2,29 @@
 import { ref } from 'vue';
 import { storeToRefs } from 'pinia';
 
-import {
-  Button,
-  FloatLabel,
-  Select,
-} from 'primevue';
+import { Button } from 'primevue';
 
 import { useRemindersStore } from '@/stores/remindersStore.ts';
 
 import { Input } from '@/components';
 import { repeatStoreToUi, repeatUiToStore } from '@/components/Reminders/utils';
 
-import { ItemRepeat, ItemDateTime } from './components';
+import { ItemRepeat, ItemDateTime, ItemMinutesBefore } from './components';
 
 const remindersStore = useRemindersStore();
 const { draftReminder } = storeToRefs(remindersStore);
 
 const repeatValues = repeatStoreToUi(draftReminder.value!.repeat);
 
-const notificationMinutesBeforeOptions = [
-  { label: 'Не напоминать', value: 0 },
-  { label: '5 минут', value: 5 },
-  { label: '15 минут', value: 15 },
-  { label: '30 минут', value: 30 },
-  { label: '60 минут', value: 60 },
-  { label: '2 часа', value: 120 },
-  { label: '3 часа', value: 180 },
-  { label: '4 часа', value: 240 },
-];
-
 const repeatFormRef = ref(repeatValues);
 
 const saveButtonClickHandler = () => {
-  const valuesToSave = repeatUiToStore({
+  draftReminder.value!.repeat = repeatUiToStore({
     preset: repeatFormRef.value.repeat,
     customInterval: repeatFormRef.value.customInterval,
     customUnit: repeatFormRef.value.customUnit,
     daysOfWeek: repeatFormRef.value.daysOfWeek,
   });
-
-  draftReminder.value!.repeat = valuesToSave;
 
   remindersStore.saveDraft();
 };
@@ -71,21 +54,7 @@ const cancelButtonClickHandler = () => {
 
     <ItemDateTime v-model="draftReminder!.dateTime" />
     <ItemRepeat v-model="repeatFormRef" />
-
-    <FloatLabel class="ReminderEditItem">
-      <label for="input-notifications-minutes-before">
-        Напоминать за
-      </label>
-
-      <Select
-        v-model="draftReminder!.notifications.minutesBefore"
-        :options="notificationMinutesBeforeOptions"
-        optionLabel="label"
-        optionValue="value"
-        fluid
-        inputId="input-notifications-minutes-before"
-      />
-    </FloatLabel>
+    <ItemMinutesBefore v-model="draftReminder!.notifications.minutesBefore" />
 
     <div class="BottomNav">
       <Button severity="success" @click="saveButtonClickHandler">
