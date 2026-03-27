@@ -4,25 +4,25 @@
 
 <template>
   <div class="BeforeAfter">
-    <div class="BeforeAfterItem">
-      <div class="BeforeAfterLabel">
+    <div class="Item">
+      <div class="Label">
         До
       </div>
 
-      <div class="BeforeAfterImage">
-        <div class="BeforeAfterImagePlaceholder">
+      <div class="Image">
+        <div class="ImagePlaceholder">
           Фото до
         </div>
       </div>
     </div>
 
-    <div class="BeforeAfterItem">
-      <div class="BeforeAfterLabel">
+    <div class="Item">
+      <div class="Label">
         После
       </div>
 
-      <div class="BeforeAfterImage">
-        <div class="BeforeAfterImagePlaceholder">
+      <div class="Image">
+        <div class="ImagePlaceholder">
           Фото после
         </div>
       </div>
@@ -37,19 +37,19 @@
   gap: 12px;
 }
 
-.BeforeAfterItem {
+.Item {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.BeforeAfterLabel {
+.Label {
   font-size: var(--fs-caption);
   color: var(--text-secondary);
   font-weight: var(--fw-medium);
 }
 
-.BeforeAfterImage {
+.Image {
   aspect-ratio: 4 / 5;
   border-radius: 18px;
   overflow: hidden;
@@ -64,7 +64,7 @@
   }
 }
 
-.BeforeAfterImagePlaceholder {
+.ImagePlaceholder {
   width: 100%;
   height: 100%;
   display: grid;
