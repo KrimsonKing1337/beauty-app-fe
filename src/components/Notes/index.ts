@@ -1,1 +1,1 @@
-export { default as Notes } from './NotesComponent.vue';
+export { default as Notes } from './Notes.vue';

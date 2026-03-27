@@ -15,28 +15,28 @@ const menuTriggerClickHandler = (e: MouseEvent) => {
 
 <template>
   <div class="CardHeader">
-    <div v-if="props.leftTop || props.leftBottom" class="CardHeaderLeft">
-      <h2 v-if="props.leftTop" class="CardHeaderTitle">
+    <div v-if="props.leftTop || props.leftBottom" class="Left">
+      <h2 v-if="props.leftTop" class="Title">
         {{ props.leftTop }}
       </h2>
 
-      <div v-if="props.leftBottom" class="CardHeaderSubTitle">
+      <div v-if="props.leftBottom" class="SubTitle">
         {{ props.leftBottom }}
       </div>
     </div>
 
-    <div v-if="props.rightTop || props.rightBottom" class="CardHeaderRight">
-      <h2 v-if="props.rightTop" class="CardHeaderTitle">
+    <div v-if="props.rightTop || props.rightBottom" class="Right">
+      <h2 v-if="props.rightTop" class="Title">
         {{ props.rightTop }}
       </h2>
 
-      <div v-if="props.rightBottom" class="CardHeaderSubTitle">
+      <div v-if="props.rightBottom" class="SubTitle">
         {{ props.rightBottom }}
       </div>
     </div>
 
     <Button
-      class="CardHeaderMenuTrigger"
+      class="MenuTrigger"
       icon="pi pi-ellipsis-v"
       ariaHaspopup="true"
       ariaControls="CardHeaderMenu"
@@ -61,26 +61,26 @@ const menuTriggerClickHandler = (e: MouseEvent) => {
   gap: 12px;
 }
 
-.CardHeaderLeft {
+.Left {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.CardHeaderTitle {
+.Title {
   margin: 0;
   font-size: var(--fs-title);
   line-height: var(--lh-title);
   font-weight: var(--fw-semibold);
 }
 
-.CardHeaderSubTitle {
+.SubTitle {
   font-size: var(--fs-caption);
   line-height: var(--lh-caption);
   color: var(--text-secondary);
 }
 
-.CardHeaderRight {
+.Right {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -89,7 +89,7 @@ const menuTriggerClickHandler = (e: MouseEvent) => {
   margin-right: 20px;
 }
 
-.CardHeaderMenuTrigger {
+.MenuTrigger {
   position: absolute;
   z-index: 1;
   top: -5px;

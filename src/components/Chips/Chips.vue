@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { ChipsProps } from './Chips.types.ts';
-import { Chip } from '@/components';
+
+import { Chip } from './components';
 
 const props = defineProps<ChipsProps>();
 </script>

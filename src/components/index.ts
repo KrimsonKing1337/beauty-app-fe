@@ -6,7 +6,6 @@ export * from './PageHeader';
 export * from './BeforeAfter';
 export * from './Notes';
 export * from './BottomNav';
-export * from './Chip';
 export * from './Chips';
 export * from './Divider';
 export * from './ProcedureCards';

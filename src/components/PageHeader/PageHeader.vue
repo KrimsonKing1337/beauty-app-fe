@@ -18,15 +18,15 @@ const subTitle = computed(() => {
 
 <template>
   <header class="PageHeader">
-    <div class="PageHeaderDate">
+    <div class="Date">
       Сегодня, {{ date }}
     </div>
 
-    <h1 class="PageHeaderTitle">
+    <h1 class="Title">
       {{ title }}
     </h1>
 
-    <p class="PageHeaderSubtitle">
+    <p class="Subtitle">
       {{ subTitle }}
     </p>
   </header>
@@ -40,19 +40,19 @@ const subTitle = computed(() => {
     margin-bottom: 24px;
   }
 
-  .PageHeaderDate {
+  .Date {
     font-size: var(--fs-caption);
     color: var(--text-secondary);
   }
 
-  .PageHeaderTitle {
+  .Title {
     font-size: var(--fs-display);
     line-height: var(--lh-display);
     font-weight: var(--fw-semibold);
     margin: 0;
   }
 
-  .PageHeaderSubtitle {
+  .Subtitle {
     margin: 0;
     color: var(--text-secondary);
   }
