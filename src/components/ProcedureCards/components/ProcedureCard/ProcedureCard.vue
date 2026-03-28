@@ -8,13 +8,11 @@ import {
   Card,
 } from '@/components';
 
-import type { ProcedureCardProps } from './ProcedureCard.types.ts';
+import type { ProcedureCard as ProcedureCardType } from '@/stores/procedureCardsStore';
 
 import { Header } from './components';
 
-const props = withDefaults(defineProps<ProcedureCardProps>(), {
-  beforeAfter: true,
-});
+const props = defineProps<{ card: ProcedureCardType }>();
 
 const chips: ChipsProps['chips'] = [
   {
@@ -35,17 +33,11 @@ const chips: ChipsProps['chips'] = [
 
 <template>
   <Card>
-    <Header
-      :cardId="props.cardId"
-      :title="props.title"
-      :meta="props.meta"
-      :price="props.price"
-    />
+    <Header :card="card" />
+    <BeforeAfter v-if="props.card.beforeAfter" />
 
-    <BeforeAfter v-if="props.beforeAfter" />
-
-    <Notes v-if="props.notes">
-      {{ props.notes }}
+    <Notes v-if="props.card.notes">
+      {{ props.card.notes }}
     </Notes>
 
     <Chips v-if="false" :chips="chips" />

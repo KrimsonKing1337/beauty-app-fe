@@ -1,4 +1,4 @@
-export const formatDate = (date: Date | null) => {
+export const formatDate = (date: string | null) => {
   if (!date) {
     return '';
   }
@@ -8,6 +8,6 @@ export const formatDate = (date: Date | null) => {
     month: 'long',
     year: 'numeric',
   })
-    .format(date)
+    .format(new Date(date))
     .replace(' г.', '');
 };

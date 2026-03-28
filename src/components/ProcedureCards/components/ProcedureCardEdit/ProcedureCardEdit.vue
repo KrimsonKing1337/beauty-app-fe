@@ -11,12 +11,44 @@ import {
 import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
 
 import { Input } from '@/components';
+import { useSaveProcedureMutation } from '@/composables/mutations/useSaveProcedureMutation.ts';
 
 const procedureCardsStore = useProcedureCardsStore();
+const saveProcedureMutation = useSaveProcedureMutation();
+
 const { draftCard } = storeToRefs(procedureCardsStore);
 
-const saveButtonClickHandler = () => {
-  procedureCardsStore.saveDraft();
+const saveButtonClickHandler = async () => {
+  if (!procedureCardsStore.draftCard) {
+    return;
+  }
+
+  const draft = procedureCardsStore.draftCard;
+
+  if (procedureCardsStore.editingCardId) {
+    const saved = await saveProcedureMutation.mutateAsync({
+      ...draft,
+      id: procedureCardsStore.editingCardId,
+    });
+
+    procedureCardsStore.setLastTouchedCardId(saved.id);
+  } else {
+    const payload = {
+      procedureName: draft.procedureName,
+      date: draft.date,
+      place: draft.place,
+      duration: draft.duration,
+      price: draft.price,
+      beforeAfter: draft.beforeAfter,
+      notes: draft.notes,
+    };
+
+    const saved = await saveProcedureMutation.mutateAsync(payload);
+
+    procedureCardsStore.setLastTouchedCardId(saved.id);
+  }
+
+  procedureCardsStore.clearDraft();
 };
 
 const cancelButtonClickHandler = () => {

@@ -1,18 +1,20 @@
-import 'reset-css/reset.css';
-import 'primeicons/primeicons.css';
-
-import './styles/styles.scss';
-
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import PrimeVue from 'primevue/config';
 import Aura from '@primeuix/themes/aura';
 import { definePreset } from '@primeuix/themes';
+import { VueQueryPlugin, QueryClient } from '@tanstack/vue-query';
 
 import App from './App.vue';
 import router from './router';
 
+import 'reset-css/reset.css';
+import 'primeicons/primeicons.css';
+
+import './styles/styles.scss';
+
 const app = createApp(App);
+const queryClient = new QueryClient();
 
 const MyPreset = definePreset(Aura, {
   semantic: {
@@ -38,6 +40,10 @@ app.use(PrimeVue, {
       darkModeSelector: false,
     },
   },
+});
+
+app.use(VueQueryPlugin, {
+  queryClient,
 });
 
 app.use(createPinia());

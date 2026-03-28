@@ -2,17 +2,14 @@
 import { computed, nextTick, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 
-import {
-  type ProcedureCard as ProcedureCardType,
-  useProcedureCardsStore,
-} from '@/stores/procedureCardsStore.ts';
+import { useProcedureCardsStore } from '@/stores/procedureCardsStore';
 
-import { formatDate } from '@/utils';
+import { useProceduresQuery } from '@/composables/queries/useProceduresQuery';
 
 import { ProcedureCard, ProcedureCardEdit } from './components';
 
 const procedureCardStore = useProcedureCardsStore();
-const { cards, draftCard, lastTouchedCardId } = storeToRefs(procedureCardStore);
+const { draftCard, lastTouchedCardId } = storeToRefs(procedureCardStore);
 
 const isEditing = computed(() => draftCard.value !== null);
 
@@ -37,33 +34,30 @@ watch(lastTouchedCardId, (id) => {
   });
 });
 
-const getCardInfo = (card: ProcedureCardType) => {
-  const date = formatDate(card.date);
-
-  const meta = `${date} - ${card.place} - ${card.duration};`
-  const price = card.price ? `${card.price} Р` : '0 Р';
-
-  return {
-    meta,
-    price,
-  }
-};
+const {
+  data: cards,
+  isLoading,
+  isError,
+  error,
+} = useProceduresQuery();
 </script>
 
 <template>
   <div class="FullWidth">
+    <div v-if="isLoading">
+      Loading...
+    </div>
+
+    <div v-if="isError">
+      Ошибка: {{ error?.message }}
+    </div>
+
     <div v-if="!isEditing" class="ProcedureCardsWrapper">
       <div
         v-for="cardCur in cards"
         :key="cardCur.id"
         :ref="(el) => setCardRef(cardCur.id, el as HTMLElement)" class="FullWidth">
-        <ProcedureCard
-          :cardId="cardCur.id"
-          :title="cardCur.procedureName"
-          :meta="getCardInfo(cardCur).meta"
-          :price="getCardInfo(cardCur).price"
-          :notes="cardCur.notes"
-        />
+        <ProcedureCard :card="cardCur" />
       </div>
     </div>
 
