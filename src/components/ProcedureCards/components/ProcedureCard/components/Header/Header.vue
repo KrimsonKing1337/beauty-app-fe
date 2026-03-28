@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import {
   type ProcedureCard as ProcedureCardType,
@@ -18,7 +18,9 @@ const procedureCardsStore = useProcedureCardsStore();
 
 const props = defineProps<{ card: ProcedureCardType }>();
 
-const { meta, price } = getCardInfo(props.card);
+const cardInfo = computed(() => getCardInfo(props.card));
+const meta = computed(() => cardInfo.value.meta);
+const price = computed(() => cardInfo.value.price);
 
 const handleRemoveCard = async (id: string) => {
   const cards = proceduresQuery.data.value ?? [];

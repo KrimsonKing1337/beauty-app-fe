@@ -4,23 +4,27 @@ import { defineStore } from 'pinia';
 export type ProcedureCard = {
   id: string;
   procedureName: string;
-  date: string | null;
-  place: string | null;
-  duration: string | null;
-  price: number | null;
+  date: Date;
+  place: string | undefined;
+  duration: string | undefined;
+  price: number | undefined;
   beforeAfter: string[];
-  notes: string | null;
+  notes: string | undefined;
+  createdAt: string;
+  updatedAt: string;
 };
 
 const createEmptyProcedureCard = (): ProcedureCard => ({
   id: crypto.randomUUID(),
   procedureName: '',
-  date: null,
+  date: new Date(),
   place: '',
   duration: '',
   price: 0,
   beforeAfter: [],
   notes: '',
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
 });
 
 export const useProcedureCardsStore = defineStore('procedureCard', () => {

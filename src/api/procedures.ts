@@ -1,22 +1,26 @@
 import { apiClient } from './client';
+import { mapProcedureDtoToModel } from '@/utils';
 
 export type ProcedureDto = {
   id: string;
   procedureName: string;
-  date: string | null;
-  place: string | null;
-  duration: string | null;
-  price: number | null;
+  date: Date;
+  place: string | undefined;
+  duration: string | undefined;
+  price: number | undefined;
   beforeAfter: string[];
-  notes: string | null;
-  createdAt?: string;
+  notes: string | undefined;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type CreateProcedurePayload = Omit<ProcedureDto, 'id' | 'createdAt'>;
 export type UpdateProcedurePayload = Omit<ProcedureDto, 'createdAt'>;
 
 export const getProcedures = async (): Promise<ProcedureDto[]> => {
-  return apiClient<ProcedureDto[]>('/api/procedures');
+  const data = await apiClient<ProcedureDto[]>('/api/procedures');
+
+  return data.map(mapProcedureDtoToModel);
 };
 
 export const createProcedure = async (
@@ -32,7 +36,7 @@ export const updateProcedure = async (
   payload: UpdateProcedurePayload,
 ): Promise<ProcedureDto> => {
   return apiClient<ProcedureDto>(`/api/procedures/${payload.id}`, {
-    method: 'PUT',
+    method: 'PATCH',
     body: JSON.stringify(payload),
   });
 };

@@ -41,6 +41,7 @@ const saveButtonClickHandler = async () => {
       price: draft.price,
       beforeAfter: draft.beforeAfter,
       notes: draft.notes,
+      updatedAt: new Date().toISOString(),
     };
 
     const saved = await saveProcedureMutation.mutateAsync(payload);
@@ -85,7 +86,7 @@ const cancelButtonClickHandler = () => {
       id="input-place"
       class="ProcedureCardEditItem"
     >
-      Название процедуры
+      Место проведения
     </Input>
 
     <Input
