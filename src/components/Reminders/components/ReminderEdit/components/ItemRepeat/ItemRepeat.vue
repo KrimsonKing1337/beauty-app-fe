@@ -5,7 +5,7 @@ import { FloatLabel, Select, Checkbox, InputNumber } from 'primevue';
 import type { RepeatPreset } from '@/components/Reminders/@types';
 
 type RepeatFormModel = {
-  repeat: RepeatPreset;
+  preset: RepeatPreset;
   daysOfWeek: number[];
   customInterval: number;
   customUnit: 'day' | 'week' | 'month' | 'year';
@@ -41,7 +41,7 @@ const daysOfWeekOptions = [
 const model = defineModel<RepeatFormModel>({ required: true });
 
 const isActive = computed(() => {
-    return model.value.repeat === 'daysOfWeek' || model.value.repeat === 'custom';
+    return model.value.preset === 'daysOfWeek' || model.value.preset === 'custom';
   }
 );
 </script>
@@ -54,7 +54,7 @@ const isActive = computed(() => {
       </label>
 
       <Select
-        v-model="model.repeat"
+        v-model="model.preset"
         :options="options"
         optionLabel="label"
         optionValue="value"
@@ -63,7 +63,7 @@ const isActive = computed(() => {
       />
     </FloatLabel>
 
-    <div v-if="model.repeat === 'daysOfWeek'" class="ReminderEditItemRepeatDaysOfWeek">
+    <div v-if="model.preset === 'daysOfWeek'" class="ReminderEditItemRepeatDaysOfWeek">
       <div
         v-for="dayCur of daysOfWeekOptions"
         :key="dayCur.value"
@@ -82,7 +82,7 @@ const isActive = computed(() => {
       </div>
     </div>
 
-    <div v-if="model.repeat === 'custom'" class="ReminderEditItemNumbersWrapper">
+    <div v-if="model.preset === 'custom'" class="ReminderEditItemNumbersWrapper">
       <FloatLabel variant="on">
         <label for="input-repeat-custom-unit">
           Единица времени

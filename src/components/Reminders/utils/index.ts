@@ -99,10 +99,8 @@ export const getHumanReadableRepeatPreset = (type: RepeatPreset) => {
 };
 
 export const repeatStoreToUi = (repeat: ReminderRepeat) => {
-  console.log('___ repeat', repeat);
-
   return {
-    repeat: repeat.preset,
+    preset: repeat.preset,
     daysOfWeek: [...repeat.daysOfWeek],
     customInterval: repeat.interval,
     customUnit: repeat.unit,

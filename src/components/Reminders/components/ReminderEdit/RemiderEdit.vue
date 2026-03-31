@@ -15,7 +15,7 @@ import {
 } from '@/composables/mutations/reminders/useCreateReminderMutation.ts';
 
 import { Input } from '@/components';
-import { repeatStoreToUi } from '@/components/Reminders/utils';
+import { repeatStoreToUi, repeatUiToStore } from '@/components/Reminders/utils';
 
 import { ItemRepeat, ItemDateTime, ItemMinutesBefore } from './components';
 
@@ -35,12 +35,13 @@ const saveButtonClickHandler = async () => {
   }
 
   const draft = remindersStore.draftReminder;
+  const repeat = repeatUiToStore(repeatFormRef.value);
 
   const basePayload = {
     name: draft.name,
     description: draft.description,
     dateTime: draft.dateTime,
-    repeat: draft.repeat,
+    repeat: repeat,
     notifications: draft.notifications,
     isCompleted: draft.isCompleted,
   };
