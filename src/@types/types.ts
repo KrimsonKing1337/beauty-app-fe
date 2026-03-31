@@ -32,3 +32,71 @@ type Procedure = {
     nextDate?: string;
   }
 }
+
+export type RepeatUnit = 'minute'
+  | 'hour'
+  | 'day'
+  | 'week'
+  | 'month'
+  | 'year';
+
+export type RepeatPreset = 'none'
+  | 'daily'
+  | 'weekly'
+  | 'monthly'
+  | 'yearly'
+  | 'daysOfWeek'
+  | 'custom';
+
+export type ReminderRepeat = {
+  unit: RepeatUnit;
+  interval: number;
+  daysOfWeek: number[];
+  preset: RepeatPreset;
+};
+
+export type ReminderNotifications = {
+  minutesBefore: number;
+};
+
+export type Reminder = {
+  id: string;
+  name: string;
+  description: string;
+  dateTime: Date;
+  repeat: ReminderRepeat;
+  notifications: ReminderNotifications;
+  isCompleted: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type ReminderDto = {
+  id: string;
+  name: string;
+  description: string;
+  dateTime: string;
+  repeat: ReminderRepeat;
+  notifications: ReminderNotifications;
+  isCompleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type CreateReminderPayload = {
+  name: string;
+  description: string;
+  dateTime: Date;
+  repeat: ReminderRepeat;
+  notifications: ReminderNotifications;
+  isCompleted?: boolean;
+};
+
+export type UpdateReminderPayload = {
+  name?: string;
+  description?: string;
+  dateTime?: Date;
+  repeat?: ReminderRepeat;
+  notifications?: ReminderNotifications;
+  isCompleted?: boolean;
+};

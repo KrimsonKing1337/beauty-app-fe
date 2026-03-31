@@ -10,10 +10,11 @@ import {
 
 import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
 
-import { Input } from '@/components';
 import {
   useSaveProcedureMutation,
 } from '@/composables/mutations/procedures/useSaveProcedureMutation.ts';
+
+import { Input } from '@/components';
 
 const procedureCardsStore = useProcedureCardsStore();
 const saveProcedureMutation = useSaveProcedureMutation();

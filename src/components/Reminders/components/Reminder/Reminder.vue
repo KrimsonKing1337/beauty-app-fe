@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-import type { Reminder } from '@/stores/remindersStore.ts';
+import type { Reminder } from '@/@types';
 
 import { Card } from '@/components';
 import {

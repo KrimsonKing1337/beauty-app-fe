@@ -6,27 +6,59 @@ import { Button } from 'primevue';
 
 import { useRemindersStore } from '@/stores/remindersStore.ts';
 
+import {
+  useUpdateReminderMutation,
+} from '@/composables/mutations/reminders/useUpdateReminderMutation.ts';
+
+import {
+  useCreateReminderMutation,
+} from '@/composables/mutations/reminders/useCreateReminderMutation.ts';
+
 import { Input } from '@/components';
-import { repeatStoreToUi, repeatUiToStore } from '@/components/Reminders/utils';
+import { repeatStoreToUi } from '@/components/Reminders/utils';
 
 import { ItemRepeat, ItemDateTime, ItemMinutesBefore } from './components';
 
 const remindersStore = useRemindersStore();
+const updateReminderMutation = useUpdateReminderMutation();
+const createReminderMutation = useCreateReminderMutation();
+
 const { draftReminder } = storeToRefs(remindersStore);
 
 const repeatValues = repeatStoreToUi(draftReminder.value!.repeat);
 
 const repeatFormRef = ref(repeatValues);
 
-const saveButtonClickHandler = () => {
-  draftReminder.value!.repeat = repeatUiToStore({
-    preset: repeatFormRef.value.repeat,
-    customInterval: repeatFormRef.value.customInterval,
-    customUnit: repeatFormRef.value.customUnit,
-    daysOfWeek: repeatFormRef.value.daysOfWeek,
-  });
+const saveButtonClickHandler = async () => {
+  if (!remindersStore.draftReminder) {
+    return;
+  }
 
-  remindersStore.saveDraft();
+  const draft = remindersStore.draftReminder;
+
+  const basePayload = {
+    name: draft.name,
+    description: draft.description,
+    dateTime: draft.dateTime,
+    repeat: draft.repeat,
+    notifications: draft.notifications,
+    isCompleted: draft.isCompleted,
+  };
+
+  if (remindersStore.editingReminderId) {
+    const saved = await updateReminderMutation.mutateAsync({
+      id: remindersStore.editingReminderId,
+      payload: basePayload,
+    });
+
+    remindersStore.setLastTouchedReminderId(saved.id);
+  } else {
+    const saved = await createReminderMutation.mutateAsync(basePayload);
+
+    remindersStore.setLastTouchedReminderId(saved.id);
+  }
+
+  remindersStore.clearDraft();
 };
 
 const cancelButtonClickHandler = () => {

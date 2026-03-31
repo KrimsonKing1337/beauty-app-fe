@@ -6,7 +6,10 @@ import { useRemindersStore } from '@/stores/remindersStore';
 import { Reminder, ReminderEdit } from './components';
 
 const remindersStore = useRemindersStore();
-const { remindersSorted, draftReminder, lastTouchedReminderId } = storeToRefs(remindersStore);
+
+import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQuery';
+
+const { draftReminder, lastTouchedReminderId } = storeToRefs(remindersStore);
 
 const isEditing = computed(() => draftReminder.value !== null);
 
@@ -30,13 +33,28 @@ watch(lastTouchedReminderId, (id) => {
     });
   });
 });
+
+const {
+  data: reminders,
+  isLoading,
+  isError,
+  error,
+} = useRemindersQuery();
 </script>
 
 <template>
   <div class="Reminders FullWidth">
+    <div v-if="isLoading">
+      Loading...
+    </div>
+
+    <div v-if="isError">
+      Ошибка: {{ error?.message }}
+    </div>
+
     <div v-if="!isEditing" class="RemindersWrapper">
       <div
-        v-for="reminderCur in remindersSorted"
+        v-for="reminderCur in reminders"
         :key="reminderCur.id"
         :ref="(el) => setReminderRef(reminderCur.id, el as HTMLElement)"
         class="FullWidth"
