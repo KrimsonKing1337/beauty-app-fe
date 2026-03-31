@@ -4,7 +4,7 @@ import { storeToRefs } from 'pinia';
 
 import { useProcedureCardsStore } from '@/stores/procedureCardsStore';
 
-import { useProceduresQuery } from '@/composables/queries/useProceduresQuery';
+import { useProceduresQuery } from '@/composables/queries/procedures/useProceduresQuery';
 
 import { ProcedureCard, ProcedureCardEdit } from './components';
 

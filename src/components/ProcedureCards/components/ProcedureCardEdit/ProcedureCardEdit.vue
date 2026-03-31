@@ -11,7 +11,9 @@ import {
 import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
 
 import { Input } from '@/components';
-import { useSaveProcedureMutation } from '@/composables/mutations/useSaveProcedureMutation.ts';
+import {
+  useSaveProcedureMutation,
+} from '@/composables/mutations/procedures/useSaveProcedureMutation.ts';
 
 const procedureCardsStore = useProcedureCardsStore();
 const saveProcedureMutation = useSaveProcedureMutation();

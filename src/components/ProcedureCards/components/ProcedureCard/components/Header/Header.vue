@@ -7,8 +7,10 @@ import {
 } from '@/stores/procedureCardsStore';
 import { CardHeader } from '@/components';
 
-import { useProceduresQuery } from '@/composables/queries/useProceduresQuery';
-import { useDeleteProcedureMutation } from '@/composables/mutations/useDeleteProcedureMutation';
+import { useProceduresQuery } from '@/composables/queries/procedures/useProceduresQuery';
+import {
+  useDeleteProcedureMutation,
+} from '@/composables/mutations/procedures/useDeleteProcedureMutation';
 
 import { getCardInfo } from '../../utils';
 
