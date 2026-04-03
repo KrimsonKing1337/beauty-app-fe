@@ -1,9 +1,9 @@
 <script setup lang="ts">
-  import { MainPage } from './pages';
+  import { RouterView } from 'vue-router';
 </script>
 
 <template>
-  <MainPage />
+  <RouterView />
 </template>
 
 <style scoped>
