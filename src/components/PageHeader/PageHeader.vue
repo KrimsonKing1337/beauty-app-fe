@@ -2,8 +2,9 @@
 import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { formatDate } from '@/utils';
+import { logout } from '@/api/auth.ts';
 import { useAuthStore } from '@/stores/authStore';
+import { formatDate } from '@/utils';
 import { Button } from '@/components';
 
 const route = useRoute();
@@ -27,6 +28,7 @@ const userName = computed(() => {
 });
 
 const handleLogout = async () => {
+  logout();
   authStore.clearAuth();
 
   await router.push('/login');

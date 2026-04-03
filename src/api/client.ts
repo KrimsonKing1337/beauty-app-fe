@@ -1,49 +1,93 @@
-const ACCESS_TOKEN_KEY = 'beauty_app_access_token';
+import { authTokenStorage } from './authTokenStorage';
+import { refreshAccessToken } from './refreshAccessToken';
 
-export const getAccessToken = (): string | null => {
-  return localStorage.getItem(ACCESS_TOKEN_KEY);
+type RequestHeaders = Record<string, string>;
+
+type ApiClientOptions = Omit<RequestInit, 'headers'> & {
+  headers?: RequestHeaders;
+  retryOnUnauthorized?: boolean;
 };
 
-export const setAccessToken = (token: string): void => {
-  localStorage.setItem(ACCESS_TOKEN_KEY, token);
-};
+let refreshPromise: Promise<string> | null = null;
 
-export const removeAccessToken = (): void => {
-  localStorage.removeItem(ACCESS_TOKEN_KEY);
-};
-
-export const apiClient = async <T>(
-  input: string,
-  init?: RequestInit,
-): Promise<T> => {
-  const token = getAccessToken();
-
-  const response = await fetch(input, {
-    ...init,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...(init?.headers ?? {}),
-    },
-  });
-
-  if (!response.ok) {
-    const errorBody = await response.json().catch(() => null);
-
-    throw new Error(
-      errorBody?.message ?? `Request failed with status ${response.status}`,
-    );
+const getFreshAccessToken = async (): Promise<string> => {
+  if (!refreshPromise) {
+    refreshPromise = refreshAccessToken().finally(() => {
+      refreshPromise = null;
+    });
   }
 
+  return refreshPromise;
+};
+
+const buildHeaders = (
+  accessToken: string | null,
+  customHeaders: RequestHeaders = {},
+  body?: BodyInit | null,
+): HeadersInit => {
+  const headers: RequestHeaders = {
+    ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+    ...customHeaders,
+  };
+
+  if (!(body instanceof FormData) && !headers['Content-Type']) {
+    headers['Content-Type'] = 'application/json';
+  }
+
+  return headers;
+};
+
+const parseResponse = async <T>(response: Response): Promise<T> => {
   if (response.status === 204) {
     return undefined as T;
   }
 
-  const contentType = response.headers.get('Content-Type') ?? '';
+  return (await response.json()) as T;
+};
 
-  if (!contentType.includes('application/json')) {
-    return undefined as T;
+export const apiClient = async <T>(
+  path: string,
+  options: ApiClientOptions = {},
+): Promise<T> => {
+  const {
+    headers,
+    retryOnUnauthorized = true,
+    body,
+    ...restOptions
+  } = options;
+
+  const accessToken = authTokenStorage.getAccessToken();
+
+  const response = await fetch(path, {
+    ...restOptions,
+    body,
+    headers: buildHeaders(accessToken, headers, body),
+  });
+
+  if (response.status === 401 && retryOnUnauthorized) {
+    try {
+      const freshAccessToken = await getFreshAccessToken();
+
+      const retryResponse = await fetch(path, {
+        ...restOptions,
+        body,
+        headers: buildHeaders(freshAccessToken, headers, body),
+      });
+
+      if (!retryResponse.ok) {
+        throw new Error(`Request failed with status ${retryResponse.status}`);
+      }
+
+      return parseResponse<T>(retryResponse);
+    } catch (error) {
+      authTokenStorage.clearTokens();
+      throw error;
+    }
   }
 
-  return response.json() as Promise<T>;
+  if (!response.ok) {
+    throw new Error(`Request failed with status ${response.status}`);
+  }
+
+  return parseResponse<T>(response);
 };

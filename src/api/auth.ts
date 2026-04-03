@@ -1,20 +1,41 @@
-import type { LoginPayload, LoginResponseDto, MeResponseDto } from '@/@types';
+import { apiClient } from './client.ts';
+import { authTokenStorage } from './authTokenStorage';
 
-import { apiClient } from './client';
+type LoginPayloadDto = {
+  login: string;
+  password: string;
+};
 
-const AUTH_API_PATH = '/api/auth';
+type LoginResponseDto = {
+  accessToken: string;
+  refreshToken: string;
+};
 
-export const login = async (
-  payload: LoginPayload,
-): Promise<LoginResponseDto> => {
-  return apiClient<LoginResponseDto>(`${AUTH_API_PATH}/login`, {
+type MeDto = {
+  userId: string;
+  login: string;
+  name: string;
+};
+
+export const login = async (payload: LoginPayloadDto): Promise<void> => {
+  const data = await apiClient<LoginResponseDto>('/login', {
     method: 'POST',
     body: JSON.stringify(payload),
+    retryOnUnauthorized: false,
+  });
+
+  authTokenStorage.setTokens({
+    accessToken: data.accessToken,
+    refreshToken: data.refreshToken,
   });
 };
 
-export const getMe = async (): Promise<MeResponseDto> => {
-  return apiClient<MeResponseDto>(`${AUTH_API_PATH}/me`, {
+export const logout = (): void => {
+  authTokenStorage.clearTokens();
+};
+
+export const getMe = async (): Promise<MeDto> => {
+  return apiClient<MeDto>('/me', {
     method: 'GET',
   });
 };

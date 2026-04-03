@@ -3,11 +3,7 @@ import { defineStore } from 'pinia';
 
 import type { AuthUser } from '@/@types';
 
-import {
-  getAccessToken,
-  setAccessToken,
-  removeAccessToken,
-} from '@/api/client';
+import { authTokenStorage } from '@/api/authTokenStorage';
 
 export type SetAuthParams = {
   accessToken: string;
@@ -15,7 +11,8 @@ export type SetAuthParams = {
 };
 
 export const useAuthStore = defineStore('auth', () => {
-  const accessToken = ref<string | null>(getAccessToken());
+  const token = authTokenStorage.getAccessToken();
+  const accessToken = ref<string | null>(token);
   const user = ref<AuthUser | null>(null);
 
   const isAuthenticated = computed(() => {
@@ -26,7 +23,7 @@ export const useAuthStore = defineStore('auth', () => {
     accessToken.value = params.accessToken;
     user.value = params.user;
 
-    setAccessToken(params.accessToken);
+    authTokenStorage.setAccessToken(params.accessToken);
   };
 
   const setUser = (nextUser: AuthUser | null) => {
@@ -36,8 +33,6 @@ export const useAuthStore = defineStore('auth', () => {
   const clearAuth = () => {
     accessToken.value = null;
     user.value = null;
-
-    removeAccessToken();
   };
 
   return {
