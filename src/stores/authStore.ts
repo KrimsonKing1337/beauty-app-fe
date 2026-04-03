@@ -29,7 +29,11 @@ export const useAuthStore = defineStore('auth', () => {
     setAccessToken(params.accessToken);
   };
 
-  const logout = () => {
+  const setUser = (nextUser: AuthUser | null) => {
+    user.value = nextUser;
+  };
+
+  const clearAuth = () => {
     accessToken.value = null;
     user.value = null;
 
@@ -41,6 +45,7 @@ export const useAuthStore = defineStore('auth', () => {
     user,
     isAuthenticated,
     setAuth,
-    logout,
+    clearAuth,
+    setUser,
   };
 });

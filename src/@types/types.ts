@@ -116,3 +116,7 @@ export type LoginResponseDto = {
   accessToken: string;
   user: AuthUser;
 };
+
+export type MeResponseDto = {
+  user: AuthUser;
+};

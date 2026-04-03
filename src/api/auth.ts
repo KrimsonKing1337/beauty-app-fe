@@ -1,4 +1,4 @@
-import type { LoginPayload, LoginResponseDto } from '@/@types';
+import type { LoginPayload, LoginResponseDto, MeResponseDto } from '@/@types';
 
 import { apiClient } from './client';
 
@@ -10,5 +10,11 @@ export const login = async (
   return apiClient<LoginResponseDto>(`${AUTH_API_PATH}/login`, {
     method: 'POST',
     body: JSON.stringify(payload),
+  });
+};
+
+export const getMe = async (): Promise<MeResponseDto> => {
+  return apiClient<MeResponseDto>(`${AUTH_API_PATH}/me`, {
+    method: 'GET',
   });
 };

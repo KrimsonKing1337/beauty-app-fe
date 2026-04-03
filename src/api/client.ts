@@ -19,12 +19,12 @@ export const apiClient = async <T>(
   const token = getAccessToken();
 
   const response = await fetch(input, {
+    ...init,
     headers: {
       'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...(init?.headers ?? {}),
     },
-    ...init,
   });
 
   if (!response.ok) {
@@ -33,6 +33,16 @@ export const apiClient = async <T>(
     throw new Error(
       errorBody?.message ?? `Request failed with status ${response.status}`,
     );
+  }
+
+  if (response.status === 204) {
+    return undefined as T;
+  }
+
+  const contentType = response.headers.get('Content-Type') ?? '';
+
+  if (!contentType.includes('application/json')) {
+    return undefined as T;
   }
 
   return response.json() as Promise<T>;

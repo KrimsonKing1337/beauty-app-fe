@@ -14,7 +14,14 @@ import 'primeicons/primeicons.css';
 import './styles/styles.scss';
 
 const app = createApp(App);
-const queryClient = new QueryClient();
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+    },
+  },
+});
 
 const MyPreset = definePreset(Aura, {
   semantic: {

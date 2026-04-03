@@ -1,11 +1,22 @@
 <script setup lang="ts">
-const props = defineProps<{
-  type?: 'primary' | 'secondary' | 'ghost';
-}>();
+const props = withDefaults(defineProps<{
+  variant?: 'primary' | 'secondary' | 'ghost';
+  nativeType?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
+}>(), {
+  variant: 'primary',
+  nativeType: 'button',
+  disabled: false,
+});
 </script>
 
 <template>
-  <button class="Button" :class="props.type">
+  <button
+    class="Button"
+    :class="props.variant"
+    :type="props.nativeType"
+    :disabled="props.disabled"
+  >
     <slot />
   </button>
 </template>
@@ -28,12 +39,18 @@ const props = defineProps<{
   transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
   cursor: pointer;
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: var(--accent-hover);
   }
 
-  &:active {
+  &:active:not(:disabled) {
     transform: translateY(1px);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    box-shadow: none;
   }
 
   &.secondary {
@@ -45,6 +62,7 @@ const props = defineProps<{
   &.ghost {
     color: var(--accent);
     background: transparent;
+    box-shadow: none;
   }
 }
 </style>

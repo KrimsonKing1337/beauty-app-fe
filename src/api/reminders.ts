@@ -4,6 +4,7 @@ import type {
   CreateReminderPayload,
   UpdateReminderPayload,
 } from '@/@types';
+import { apiClient } from '@/api/client.ts';
 
 const REMINDERS_API_PATH = '/api/reminders';
 
@@ -42,18 +43,14 @@ const checkResponse =
 };
 
 export const getReminders = async (): Promise<Reminder[]> => {
-  const response = await fetch(REMINDERS_API_PATH);
-
-  const data = await checkResponse<ReminderDto[]>(response);
+  const data = await apiClient<ReminderDto[]>(REMINDERS_API_PATH);
 
   return data.map(mapReminderDtoToEntity);
 };
 
 export const getReminderById =
   async (id: string): Promise<Reminder> => {
-  const response = await fetch(`${REMINDERS_API_PATH}/${id}`);
-
-  const data = await checkResponse<ReminderDto>(response);
+  const data = await apiClient<ReminderDto>(`${REMINDERS_API_PATH}/${id}`);
 
   return mapReminderDtoToEntity(data);
 };
@@ -61,15 +58,10 @@ export const getReminderById =
 export const createReminder = async (
   payload: CreateReminderPayload,
 ): Promise<Reminder> => {
-  const response = await fetch(REMINDERS_API_PATH, {
+  const data = await apiClient<ReminderDto>(REMINDERS_API_PATH, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify(mapCreateReminderPayloadToDto(payload)),
   });
-
-  const data = await checkResponse<ReminderDto>(response);
 
   return mapReminderDtoToEntity(data);
 };
@@ -78,29 +70,16 @@ export const updateReminder = async (
   id: string,
   payload: UpdateReminderPayload,
 ): Promise<Reminder> => {
-  const response = await fetch(`${REMINDERS_API_PATH}/${id}`, {
+  const data = await apiClient<ReminderDto>(`${REMINDERS_API_PATH}/${id}`, {
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify(mapUpdateReminderPayloadToDto(payload)),
   });
-
-  const data = await checkResponse<ReminderDto>(response);
 
   return mapReminderDtoToEntity(data);
 };
 
 export const deleteReminder = async (id: string): Promise<void> => {
-  const response = await fetch(`${REMINDERS_API_PATH}/${id}`, {
+  await apiClient<void>(`${REMINDERS_API_PATH}/${id}`, {
     method: 'DELETE',
   });
-
-  if (!response.ok) {
-    const errorBody = await response.json().catch(() => null);
-
-    throw new Error(
-      errorBody?.message ?? `Request failed with status ${response.status}`,
-    );
-  }
 };
