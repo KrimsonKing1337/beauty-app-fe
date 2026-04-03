@@ -1,14 +1,38 @@
-export const apiClient = async <T>(input: string, init?: RequestInit): Promise<T> => {
+const ACCESS_TOKEN_KEY = 'beauty_app_access_token';
+
+export const getAccessToken = (): string | null => {
+  return localStorage.getItem(ACCESS_TOKEN_KEY);
+};
+
+export const setAccessToken = (token: string): void => {
+  localStorage.setItem(ACCESS_TOKEN_KEY, token);
+};
+
+export const removeAccessToken = (): void => {
+  localStorage.removeItem(ACCESS_TOKEN_KEY);
+};
+
+export const apiClient = async <T>(
+  input: string,
+  init?: RequestInit,
+): Promise<T> => {
+  const token = getAccessToken();
+
   const response = await fetch(input, {
     headers: {
       'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...(init?.headers ?? {}),
     },
     ...init,
   });
 
   if (!response.ok) {
-    throw new Error(`Request failed with status ${response.status}`);
+    const errorBody = await response.json().catch(() => null);
+
+    throw new Error(
+      errorBody?.message ?? `Request failed with status ${response.status}`,
+    );
   }
 
   return response.json() as Promise<T>;

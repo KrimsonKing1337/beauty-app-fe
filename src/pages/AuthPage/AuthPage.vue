@@ -1,7 +1,53 @@
 <script setup lang="ts">
+import { computed, reactive } from 'vue';
+import { useRouter } from 'vue-router';
 import { Button } from 'primevue';
 
 import { Input } from '@/components';
+import { useAuthStore } from '@/stores/authStore';
+import { useLoginMutation } from '@/composables/mutations/auth/useLoginMutation';
+
+const router = useRouter();
+const authStore = useAuthStore();
+const loginMutation = useLoginMutation();
+
+const form = reactive({
+  login: '',
+  password: '',
+  rememberMe: true,
+});
+
+const isSubmitDisabled = computed(() => {
+  return !form.login.trim() || !form.password.trim() || loginMutation.isPending.value;
+});
+
+const errorMessage = computed(() => {
+  if (!(loginMutation.error.value instanceof Error)) {
+    return '';
+  }
+
+  return loginMutation.error.value.message;
+});
+
+const submitHandler = async () => {
+  loginMutation.reset();
+
+  try {
+    const result = await loginMutation.mutateAsync({
+      login: form.login.trim(),
+      password: form.password,
+    });
+
+    authStore.setAuth({
+      accessToken: result.accessToken,
+      user: result.user,
+    });
+
+    await router.push('/');
+  } catch {
+    // ошибка уже попадёт в loginMutation.error
+  }
+};
 </script>
 
 <template>
@@ -37,26 +83,20 @@ import { Input } from '@/components';
           </p>
         </div>
 
-        <form class="AuthForm">
+        <form class="AuthForm" @submit.prevent="submitHandler">
           <div class="AuthFormFields">
-            <Input
-              id="email"
-              label="Email"
-              type="email"
-              placeholder="example@mail.com"
-            />
+            <Input v-model="form.login" id="auth-email">
+              Логин
+            </Input>
 
-            <Input
-              id="password"
-              label="Пароль"
-              type="password"
-              placeholder="••••••••"
-            />
+            <Input v-model="form.password" id="auth-password">
+              Пароль
+            </Input>
           </div>
 
           <div class="AuthFormRow">
             <label class="AuthFormCheckbox">
-              <input type="checkbox" />
+              <input v-model="form.rememberMe" type="checkbox">
 
               <span>
                 Запомнить меня
@@ -68,11 +108,16 @@ import { Input } from '@/components';
             </button>
           </div>
 
+          <p v-if="errorMessage" class="AuthFormError">
+            {{ errorMessage }}
+          </p>
+
           <Button
             class="AuthFormSubmit"
-            label="Войти"
+            :label="loginMutation.isPending.value ? 'Входим...' : 'Войти'"
             type="submit"
             fluid
+            :disabled="isSubmitDisabled"
           />
 
           <div class="AuthFormDivider">
@@ -250,6 +295,14 @@ import { Input } from '@/components';
   &:hover {
     opacity: 0.8;
   }
+}
+
+.AuthFormError {
+  padding: 12px 14px;
+  border: 1px solid rgba(211, 122, 122, 0.28);
+  border-radius: 14px;
+  color: var(--danger);
+  background: rgba(211, 122, 122, 0.08);
 }
 
 .AuthFormSubmit,
