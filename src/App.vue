@@ -1,12 +1,20 @@
 <script setup lang="ts">
 import { watch } from 'vue';
-import { RouterView } from 'vue-router';
+import { RouterView, useRouter } from 'vue-router';
 
+import { setUnauthorizedHandler } from '@/api/client.ts';
 import { useAuthStore } from '@/stores/authStore';
 import { useMeQuery } from '@/composables/queries/auth/useMeQuery';
 
+const router = useRouter();
 const authStore = useAuthStore();
 const meQuery = useMeQuery();
+
+setUnauthorizedHandler(() => {
+  authStore.clearAuth();
+
+  router.push('/login');
+});
 
 watch(
   () => meQuery.data.value,

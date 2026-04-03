@@ -29,7 +29,7 @@ type MeDto = {
 export const login = async (
   payload: LoginPayloadDto,
 ): Promise<LoginResponseDto> => {
-  const data = await apiClient<LoginResponseDto>('/login', {
+  const data = await apiClient<LoginResponseDto>('/auth/login', {
     method: 'POST',
     body: JSON.stringify(payload),
     retryOnUnauthorized: false,
@@ -44,7 +44,7 @@ export const login = async (
 };
 
 export const getMe = async (): Promise<MeDto> => {
-  return apiClient<MeDto>('/me', {
+  return apiClient<MeDto>('/auth/me', {
     method: 'GET',
   });
 };

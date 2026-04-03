@@ -6,8 +6,6 @@ import type {
 } from '@/@types';
 import { apiClient } from '@/api/client.ts';
 
-const REMINDERS_API_PATH = '/api/reminders';
-
 const mapReminderDtoToEntity = (dto: ReminderDto): Reminder => ({
   ...dto,
   dateTime: new Date(dto.dateTime),
@@ -30,14 +28,14 @@ const mapUpdateReminderPayloadToDto = (
 });
 
 export const getReminders = async (): Promise<Reminder[]> => {
-  const data = await apiClient<ReminderDto[]>(REMINDERS_API_PATH);
+  const data = await apiClient<ReminderDto[]>('/reminders');
 
   return data.map(mapReminderDtoToEntity);
 };
 
 export const getReminderById =
   async (id: string): Promise<Reminder> => {
-  const data = await apiClient<ReminderDto>(`${REMINDERS_API_PATH}/${id}`);
+  const data = await apiClient<ReminderDto>(`/reminders/${id}`);
 
   return mapReminderDtoToEntity(data);
 };
@@ -45,7 +43,7 @@ export const getReminderById =
 export const createReminder = async (
   payload: CreateReminderPayload,
 ): Promise<Reminder> => {
-  const data = await apiClient<ReminderDto>(REMINDERS_API_PATH, {
+  const data = await apiClient<ReminderDto>('/reminders', {
     method: 'POST',
     body: JSON.stringify(mapCreateReminderPayloadToDto(payload)),
   });
@@ -57,7 +55,7 @@ export const updateReminder = async (
   id: string,
   payload: UpdateReminderPayload,
 ): Promise<Reminder> => {
-  const data = await apiClient<ReminderDto>(`${REMINDERS_API_PATH}/${id}`, {
+  const data = await apiClient<ReminderDto>(`/reminders/${id}`, {
     method: 'PUT',
     body: JSON.stringify(mapUpdateReminderPayloadToDto(payload)),
   });
@@ -66,7 +64,7 @@ export const updateReminder = async (
 };
 
 export const deleteReminder = async (id: string): Promise<void> => {
-  await apiClient<void>(`${REMINDERS_API_PATH}/${id}`, {
+  await apiClient<void>(`/reminders/${id}`, {
     method: 'DELETE',
   });
 };

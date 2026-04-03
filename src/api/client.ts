@@ -45,6 +45,12 @@ const parseResponse = async <T>(response: Response): Promise<T> => {
   return (await response.json()) as T;
 };
 
+let onUnauthorized: (() => void) | null = null;
+
+export const setUnauthorizedHandler = (handler: () => void) => {
+  onUnauthorized = handler;
+};
+
 export const apiClient = async <T>(
   path: string,
   options: ApiClientOptions = {},
@@ -58,7 +64,7 @@ export const apiClient = async <T>(
 
   const accessToken = authTokenStorage.getAccessToken();
 
-  const response = await fetch(path, {
+  const response = await fetch(`/api${path}`, {
     ...restOptions,
     body,
     headers: buildHeaders(accessToken, headers, body),
@@ -68,7 +74,7 @@ export const apiClient = async <T>(
     try {
       const freshAccessToken = await getFreshAccessToken();
 
-      const retryResponse = await fetch(path, {
+      const retryResponse = await fetch(`/api${path}`, {
         ...restOptions,
         body,
         headers: buildHeaders(freshAccessToken, headers, body),
@@ -81,6 +87,11 @@ export const apiClient = async <T>(
       return parseResponse<T>(retryResponse);
     } catch (error) {
       authTokenStorage.clearTokens();
+
+      if (onUnauthorized) {
+        onUnauthorized();
+      }
+
       throw error;
     }
   }

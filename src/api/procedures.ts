@@ -18,7 +18,7 @@ export type CreateProcedurePayload = Omit<ProcedureDto, 'id' | 'createdAt'>;
 export type UpdateProcedurePayload = Omit<ProcedureDto, 'createdAt'>;
 
 export const getProcedures = async (): Promise<ProcedureDto[]> => {
-  const data = await apiClient<ProcedureDto[]>('/api/procedures');
+  const data = await apiClient<ProcedureDto[]>('/procedures');
 
   return data.map(mapProcedureDtoToModel);
 };
@@ -26,7 +26,7 @@ export const getProcedures = async (): Promise<ProcedureDto[]> => {
 export const createProcedure = async (
   payload: CreateProcedurePayload,
 ): Promise<ProcedureDto> => {
-  return apiClient<ProcedureDto>('/api/procedures', {
+  return apiClient<ProcedureDto>('/procedures', {
     method: 'POST',
     body: JSON.stringify(payload),
   });
@@ -35,14 +35,14 @@ export const createProcedure = async (
 export const updateProcedure = async (
   payload: UpdateProcedurePayload,
 ): Promise<ProcedureDto> => {
-  return apiClient<ProcedureDto>(`/api/procedures/${payload.id}`, {
+  return apiClient<ProcedureDto>(`/procedures/${payload.id}`, {
     method: 'PATCH',
     body: JSON.stringify(payload),
   });
 };
 
 export const deleteProcedure = async (id: string): Promise<{ id: string }> => {
-  return apiClient<{ id: string }>(`/api/procedures/${id}`, {
+  return apiClient<{ id: string }>(`/procedures/${id}`, {
     method: 'DELETE',
   });
 };
