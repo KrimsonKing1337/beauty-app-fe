@@ -2,7 +2,6 @@
 import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { logout } from '@/api/auth.ts';
 import { useAuthStore } from '@/stores/authStore';
 import { formatDate } from '@/utils';
 import { Button } from '@/components';
@@ -28,7 +27,6 @@ const userName = computed(() => {
 });
 
 const handleLogout = async () => {
-  logout();
   authStore.clearAuth();
 
   await router.push('/login');
@@ -42,7 +40,7 @@ const handleLogout = async () => {
         Сегодня, {{ date }}
       </div>
 
-      <Button type="ghost" @click="handleLogout">
+      <Button variant="ghost" @click="handleLogout">
         Выйти
       </Button>
     </div>

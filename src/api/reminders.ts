@@ -29,19 +29,6 @@ const mapUpdateReminderPayloadToDto = (
   dateTime: payload.dateTime?.toISOString(),
 });
 
-const checkResponse =
-  async <T>(response: Response): Promise<T> => {
-  if (!response.ok) {
-    const errorBody = await response.json().catch(() => null);
-
-    throw new Error(
-      errorBody?.message ?? `Request failed with status ${response.status}`,
-    );
-  }
-
-  return response.json() as Promise<T>;
-};
-
 export const getReminders = async (): Promise<Reminder[]> => {
   const data = await apiClient<ReminderDto[]>(REMINDERS_API_PATH);
 

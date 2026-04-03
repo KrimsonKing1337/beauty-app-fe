@@ -6,18 +6,29 @@ type LoginPayloadDto = {
   password: string;
 };
 
-type LoginResponseDto = {
-  accessToken: string;
-  refreshToken: string;
-};
-
-type MeDto = {
+type AuthUserDto = {
   userId: string;
   login: string;
   name: string;
 };
 
-export const login = async (payload: LoginPayloadDto): Promise<void> => {
+type LoginResponseDto = {
+  accessToken: string;
+  refreshToken: string;
+  user: AuthUserDto;
+};
+
+type MeDto = {
+  user: {
+    id: string;
+    login: string;
+    name: string;
+  }
+};
+
+export const login = async (
+  payload: LoginPayloadDto,
+): Promise<LoginResponseDto> => {
   const data = await apiClient<LoginResponseDto>('/login', {
     method: 'POST',
     body: JSON.stringify(payload),
@@ -28,10 +39,8 @@ export const login = async (payload: LoginPayloadDto): Promise<void> => {
     accessToken: data.accessToken,
     refreshToken: data.refreshToken,
   });
-};
 
-export const logout = (): void => {
-  authTokenStorage.clearTokens();
+  return data;
 };
 
 export const getMe = async (): Promise<MeDto> => {

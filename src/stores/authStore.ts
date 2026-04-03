@@ -33,6 +33,8 @@ export const useAuthStore = defineStore('auth', () => {
   const clearAuth = () => {
     accessToken.value = null;
     user.value = null;
+
+    authTokenStorage.clearTokens();
   };
 
   return {
