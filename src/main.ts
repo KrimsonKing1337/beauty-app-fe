@@ -4,12 +4,14 @@ import PrimeVue from 'primevue/config';
 import Aura from '@primeuix/themes/aura';
 import { definePreset } from '@primeuix/themes';
 import { VueQueryPlugin, QueryClient } from '@tanstack/vue-query';
+import VCalendar from 'v-calendar';
 
 import App from './App.vue';
 import router from './router';
 
 import 'reset-css/reset.css';
 import 'primeicons/primeicons.css';
+import 'v-calendar/style.css';
 
 import './styles/styles.scss';
 
@@ -53,6 +55,7 @@ app.use(VueQueryPlugin, {
   queryClient,
 });
 
+app.use(VCalendar, {});
 app.use(createPinia());
 app.use(router);
 

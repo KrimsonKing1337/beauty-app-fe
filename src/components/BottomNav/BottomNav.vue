@@ -19,6 +19,10 @@ const buttonRemindersClickHandler = () => {
   router.push('/reminders');
 };
 
+const buttonCalendarClickHandler = () => {
+  router.push('/calendar');
+};
+
 const buttonCreateClickHandler = () => {
   if (route.path === '/reminders') {
     remindersStore.startCreateReminder();
@@ -47,7 +51,15 @@ const buttonCreateClickHandler = () => {
        Напоминания
      </Button>
 
-     <Button class="Item" @click="buttonCreateClickHandler">
+     <Button
+       class="Item"
+       :class="{ isActive: route.path === '/calendar' }"
+       @click="buttonCalendarClickHandler"
+     >
+       Календарь
+     </Button>
+
+     <Button v-if="route.path !== '/calendar'" class="Item" @click="buttonCreateClickHandler">
        <i class="pi pi-plus" />
      </Button>
    </div>
