@@ -66,9 +66,12 @@ const attrs = computed<typeof Calendar['attributes']>(() => {
 </script>
 
 <template>
-  <div>
-    <Calendar :attributes="attrs" />
-  </div>
+  <Calendar
+    :attributes="attrs"
+    expanded
+    titlePosition="right"
+    :rows="3"
+  />
 </template>
 
 <style scoped lang="scss">

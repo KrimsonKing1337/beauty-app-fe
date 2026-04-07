@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-import { MainPage, AuthPage, CalendarPage } from '@/pages';
+import { MainPage, AuthPage } from '@/pages';
 import { useAuthStore } from '@/stores/authStore';
 
 const router = createRouter({
@@ -33,7 +33,7 @@ const router = createRouter({
     {
       path: '/calendar',
       name: 'calendar',
-      component: CalendarPage,
+      component: MainPage,
       meta: {
         requiresAuth: true,
       },

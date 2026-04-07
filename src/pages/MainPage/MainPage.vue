@@ -8,6 +8,8 @@ import {
   BottomNav,
 } from '@/components';
 
+import { CalendarPage } from '@/pages';
+
 const route = useRoute();
 </script>
 
@@ -18,6 +20,7 @@ const route = useRoute();
 
       <ProcedureCards v-if="route.path === '/'" />
       <Reminders v-if="route.path === '/reminders'" />
+      <CalendarPage v-if="route.path === '/calendar'" />
 
       <BottomNav />
     </div>
