@@ -59,7 +59,7 @@ const buttonCreateClickHandler = () => {
        Календарь
      </Button>
 
-     <Button v-if="route.path !== '/calendar'" class="Item" @click="buttonCreateClickHandler">
+     <Button v-if="route.path !== '/calendar'" class="Item CreateButton" @click="buttonCreateClickHandler">
        <i class="pi pi-plus" />
      </Button>
    </div>
@@ -97,14 +97,14 @@ const buttonCreateClickHandler = () => {
   color: var(--text-secondary);
   cursor: pointer;
 
-  &:nth-last-child(1) {
-    margin-left: auto;
-    border-color: transparent;
-  }
-
   &.isActive {
     background: var(--accent-soft);
     color: #8e4e61;
+  }
+
+  &.CreateButton {
+    margin-left: auto;
+    border-color: transparent;
   }
 }
 </style>
