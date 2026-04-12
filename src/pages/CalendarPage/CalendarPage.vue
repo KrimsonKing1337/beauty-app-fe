@@ -3,13 +3,16 @@ import { computed, ref } from 'vue';
 
 import { DatePicker } from 'v-calendar';
 
+import type { Reminder as ReminderType } from '@/@types';
+import type { ProcedureDto } from '@/api/procedures.ts';
+
 import { useProceduresQuery } from '@/composables/queries/procedures/useProceduresQuery.ts';
 import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQuery.ts';
 
 import { ProcedureCard } from '@/components/ProcedureCards/components/ProcedureCard';
 import { Reminder } from '@/components/Reminders/components/Reminder';
 
-import { isSameDate } from '@/utils';
+import { getTodayItems } from '@/pages/CalendarPage/utils.ts';
 
 const { data: procedures } = useProceduresQuery();
 const { data: reminders } = useRemindersQuery();
@@ -54,22 +57,16 @@ const attrs = computed<typeof DatePicker['attributes']>(() => {
 const dateRef = ref(new Date());
 
 const proceduresComputed = computed(() => {
-  if (!procedures?.value) {
-    return [];
-  }
-
-  return procedures.value.filter((procedureCur) => {
-    return isSameDate(procedureCur.date, dateRef.value);
+  return getTodayItems<ProcedureDto>({
+    items: procedures.value,
+    date: dateRef.value,
   });
 });
 
 const remindersComputed = computed(() => {
-  if (!reminders?.value) {
-    return [];
-  }
-
-  return reminders.value.filter((reminderCur) => {
-    return isSameDate(reminderCur.dateTime, dateRef.value);
+  return getTodayItems<ReminderType>({
+    items: reminders.value,
+    date: dateRef.value,
   });
 });
 </script>
