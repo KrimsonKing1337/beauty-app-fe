@@ -1,77 +1,115 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
-import { Calendar } from 'v-calendar';
+import { DatePicker } from 'v-calendar';
 
 import { useProceduresQuery } from '@/composables/queries/procedures/useProceduresQuery.ts';
 import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQuery.ts';
 
-const {
-  data: cards,
-} = useProceduresQuery();
+import { isSameDate } from '@/utils';
 
-const {
-  data: reminders,
-} = useRemindersQuery();
+const { data: procedures } = useProceduresQuery();
+const { data: reminders } = useRemindersQuery();
 
-const attrs = computed<typeof Calendar['attributes']>(() => {
+const attrs = computed<typeof DatePicker['attributes']>(() => {
   const today = {
     key: 'today',
-    highlight: true,
+    highlight: {
+      fillMode: 'outline',
+      color: true,
+    },
     dates: [new Date()],
   };
 
-  if (!cards?.value || !reminders.value) {
+  if (!procedures?.value || !reminders.value) {
     return today;
   }
 
-  const daysOfCards = cards.value.map((cardCur) => {
-    const { id, date, procedureName, place, price, notes } = cardCur;
-
-    const label = `${procedureName} ${place} ${price}Р ${notes}`;
+  const daysOfProcedures = procedures.value.map((procedureCur) => {
+    const { id, date } = procedureCur;
 
     return {
       key: id,
       dot: true,
       dates: [date],
-      popover: {
-        label: label,
-        visibility: 'click',
-        hideIndicator: true,
-        isInteractive: true,
-      },
     }
   });
 
   const daysOfReminders = reminders.value.map((reminderCur) => {
-    const { id, name, dateTime, description } = reminderCur;
-
-    const label = `${name} ${description} ${dateTime.toLocaleString()}`;
+    const { id, dateTime } = reminderCur;
 
     return {
       key: id,
       dot: 'red',
       dates: [dateTime],
-      popover: {
-        label: label,
-        visibility: 'click',
-        hideIndicator: true,
-        isInteractive: true,
-      },
     }
   });
 
-  return [today, ...daysOfCards, ...daysOfReminders];
+  return [today, ...daysOfProcedures, ...daysOfReminders];
+});
+
+const dateRef = ref(new Date());
+
+const proceduresComputed = computed(() => {
+  if (!procedures?.value) {
+    return [];
+  }
+
+  const filteredProcedures = procedures.value.filter((procedureCur) => {
+    return isSameDate(procedureCur.date, dateRef.value);
+  });
+
+  return filteredProcedures.map((procedureCur) => {
+    const { id, procedureName, place, price, notes } = procedureCur;
+
+    const label = `${procedureName} ${place} ${price}Р ${notes}`;
+
+    return {
+      id,
+      label,
+    };
+  });
+});
+
+const remindersComputed = computed(() => {
+  if (!reminders?.value) {
+    return [];
+  }
+
+  const filteredReminders = reminders.value.filter((reminderCur) => {
+    return isSameDate(reminderCur.dateTime, dateRef.value);
+  });
+
+  return filteredReminders.map((procedureCur) => {
+    const { id, name } = procedureCur;
+
+    return {
+      id,
+      label: name,
+    };
+  });
 });
 </script>
 
 <template>
-  <Calendar
+  <DatePicker
+    v-model="dateRef"
     :attributes="attrs"
     expanded
     titlePosition="right"
-    :rows="3"
   />
+
+  <div v-if="proceduresComputed.length" style="border: 1px red solid;">
+    <div v-for="procedureCur in proceduresComputed" :key="procedureCur.id">
+      {{ procedureCur.label }}
+    </div>
+  </div>
+
+  <div v-if="remindersComputed.length" style="border: 1px blue solid;">
+    <div v-for="reminderCur in remindersComputed" :key="reminderCur.id">
+      {{ reminderCur.label }}
+    </div>
+  </div>
 </template>
 
 <style scoped lang="scss">

@@ -27,3 +27,11 @@ export const mapProcedureDtoToModel = (dto: ProcedureDto): ProcedureCard => ({
   createdAt: dto.createdAt,
   updatedAt: dto.updatedAt,
 });
+
+export const isSameDate = (a: Date, b: Date) => {
+  return (
+    a.getFullYear() === b.getFullYear()
+    && a.getMonth() === b.getMonth()
+    && a.getDate() === b.getDate()
+  );
+};
