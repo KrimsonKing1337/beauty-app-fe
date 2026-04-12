@@ -6,6 +6,9 @@ import { DatePicker } from 'v-calendar';
 import { useProceduresQuery } from '@/composables/queries/procedures/useProceduresQuery.ts';
 import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQuery.ts';
 
+import { ProcedureCard } from '@/components/ProcedureCards/components/ProcedureCard';
+import { Reminder } from '@/components/Reminders/components/Reminder';
+
 import { isSameDate } from '@/utils';
 
 const { data: procedures } = useProceduresQuery();
@@ -55,19 +58,8 @@ const proceduresComputed = computed(() => {
     return [];
   }
 
-  const filteredProcedures = procedures.value.filter((procedureCur) => {
+  return procedures.value.filter((procedureCur) => {
     return isSameDate(procedureCur.date, dateRef.value);
-  });
-
-  return filteredProcedures.map((procedureCur) => {
-    const { id, procedureName, place, price, notes } = procedureCur;
-
-    const label = `${procedureName} ${place} ${price}Р ${notes}`;
-
-    return {
-      id,
-      label,
-    };
   });
 });
 
@@ -76,17 +68,8 @@ const remindersComputed = computed(() => {
     return [];
   }
 
-  const filteredReminders = reminders.value.filter((reminderCur) => {
+  return reminders.value.filter((reminderCur) => {
     return isSameDate(reminderCur.dateTime, dateRef.value);
-  });
-
-  return filteredReminders.map((procedureCur) => {
-    const { id, name } = procedureCur;
-
-    return {
-      id,
-      label: name,
-    };
   });
 });
 </script>
@@ -97,21 +80,30 @@ const remindersComputed = computed(() => {
     :attributes="attrs"
     expanded
     titlePosition="right"
+    class="Calendar"
   />
 
-  <div v-if="proceduresComputed.length" style="border: 1px red solid;">
-    <div v-for="procedureCur in proceduresComputed" :key="procedureCur.id">
-      {{ procedureCur.label }}
+  <div class="ItemsWrapper">
+    <div v-if="proceduresComputed.length">
+      <div v-for="procedureCur in proceduresComputed" :key="procedureCur.id">
+        <ProcedureCard :card="procedureCur" />
+      </div>
     </div>
-  </div>
 
-  <div v-if="remindersComputed.length" style="border: 1px blue solid;">
-    <div v-for="reminderCur in remindersComputed" :key="reminderCur.id">
-      {{ reminderCur.label }}
+    <div v-if="remindersComputed.length">
+      <div v-for="reminderCur in remindersComputed" :key="reminderCur.id">
+        <Reminder :reminder="reminderCur" />
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
+.ItemsWrapper {
+  margin-top: 20px;
+}
 
+:global(.Calendar.vc-container.vc-bordered) {
+  border-radius: 24px;
+}
 </style>
