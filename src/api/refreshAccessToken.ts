@@ -12,7 +12,7 @@ export const refreshAccessToken = async (): Promise<string> => {
     throw new Error('Refresh token is missing');
   }
 
-  const response = await fetch('/refresh', {
+  const response = await fetch('/api/auth/refresh', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
