@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
 import type { ReminderRepeat } from '@/components/Reminders/@types.ts';

@@ -1,3 +1,5 @@
+import type { RepeatCustomUnit } from '@/components/Reminders/@types.ts';
+
 type Product = {
   id: string;
   name: string;
@@ -33,13 +35,6 @@ type Procedure = {
   }
 }
 
-export type RepeatUnit = 'minute'
-  | 'hour'
-  | 'day'
-  | 'week'
-  | 'month'
-  | 'year';
-
 export type RepeatPreset = 'none'
   | 'daily'
   | 'weekly'
@@ -49,7 +44,7 @@ export type RepeatPreset = 'none'
   | 'custom';
 
 export type ReminderRepeat = {
-  unit: RepeatUnit;
+  unit: RepeatCustomUnit;
   interval: number;
   daysOfWeek: number[];
   preset: RepeatPreset;
