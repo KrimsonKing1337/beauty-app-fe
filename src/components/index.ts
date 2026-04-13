@@ -8,5 +8,6 @@ export * from './Notes';
 export * from './BottomNav';
 export * from './Chips';
 export * from './Divider';
+export * from './ProcedureCardsWrapper';
 export * from './ProcedureCards';
 export * from './Reminders';

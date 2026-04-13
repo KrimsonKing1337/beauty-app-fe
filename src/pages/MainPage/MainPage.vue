@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router';
 
 import {
   PageHeader,
-  ProcedureCards,
+  ProcedureCardsWrapper,
   Reminders,
   BottomNav,
 } from '@/components';
@@ -18,7 +18,7 @@ const route = useRoute();
     <div class="Content">
       <PageHeader />
 
-      <ProcedureCards v-if="route.path === '/'" />
+      <ProcedureCardsWrapper v-if="route.path === '/'" />
       <Reminders v-if="route.path === '/reminders'" />
       <CalendarPage v-if="route.path === '/calendar'" />
 

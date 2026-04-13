@@ -1,45 +1,46 @@
 <script setup lang="ts">
-import { computed, nextTick, watch } from 'vue';
-import { storeToRefs } from 'pinia';
+import { nextTick, watch } from 'vue';
 
-import { useProcedureCardsStore } from '@/stores/procedureCardsStore';
-
-import { useProceduresQuery } from '@/composables/queries/procedures/useProceduresQuery';
+import type { ProcedureDto } from '@/api/procedures';
 
 import { ProcedureCard, ProcedureCardEdit } from './components';
 
-const procedureCardStore = useProcedureCardsStore();
-const { draftCard, lastTouchedCardId } = storeToRefs(procedureCardStore);
+type Props = {
+  cards: ProcedureDto[];
+  isLoading: boolean;
+  errorMessage: string | null;
+  isEditing: boolean;
+  lastTouchedCardId: string | null;
+};
 
-const isEditing = computed(() => draftCard.value !== null);
+const props = defineProps<Props>();
 
 const cardRefs = new Map<string, HTMLElement>();
 
 const setCardRef = (id: string, el: HTMLElement | null) => {
   if (el) {
     cardRefs.set(id, el);
-  }
-}
-
-watch(lastTouchedCardId, (id) => {
-  if (!id) {
     return;
   }
 
-  nextTick(() => {
-    cardRefs.get(id)?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
-  });
-});
+  cardRefs.delete(id);
+};
 
-const {
-  data: cards,
-  isLoading,
-  isError,
-  error,
-} = useProceduresQuery();
+watch(
+  () => props.lastTouchedCardId,
+  (id) => {
+    if (!id) {
+      return;
+    }
+
+    nextTick(() => {
+      cardRefs.get(id)?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    });
+  },
+);
 </script>
 
 <template>
@@ -48,8 +49,8 @@ const {
       Loading...
     </div>
 
-    <div v-if="isError">
-      Ошибка: {{ error?.message }}
+    <div v-if="errorMessage">
+      Ошибка: {{ errorMessage }}
     </div>
 
     <div v-if="!isEditing" class="ProcedureCardsWrapper">
