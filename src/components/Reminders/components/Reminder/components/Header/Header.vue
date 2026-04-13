@@ -13,6 +13,7 @@ import {
 } from '@/composables/mutations/reminders/useUpdateReminderMutation.ts';
 
 import { CardHeader } from '@/components';
+import { getToggleReminderCompletePayload } from '@/components/Reminders/utils';
 
 const props = defineProps<{
   reminder: Reminder;
@@ -30,16 +31,13 @@ const updateReminderMutation = useUpdateReminderMutation();
 const completed = computed(() => {
   return {
     label: props.reminder.isCompleted ? 'Отменить' : 'Завершить',
-    value: !props.reminder.isCompleted,
   };
 });
 
-const handlerCompleteReminder = async (reminder: Reminder, isCompleted: boolean) => {
+const handlerToggleReminderComplete = async (reminder: Reminder) => {
   await updateReminderMutation.mutateAsync({
     id: reminder.id,
-    payload: {
-      isCompleted,
-    },
+    payload: getToggleReminderCompletePayload(reminder),
   });
 };
 
@@ -70,7 +68,7 @@ const menuItems = computed(() => [
     label: completed.value.label,
     icon: 'pi pi-check',
     command: () => {
-      handlerCompleteReminder(props.reminder, completed.value.value);
+      handlerToggleReminderComplete(props.reminder);
     },
   },
   {

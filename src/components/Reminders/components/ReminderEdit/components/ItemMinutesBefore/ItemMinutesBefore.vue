@@ -2,7 +2,7 @@
 import { FloatLabel, Select } from 'primevue';
 
 const notificationMinutesBeforeOptions = [
-  { label: 'Не напоминать', value: 0 },
+  { label: '0 минут', value: 0 },
   { label: '5 минут', value: 5 },
   { label: '15 минут', value: 15 },
   { label: '30 минут', value: 30 },
