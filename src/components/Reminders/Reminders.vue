@@ -1,45 +1,45 @@
 <script setup lang="ts">
-import { computed, nextTick, watch } from 'vue';
-import { storeToRefs } from 'pinia';
-import { useRemindersStore } from '@/stores/remindersStore';
+import { nextTick, watch } from 'vue';
 
 import { Reminder, ReminderEdit } from './components';
+import type { Reminder as ReminderType } from '@/@types';
 
-const remindersStore = useRemindersStore();
+type Props = {
+  reminders: ReminderType[];
+  isLoading: boolean;
+  errorMessage: string | null;
+  isEditing: boolean;
+  lastTouchedReminderId: string | null;
+};
 
-import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQuery';
-
-const { draftReminder, lastTouchedReminderId } = storeToRefs(remindersStore);
-
-const isEditing = computed(() => draftReminder.value !== null);
+const props = defineProps<Props>();
 
 const reminderRefs = new Map<string, HTMLElement>();
 
 const setReminderRef = (id: string, el: HTMLElement | null) => {
   if (el) {
     reminderRefs.set(id, el);
-  }
-}
-
-watch(lastTouchedReminderId, (id) => {
-  if (!id) {
     return;
   }
 
-  nextTick(() => {
-    reminderRefs.get(id)?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
-  });
-});
+  reminderRefs.delete(id);
+};
 
-const {
-  data: reminders,
-  isLoading,
-  isError,
-  error,
-} = useRemindersQuery();
+watch(
+  () => props.lastTouchedReminderId,
+  (id) => {
+    if (!id) {
+      return;
+    }
+
+    nextTick(() => {
+      reminderRefs.get(id)?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    });
+  },
+);
 </script>
 
 <template>
@@ -48,8 +48,8 @@ const {
       Loading...
     </div>
 
-    <div v-if="isError">
-      Ошибка: {{ error?.message }}
+    <div v-if="errorMessage">
+      Ошибка: {{ errorMessage }}
     </div>
 
     <div v-if="!isEditing" class="RemindersWrapper">
