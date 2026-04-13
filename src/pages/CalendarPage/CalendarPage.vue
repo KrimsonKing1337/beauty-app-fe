@@ -1,21 +1,35 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { storeToRefs } from 'pinia';
 
 import { DatePicker } from 'v-calendar';
 
 import type { Reminder as ReminderType } from '@/@types';
 import type { ProcedureDto } from '@/api/procedures.ts';
 
+import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
+import { useRemindersStore } from '@/stores/remindersStore.ts';
+
 import { useProceduresQuery } from '@/composables/queries/procedures/useProceduresQuery.ts';
 import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQuery.ts';
 
-import { ProcedureCard } from '@/components/ProcedureCards/components/ProcedureCard';
-import { Reminder } from '@/components/Reminders/components/Reminder';
+import { ProcedureCards, Reminders } from '@/components';
 
-import { getTodayItems } from '@/pages/CalendarPage/utils.ts';
+import { createErrorMessage, getTodayItems } from './utils.ts';
 
-const { data: procedures } = useProceduresQuery();
-const { data: reminders } = useRemindersQuery();
+const {
+  data: procedures,
+  isLoading: isProceduresLoading,
+  isError: isProceduresError,
+  error: proceduresError,
+} = useProceduresQuery();
+
+const {
+  data: reminders,
+  isLoading: isRemindersLoading,
+  isError: isRemindersError,
+  error: remindersError,
+} = useRemindersQuery();
 
 const attrs = computed<typeof DatePicker['attributes']>(() => {
   const today = {
@@ -56,6 +70,15 @@ const attrs = computed<typeof DatePicker['attributes']>(() => {
 
 const dateRef = ref(new Date());
 
+const remindersStore = useRemindersStore();
+const procedureCardStore = useProcedureCardsStore();
+
+const { draftReminder, lastTouchedReminderId } = storeToRefs(remindersStore);
+const { draftCard, lastTouchedCardId } = storeToRefs(procedureCardStore);
+
+const isReminderEditing = computed(() => draftReminder.value !== null);
+const isProcedureEditing = computed(() => draftCard.value !== null);
+
 const proceduresComputed = computed(() => {
   return getTodayItems<ProcedureDto>({
     items: procedures.value,
@@ -69,6 +92,9 @@ const remindersComputed = computed(() => {
     date: dateRef.value,
   });
 });
+
+const proceduresErrorMessage = createErrorMessage(isProceduresError, proceduresError);
+const remindersErrorMessage = createErrorMessage(isRemindersError, remindersError);
 </script>
 
 <template>
@@ -81,17 +107,23 @@ const remindersComputed = computed(() => {
   />
 
   <div class="ItemsWrapper">
-    <div v-if="proceduresComputed.length">
-      <div v-for="procedureCur in proceduresComputed" :key="procedureCur.id">
-        <ProcedureCard :card="procedureCur" />
-      </div>
-    </div>
+    <ProcedureCards
+      v-if="proceduresComputed.length"
+      :cards="proceduresComputed"
+      :isLoading="isProceduresLoading"
+      :errorMessage="proceduresErrorMessage"
+      :isEditing="isProcedureEditing"
+      :lastTouchedCardId="lastTouchedCardId"
+    />
 
-    <div v-if="remindersComputed.length">
-      <div v-for="reminderCur in remindersComputed" :key="reminderCur.id">
-        <Reminder :reminder="reminderCur" />
-      </div>
-    </div>
+    <Reminders
+      v-if="remindersComputed.length"
+      :reminders="remindersComputed"
+      :isLoading="isRemindersLoading"
+      :errorMessage="remindersErrorMessage"
+      :isEditing="isReminderEditing"
+      :lastTouchedReminderId="lastTouchedReminderId"
+    />
   </div>
 </template>
 
