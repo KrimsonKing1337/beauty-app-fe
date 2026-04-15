@@ -9,6 +9,8 @@ export type ProcedureDto = {
   duration: string | undefined;
   price: number | undefined;
   beforeAfter: string[];
+  beforeImagePaths: string[];
+  afterImagePaths: string[];
   notes: string | undefined;
   createdAt: string;
   updatedAt: string;

@@ -1,5 +1,11 @@
 <script setup lang="ts">
 
+type Props = {
+  beforeImagePaths: string[];
+  afterImagePaths: string[];
+};
+
+defineProps<Props>();
 </script>
 
 <template>
@@ -10,8 +16,12 @@
       </div>
 
       <div class="Image">
-        <div class="ImagePlaceholder">
+        <div v-if="!beforeImagePaths.length" class="ImagePlaceholder">
           Фото до
+        </div>
+
+        <div v-else>
+          <img :src="beforeImagePaths[0]" alt="Фото до" />
         </div>
       </div>
     </div>
@@ -22,8 +32,12 @@
       </div>
 
       <div class="Image">
-        <div class="ImagePlaceholder">
+        <div v-if="!afterImagePaths.length" class="ImagePlaceholder">
           Фото после
+        </div>
+
+        <div v-else>
+          <img :src="afterImagePaths[0]" alt="Фото после" />
         </div>
       </div>
     </div>

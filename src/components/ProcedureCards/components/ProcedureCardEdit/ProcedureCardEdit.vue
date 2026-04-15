@@ -2,10 +2,12 @@
 import { storeToRefs } from 'pinia';
 
 import {
+  type FileUploadSelectEvent,
+
+  FileUpload,
   Button,
   FloatLabel,
   DatePicker,
-  FileUpload,
 } from 'primevue';
 
 import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
@@ -15,11 +17,16 @@ import {
 } from '@/composables/mutations/procedures/useSaveProcedureMutation.ts';
 
 import { Input } from '@/components';
+import { ref } from 'vue';
+import { uploadFile } from '@/api/uploads.ts';
 
 const procedureCardsStore = useProcedureCardsStore();
 const saveProcedureMutation = useSaveProcedureMutation();
 
 const { draftCard } = storeToRefs(procedureCardsStore);
+
+const imageBeforeFileUploadRef = ref();
+const imageAfterFileUploadRef = ref();
 
 const saveButtonClickHandler = async () => {
   if (!procedureCardsStore.draftCard) {
@@ -57,6 +64,30 @@ const saveButtonClickHandler = async () => {
 
 const cancelButtonClickHandler = () => {
   procedureCardsStore.cancelEdit();
+};
+
+const imageBeforeUploadSelectHandler = (event: FileUploadSelectEvent) => {
+  imageBeforeFileUploadRef.value = event.files?.[0];
+};
+
+const imageAfterUploadSelectHandler = (event: FileUploadSelectEvent) => {
+  imageAfterFileUploadRef.value = event.files?.[0];
+};
+
+const imageBeforeUploadClickHandler = () => {
+  uploadFile({
+    file: imageBeforeFileUploadRef.value,
+    procedureId: procedureCardsStore.editingCardId,
+    type: 'before',
+  });
+};
+
+const imageAfterUploadClickHandler = () => {
+  uploadFile({
+    file: imageAfterFileUploadRef.value,
+    procedureId: procedureCardsStore.editingCardId,
+    type: 'after',
+  });
 };
 </script>
 
@@ -114,6 +145,9 @@ const cancelButtonClickHandler = () => {
         chooseLabel="Фото до"
         uploadLabel="Загрузить"
         cancelLabel="Отменить"
+        customUpload
+        @select="imageBeforeUploadSelectHandler"
+        @uploader="imageBeforeUploadClickHandler"
       />
     </div>
 
@@ -123,6 +157,9 @@ const cancelButtonClickHandler = () => {
         chooseLabel="Фото после"
         uploadLabel="Загрузить"
         cancelLabel="Отменить"
+        customUpload
+        @select="imageAfterUploadSelectHandler"
+        @uploader="imageAfterUploadClickHandler"
       />
     </div>
 

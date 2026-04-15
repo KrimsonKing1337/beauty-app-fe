@@ -9,6 +9,8 @@ export type ProcedureCard = {
   duration: string | undefined;
   price: number | undefined;
   beforeAfter: string[];
+  beforeImagePaths: string[];
+  afterImagePaths: string[];
   notes: string | undefined;
   createdAt: string;
   updatedAt: string;
@@ -22,6 +24,8 @@ const createEmptyProcedureCard = (): ProcedureCard => ({
   duration: '',
   price: 0,
   beforeAfter: [],
+  beforeImagePaths: [],
+  afterImagePaths: [],
   notes: '',
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),

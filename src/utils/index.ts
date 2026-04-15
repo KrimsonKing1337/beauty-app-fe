@@ -23,6 +23,8 @@ export const mapProcedureDtoToModel = (dto: ProcedureDto): ProcedureCard => ({
   duration: dto.duration,
   price: dto.price,
   beforeAfter: dto.beforeAfter,
+  beforeImagePaths: dto.beforeImagePaths,
+  afterImagePaths: dto.afterImagePaths,
   notes: dto.notes,
   createdAt: dto.createdAt,
   updatedAt: dto.updatedAt,

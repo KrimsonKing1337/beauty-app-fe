@@ -34,7 +34,11 @@ const chips: ChipsProps['chips'] = [
 <template>
   <Card>
     <Header :card="card" />
-    <BeforeAfter v-if="props.card.beforeAfter" />
+
+    <BeforeAfter
+      :beforeImagePaths="card.beforeImagePaths"
+      :afterImagePaths="card.afterImagePaths"
+    />
 
     <Notes v-if="props.card.notes">
       {{ props.card.notes }}
