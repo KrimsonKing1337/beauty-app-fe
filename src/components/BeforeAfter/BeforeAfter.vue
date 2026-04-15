@@ -20,9 +20,7 @@ defineProps<Props>();
           Фото до
         </div>
 
-        <div v-else>
-          <img :src="beforeImagePaths[0]" alt="Фото до" />
-        </div>
+        <img v-else :src="beforeImagePaths[0]" alt="Фото до" />
       </div>
     </div>
 
@@ -36,9 +34,7 @@ defineProps<Props>();
           Фото после
         </div>
 
-        <div v-else>
-          <img :src="afterImagePaths[0]" alt="Фото после" />
-        </div>
+        <img v-else :src="afterImagePaths[0]" alt="Фото после" />
       </div>
     </div>
   </div>
