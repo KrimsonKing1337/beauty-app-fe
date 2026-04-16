@@ -30,6 +30,24 @@ const imageAfterFileUploadRef = ref();
 
 const saveButtonIsLoadingRef = ref(false);
 
+const uploadImages = async (procedureId: string) => {
+  if (imageBeforeFileUploadRef.value) {
+    await uploadFile({
+      file: imageBeforeFileUploadRef.value,
+      procedureId: procedureId,
+      type: 'before',
+    });
+  }
+
+  if (imageAfterFileUploadRef.value) {
+    await uploadFile({
+      file: imageAfterFileUploadRef.value,
+      procedureId: procedureId,
+      type: 'after',
+    });
+  }
+}
+
 const saveButtonClickHandler = async () => {
   if (!procedureCardsStore.draftCard) {
     return;
@@ -44,6 +62,8 @@ const saveButtonClickHandler = async () => {
       ...draft,
       id: procedureCardsStore.editingCardId,
     });
+
+    await uploadImages(procedureCardsStore.editingCardId);
 
     procedureCardsStore.setLastTouchedCardId(saved.id);
   } else {
@@ -64,21 +84,7 @@ const saveButtonClickHandler = async () => {
 
     procedureCardsStore.setLastTouchedCardId(saved.id);
 
-    if (imageBeforeFileUploadRef.value) {
-      await uploadFile({
-        file: imageBeforeFileUploadRef.value,
-        procedureId: saved.id,
-        type: 'before',
-      });
-    }
-
-    if (imageAfterFileUploadRef.value) {
-      await uploadFile({
-        file: imageAfterFileUploadRef.value,
-        procedureId: saved.id,
-        type: 'after',
-      });
-    }
+    await uploadImages(saved.id);
   }
 
   saveButtonIsLoadingRef.value = false;
