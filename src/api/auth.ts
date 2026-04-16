@@ -7,7 +7,7 @@ type LoginPayloadDto = {
 };
 
 type AuthUserDto = {
-  userId: string;
+  id: string;
   login: string;
   name: string;
 };

@@ -79,7 +79,7 @@ const submitHandler = async () => {
           </h2>
 
           <p class="AuthCardSubtitle">
-            Введи почту и пароль, чтобы продолжить
+            Введи логин и пароль, чтобы продолжить
           </p>
         </div>
 
@@ -89,14 +89,14 @@ const submitHandler = async () => {
               Логин
             </Input>
 
-            <Input v-model="form.password" id="auth-password">
+            <Input v-model="form.password" id="auth-password" type="password">
               Пароль
             </Input>
           </div>
 
           <div class="AuthFormRow">
             <label class="AuthFormCheckbox">
-              <input v-model="form.rememberMe" type="checkbox">
+              <input v-model="form.rememberMe" id="auth-remember-me" type="checkbox">
 
               <span>
                 Запомнить меня

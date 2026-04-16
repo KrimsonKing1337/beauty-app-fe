@@ -13,13 +13,16 @@ const authStore = useAuthStore();
 const date = formatDate(new Date().toISOString());
 
 const title = computed(() => {
-  return route.path !== '/reminders' ? 'Мои процедуры' : 'Мои напоминания';
-});
-
-const subTitle = computed(() => {
-  return route.path !== '/reminders'
-    ? 'История ухода и результат по фото'
-    : '';
+  switch (route.path) {
+    case '/':
+      return 'Мои процедуры';
+    case '/reminders':
+      return 'Мои напоминания';
+    case '/calendar':
+      return 'Мой календарь'
+    default:
+      return '';
+  }
 });
 
 const userName = computed(() => {
@@ -40,7 +43,7 @@ const handleLogout = async () => {
         Сегодня, {{ date }}
       </div>
 
-      <Button variant="ghost" @click="handleLogout">
+      <Button @click="handleLogout">
         Выйти
       </Button>
     </div>
@@ -48,10 +51,6 @@ const handleLogout = async () => {
     <h1 class="Title">
       {{ title }}
     </h1>
-
-    <p class="Subtitle">
-      {{ subTitle }}
-    </p>
 
     <p class="User">
       {{ userName }}
