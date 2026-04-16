@@ -50,6 +50,8 @@ const saveButtonClickHandler = async () => {
       duration: draft.duration,
       price: draft.price,
       beforeAfter: draft.beforeAfter,
+      beforeImagePaths: [],
+      afterImagePaths: [],
       notes: draft.notes,
       updatedAt: new Date().toISOString(),
     };
@@ -57,12 +59,31 @@ const saveButtonClickHandler = async () => {
     const saved = await saveProcedureMutation.mutateAsync(payload);
 
     procedureCardsStore.setLastTouchedCardId(saved.id);
+
+    if (imageBeforeFileUploadRef.value) {
+      await uploadFile({
+        file: imageBeforeFileUploadRef.value,
+        procedureId: saved.id,
+        type: 'before',
+      });
+    }
+
+    if (imageAfterFileUploadRef.value) {
+      await uploadFile({
+        file: imageAfterFileUploadRef.value,
+        procedureId: saved.id,
+        type: 'after',
+      });
+    }
   }
 
   procedureCardsStore.clearDraft();
 };
 
 const cancelButtonClickHandler = () => {
+  imageBeforeFileUploadRef.value = null;
+  imageAfterFileUploadRef.value = null;
+
   procedureCardsStore.cancelEdit();
 };
 
@@ -72,22 +93,6 @@ const imageBeforeUploadSelectHandler = (event: FileUploadSelectEvent) => {
 
 const imageAfterUploadSelectHandler = (event: FileUploadSelectEvent) => {
   imageAfterFileUploadRef.value = event.files?.[0];
-};
-
-const imageBeforeUploadClickHandler = () => {
-  uploadFile({
-    file: imageBeforeFileUploadRef.value,
-    procedureId: procedureCardsStore.editingCardId,
-    type: 'before',
-  });
-};
-
-const imageAfterUploadClickHandler = () => {
-  uploadFile({
-    file: imageAfterFileUploadRef.value,
-    procedureId: procedureCardsStore.editingCardId,
-    type: 'after',
-  });
 };
 </script>
 
@@ -143,11 +148,9 @@ const imageAfterUploadClickHandler = () => {
       <FileUpload
         accept="image/*"
         chooseLabel="Фото до"
-        uploadLabel="Загрузить"
-        cancelLabel="Отменить"
         customUpload
+        mode="basic"
         @select="imageBeforeUploadSelectHandler"
-        @uploader="imageBeforeUploadClickHandler"
       />
     </div>
 
@@ -155,11 +158,9 @@ const imageAfterUploadClickHandler = () => {
       <FileUpload
         accept="image/*"
         chooseLabel="Фото после"
-        uploadLabel="Загрузить"
-        cancelLabel="Отменить"
+        mode="basic"
         customUpload
         @select="imageAfterUploadSelectHandler"
-        @uploader="imageAfterUploadClickHandler"
       />
     </div>
 
