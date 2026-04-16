@@ -28,10 +28,14 @@ const { draftCard } = storeToRefs(procedureCardsStore);
 const imageBeforeFileUploadRef = ref();
 const imageAfterFileUploadRef = ref();
 
+const saveButtonIsLoadingRef = ref(false);
+
 const saveButtonClickHandler = async () => {
   if (!procedureCardsStore.draftCard) {
     return;
   }
+
+  saveButtonIsLoadingRef.value = true;
 
   const draft = procedureCardsStore.draftCard;
 
@@ -76,6 +80,8 @@ const saveButtonClickHandler = async () => {
       });
     }
   }
+
+  saveButtonIsLoadingRef.value = false;
 
   procedureCardsStore.clearDraft();
 };
@@ -165,7 +171,7 @@ const imageAfterUploadSelectHandler = (event: FileUploadSelectEvent) => {
     </div>
 
     <div class="BottomNav">
-      <Button severity="success" @click="saveButtonClickHandler">
+      <Button severity="success" :loading="saveButtonIsLoadingRef" @click="saveButtonClickHandler">
         Сохранить
       </Button>
 
