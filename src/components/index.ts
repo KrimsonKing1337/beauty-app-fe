@@ -1,5 +1,6 @@
 export * from './Card';
 export * from './CardHeader';
+export * from './CardPlaceholder';
 export * from './Button';
 export * from './Input';
 export * from './PageHeader';

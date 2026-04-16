@@ -7,7 +7,7 @@ import type { ProcedureDto } from '@/api/procedures';
 import { useProcedureCardsStore } from '@/stores/procedureCardsStore';
 import { useProceduresQuery } from '@/composables/queries/procedures/useProceduresQuery';
 
-import { ProcedureCards } from '@/components/ProcedureCards';
+import { CardPlaceholder, ProcedureCards } from '@/components';
 
 const procedureCardStore = useProcedureCardsStore();
 const { draftCard, lastTouchedCardId } = storeToRefs(procedureCardStore);
@@ -30,9 +30,17 @@ const errorMessage = computed<string | null>(() => {
 
   return error.value?.message ?? 'Неизвестная ошибка';
 });
+
+const showPlaceholder = computed(() => {
+  return !cards.value.length && !isEditing.value;
+});
 </script>
 
 <template>
+  <CardPlaceholder v-if="showPlaceholder">
+    Здесь будут процедуры
+  </CardPlaceholder>
+
   <ProcedureCards
     :cards="cards"
     :isLoading="isLoading"

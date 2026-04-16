@@ -6,6 +6,7 @@ import type { Reminder as ReminderType } from '@/@types';
 import { useRemindersStore } from '@/stores/remindersStore';
 import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQuery';
 import { Reminders } from '@/components/Reminders';
+import { CardPlaceholder } from '@/components';
 
 const remindersStore = useRemindersStore();
 
@@ -29,9 +30,17 @@ const errorMessage = computed<string | null>(() => {
 
   return error.value?.message ?? 'Неизвестная ошибка';
 });
+
+const showPlaceholder = computed(() => {
+  return !reminders.value.length && !isEditing.value;
+});
 </script>
 
 <template>
+  <CardPlaceholder v-if="showPlaceholder">
+    Здесь будут напоминания
+  </CardPlaceholder>
+
   <Reminders
     :reminders="reminders"
     :isLoading="isLoading"
