@@ -52,39 +52,39 @@ const submitHandler = async () => {
 
 <template>
   <div class="AuthPage">
-    <div class="AuthPageBackground">
-      <div class="AuthPageBlur AuthPageBlurTop" />
-      <div class="AuthPageBlur AuthPageBlurBottom" />
+    <div class="Background">
+      <div class="Blur BlurTop" />
+      <div class="Blur BlurBottom" />
     </div>
 
-    <div class="AuthPageContent">
-      <section class="AuthPageHero">
-        <span class="AuthPageBadge">
+    <div class="Content">
+      <section class="PageHero">
+        <span class="Badge">
           Beauty App
         </span>
 
-        <h1 class="AuthPageTitle">
+        <h1 class="PageTitle">
           Вход в личный кабинет
         </h1>
 
-        <p class="AuthPageDescription">
+        <p class="Description">
           Храни историю процедур, расходы, фотографии и напоминания в одном месте.
         </p>
       </section>
 
-      <section class="AuthCard">
-        <div class="AuthCardHeader">
-          <h2 class="AuthCardTitle">
+      <section class="Card">
+        <div class="CardHeader">
+          <h2 class="CardTitle">
             Авторизация
           </h2>
 
-          <p class="AuthCardSubtitle">
+          <p class="CardSubtitle">
             Введи логин и пароль, чтобы продолжить
           </p>
         </div>
 
-        <form class="AuthForm" @submit.prevent="submitHandler">
-          <div class="AuthFormFields">
+        <form class="Form" @submit.prevent="submitHandler">
+          <div class="FormFields">
             <Input v-model="form.login" id="auth-email">
               Логин
             </Input>
@@ -94,8 +94,8 @@ const submitHandler = async () => {
             </Input>
           </div>
 
-          <div class="AuthFormRow">
-            <label class="AuthFormCheckbox">
+          <div class="FormRow">
+            <label class="FormCheckbox">
               <input v-model="form.rememberMe" id="auth-remember-me" type="checkbox">
 
               <span>
@@ -103,31 +103,32 @@ const submitHandler = async () => {
               </span>
             </label>
 
-            <button type="button" class="AuthFormLink">
+            <button type="button" class="FormLink">
               Забыли пароль?
             </button>
           </div>
 
-          <p v-if="errorMessage" class="AuthFormError">
+          <p v-if="errorMessage" class="FormError">
             {{ errorMessage }}
           </p>
 
           <Button
-            class="AuthFormSubmit"
-            :label="loginMutation.isPending.value ? 'Входим...' : 'Войти'"
+            class="FormSubmit"
+            :loading="loginMutation.isPending.value"
+            label="Войти"
             type="submit"
             fluid
             :disabled="isSubmitDisabled"
           />
 
-          <div class="AuthFormDivider">
+          <div class="FormDivider">
             <span>
               или
             </span>
           </div>
 
           <Button
-            class="AuthFormSecondary"
+            class="FormSecondary"
             label="Создать аккаунт"
             severity="secondary"
             variant="outlined"
@@ -151,13 +152,13 @@ const submitHandler = async () => {
     linear-gradient(180deg, #fcf9fa 0%, #f6f1f3 100%);
 }
 
-.AuthPageBackground {
+.Background {
   position: absolute;
   inset: 0;
   pointer-events: none;
 }
 
-.AuthPageBlur {
+.Blur {
   position: absolute;
   width: 320px;
   height: 320px;
@@ -166,17 +167,17 @@ const submitHandler = async () => {
   filter: blur(80px);
 }
 
-.AuthPageBlurTop {
+.BlurTop {
   top: -100px;
   right: -40px;
 }
 
-.AuthPageBlurBottom {
+.BlurBottom {
   bottom: -120px;
   left: -60px;
 }
 
-.AuthPageContent {
+.Content {
   position: relative;
   z-index: 1;
   display: grid;
@@ -189,14 +190,14 @@ const submitHandler = async () => {
   padding: 24px;
 }
 
-.AuthPageHero {
+.PageHero {
   display: flex;
   flex-direction: column;
   gap: 12px;
   text-align: center;
 }
 
-.AuthPageBadge {
+.Badge {
   align-self: center;
   padding: 6px 12px;
   border: 1px solid rgba(217, 142, 161, 0.28);
@@ -209,20 +210,20 @@ const submitHandler = async () => {
   backdrop-filter: blur(10px);
 }
 
-.AuthPageTitle {
+.PageTitle {
   font-size: clamp(28px, 5vw, 36px);
   line-height: 1.12;
   font-weight: 700;
   color: var(--text-primary);
 }
 
-.AuthPageDescription {
+.Description {
   max-width: 360px;
   margin: 0 auto;
   color: var(--text-secondary);
 }
 
-.AuthCard {
+.Card {
   padding: 24px;
   border: 1px solid rgba(236, 227, 231, 0.9);
   border-radius: 28px;
@@ -231,44 +232,44 @@ const submitHandler = async () => {
   backdrop-filter: blur(18px);
 }
 
-.AuthCardHeader {
+.CardHeader {
   display: flex;
   flex-direction: column;
   gap: 8px;
   margin-bottom: 20px;
 }
 
-.AuthCardTitle {
+.CardTitle {
   font-size: var(--fs-h2);
   line-height: var(--lh-h2);
   font-weight: var(--fw-semibold);
   color: var(--text-primary);
 }
 
-.AuthCardSubtitle {
+.CardSubtitle {
   color: var(--text-secondary);
 }
 
-.AuthForm {
+.Form {
   display: flex;
   flex-direction: column;
   gap: 18px;
 }
 
-.AuthFormFields {
+.FormFields {
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
-.AuthFormRow {
+.FormRow {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
 }
 
-.AuthFormCheckbox {
+.FormCheckbox {
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -284,7 +285,7 @@ const submitHandler = async () => {
   }
 }
 
-.AuthFormLink {
+.FormLink {
   border: 0;
   font: inherit;
   color: var(--accent-hover);
@@ -297,7 +298,7 @@ const submitHandler = async () => {
   }
 }
 
-.AuthFormError {
+.FormError {
   padding: 12px 14px;
   border: 1px solid rgba(211, 122, 122, 0.28);
   border-radius: 14px;
@@ -305,12 +306,12 @@ const submitHandler = async () => {
   background: rgba(211, 122, 122, 0.08);
 }
 
-.AuthFormSubmit,
-.AuthFormSecondary {
+.FormSubmit,
+.FormSecondary {
   width: 100%;
 }
 
-.AuthFormDivider {
+.FormDivider {
   position: relative;
   text-align: center;
 
@@ -337,16 +338,16 @@ const submitHandler = async () => {
 }
 
 @media (max-width: 480px) {
-  .AuthPageContent {
+  .Content {
     padding: 16px;
   }
 
-  .AuthCard {
+  .Card {
     padding: 20px;
     border-radius: 24px;
   }
 
-  .AuthFormRow {
+  .FormRow {
     flex-direction: column;
     align-items: flex-start;
   }
