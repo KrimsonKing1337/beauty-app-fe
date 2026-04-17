@@ -56,7 +56,7 @@ export const updateReminder = async (
   payload: UpdateReminderPayload,
 ): Promise<Reminder> => {
   const data = await apiClient<ReminderDto>(`/reminders/${id}`, {
-    method: 'PUT',
+    method: 'PATCH',
     body: JSON.stringify(mapUpdateReminderPayloadToDto(payload)),
   });
 
