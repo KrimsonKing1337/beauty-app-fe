@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-import { MainPage, AuthPage } from '@/pages';
+import { MainPage, Auth } from '@/pages';
 import { useAuthStore } from '@/stores/authStore';
 
 const router = createRouter({
@@ -9,7 +9,7 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: AuthPage,
+      component: Auth,
       meta: {
         guestOnly: true,
       },
