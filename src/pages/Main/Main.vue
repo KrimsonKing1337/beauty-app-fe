@@ -8,7 +8,7 @@ import {
   BottomNav,
 } from '@/components';
 
-import { CalendarPage } from '@/pages';
+import { Calendar } from '@/pages';
 
 const route = useRoute();
 </script>
@@ -20,7 +20,7 @@ const route = useRoute();
 
       <ProcedureCardsWrapper v-if="route.path === '/'" />
       <RemindersWrapper v-if="route.path === '/reminders'" />
-      <CalendarPage v-if="route.path === '/calendar'" />
+      <Calendar v-if="route.path === '/calendar'" />
 
       <BottomNav />
     </div>

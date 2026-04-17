@@ -1,3 +1,3 @@
 export * from './Auth';
-export * from './MainPage';
-export * from './CalendarPage';
+export * from './Main';
+export * from './Calendar';
