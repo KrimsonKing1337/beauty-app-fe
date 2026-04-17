@@ -7,6 +7,8 @@ import { Input } from '@/components';
 import { useAuthStore } from '@/stores/authStore';
 import { useLoginMutation } from '@/composables/mutations/auth/useLoginMutation';
 
+import { Background, ContentHeader, CardHeader } from './components';
+
 const router = useRouter();
 const authStore = useAuthStore();
 const loginMutation = useLoginMutation();
@@ -52,36 +54,13 @@ const submitHandler = async () => {
 
 <template>
   <div class="AuthPage">
-    <div class="Background">
-      <div class="Blur BlurTop" />
-      <div class="Blur BlurBottom" />
-    </div>
+    <Background />
 
     <div class="Content">
-      <section class="PageHero">
-        <span class="Badge">
-          Beauty App
-        </span>
+      <ContentHeader />
 
-        <h1 class="PageTitle">
-          Вход в личный кабинет
-        </h1>
-
-        <p class="Description">
-          Храни историю процедур, расходы, фотографии и напоминания в одном месте.
-        </p>
-      </section>
-
-      <section class="Card">
-        <div class="CardHeader">
-          <h2 class="CardTitle">
-            Авторизация
-          </h2>
-
-          <p class="CardSubtitle">
-            Введи логин и пароль, чтобы продолжить
-          </p>
-        </div>
+      <div class="Card">
+        <CardHeader />
 
         <form class="Form" @submit.prevent="submitHandler">
           <div class="FormFields">
@@ -136,7 +115,7 @@ const submitHandler = async () => {
             fluid
           />
         </form>
-      </section>
+      </div>
     </div>
   </div>
 </template>
@@ -152,31 +131,6 @@ const submitHandler = async () => {
     linear-gradient(180deg, #fcf9fa 0%, #f6f1f3 100%);
 }
 
-.Background {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.Blur {
-  position: absolute;
-  width: 320px;
-  height: 320px;
-  border-radius: 50%;
-  background: rgba(217, 142, 161, 0.22);
-  filter: blur(80px);
-}
-
-.BlurTop {
-  top: -100px;
-  right: -40px;
-}
-
-.BlurBottom {
-  bottom: -120px;
-  left: -60px;
-}
-
 .Content {
   position: relative;
   z-index: 1;
@@ -190,39 +144,6 @@ const submitHandler = async () => {
   padding: 24px;
 }
 
-.PageHero {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  text-align: center;
-}
-
-.Badge {
-  align-self: center;
-  padding: 6px 12px;
-  border: 1px solid rgba(217, 142, 161, 0.28);
-  border-radius: 999px;
-  font-size: var(--fs-caption);
-  line-height: var(--lh-caption);
-  font-weight: var(--fw-medium);
-  color: var(--accent-hover);
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(10px);
-}
-
-.PageTitle {
-  font-size: clamp(28px, 5vw, 36px);
-  line-height: 1.12;
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
-.Description {
-  max-width: 360px;
-  margin: 0 auto;
-  color: var(--text-secondary);
-}
-
 .Card {
   padding: 24px;
   border: 1px solid rgba(236, 227, 231, 0.9);
@@ -230,24 +151,6 @@ const submitHandler = async () => {
   background: rgba(255, 255, 255, 0.88);
   box-shadow: 0 20px 60px rgba(43, 24, 31, 0.08);
   backdrop-filter: blur(18px);
-}
-
-.CardHeader {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 20px;
-}
-
-.CardTitle {
-  font-size: var(--fs-h2);
-  line-height: var(--lh-h2);
-  font-weight: var(--fw-semibold);
-  color: var(--text-primary);
-}
-
-.CardSubtitle {
-  color: var(--text-secondary);
 }
 
 .Form {
