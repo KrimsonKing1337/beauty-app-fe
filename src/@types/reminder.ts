@@ -1,6 +1,5 @@
-import type { RepeatCustomUnit } from '@/pages/RemindersPage/components/Reminders/@types.ts';
-
-export type RepeatPreset = 'none'
+export type RepeatPreset =
+  | 'none'
   | 'daily'
   | 'weekly'
   | 'monthly'
@@ -8,11 +7,13 @@ export type RepeatPreset = 'none'
   | 'daysOfWeek'
   | 'custom';
 
+export type RepeatCustomUnit = 'day' | 'week' | 'month' | 'year';
+
 export type ReminderRepeat = {
-  unit: RepeatCustomUnit;
-  interval: number;
-  daysOfWeek: number[];
   preset: RepeatPreset;
+  interval: number;
+  unit: RepeatCustomUnit;
+  daysOfWeek: number[];
 };
 
 export type ReminderNotifications = {
@@ -59,15 +60,4 @@ export type UpdateReminderPayload = {
   repeat?: ReminderRepeat;
   notifications?: ReminderNotifications;
   isCompleted?: boolean;
-};
-
-export type AuthUser = {
-  id: string;
-  login: string;
-  name: string;
-};
-
-export type LoginPayload = {
-  login: string;
-  password: string;
 };

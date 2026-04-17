@@ -1,21 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-
-import type { ReminderRepeat } from '@/components/Reminders/@types.ts';
-
-export type ReminderNotifications = {
-  minutesBefore: number;
-};
-
-export type Reminder = {
-  id: string;
-  name: string;
-  description: string;
-  dateTime: Date;
-  repeat: ReminderRepeat;
-  notifications: ReminderNotifications;
-  isCompleted: boolean;
-};
+import type { Reminder } from '@/@types';
 
 const createEmptyReminder = (): Reminder => ({
   id: crypto.randomUUID(),
@@ -32,15 +17,9 @@ const createEmptyReminder = (): Reminder => ({
     minutesBefore: 0,
   },
   isCompleted: false,
+  createdAt: new Date(),
+  updatedAt: new Date(),
 });
-
-const shiftDate = (base: Date, days: number) => {
-  const d = new Date(base);
-  d.setDate(d.getDate() + days);
-  return d;
-};
-
-const todayDate = new Date();
 
 export const useRemindersStore = defineStore('reminders', () => {
   const editingReminderId = ref<string | null>(null);

@@ -1,22 +1,9 @@
 import { ref } from 'vue';
 import { defineStore } from 'pinia';
 
-export type ProcedureCard = {
-  id: string;
-  procedureName: string;
-  date: Date;
-  place: string | undefined;
-  duration: string | undefined;
-  price: number | undefined;
-  beforeAfter: string[];
-  beforeImagePaths: string[];
-  afterImagePaths: string[];
-  notes: string | undefined;
-  createdAt: string;
-  updatedAt: string;
-};
+import type { ProcedureDraft } from '@/@types';
 
-const createEmptyProcedureCard = (): ProcedureCard => ({
+const createEmptyProcedureCard = (): ProcedureDraft => ({
   id: crypto.randomUUID(),
   procedureName: '',
   date: new Date(),
@@ -33,7 +20,7 @@ const createEmptyProcedureCard = (): ProcedureCard => ({
 
 export const useProcedureCardsStore = defineStore('procedureCard', () => {
   const editingCardId = ref<string | null>(null);
-  const draftCard = ref<ProcedureCard | null>(null);
+  const draftCard = ref<ProcedureDraft | null>(null);
   const lastTouchedCardId = ref<string | null>(null);
 
   const startCreateCard = () => {
@@ -41,7 +28,7 @@ export const useProcedureCardsStore = defineStore('procedureCard', () => {
     draftCard.value = createEmptyProcedureCard();
   };
 
-  const startEditCard = (card: ProcedureCard) => {
+  const startEditCard = (card: ProcedureDraft) => {
     editingCardId.value = card.id;
     draftCard.value = { ...card };
   };
@@ -62,8 +49,8 @@ export const useProcedureCardsStore = defineStore('procedureCard', () => {
     lastTouchedCardId.value = id;
   };
 
-  const duplicateCardDraft = (card: ProcedureCard) => {
-    const duplicatedCard: ProcedureCard = {
+  const duplicateCardDraft = (card: ProcedureDraft) => {
+    const duplicatedCard: ProcedureDraft = {
       ...card,
       id: crypto.randomUUID(),
     };

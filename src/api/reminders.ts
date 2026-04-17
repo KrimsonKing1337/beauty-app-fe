@@ -4,6 +4,7 @@ import type {
   CreateReminderPayload,
   UpdateReminderPayload,
 } from '@/@types';
+
 import { apiClient } from '@/api/client.ts';
 
 const mapReminderDtoToEntity = (dto: ReminderDto): Reminder => ({
@@ -33,8 +34,7 @@ export const getReminders = async (): Promise<Reminder[]> => {
   return data.map(mapReminderDtoToEntity);
 };
 
-export const getReminderById =
-  async (id: string): Promise<Reminder> => {
+export const getReminderById = async (id: string): Promise<Reminder> => {
   const data = await apiClient<ReminderDto>(`/reminders/${id}`);
 
   return mapReminderDtoToEntity(data);
