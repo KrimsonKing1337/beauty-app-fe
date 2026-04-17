@@ -1,40 +1,5 @@
 import type { RepeatCustomUnit } from '@/components/Reminders/@types.ts';
 
-type Product = {
-  id: string;
-  name: string;
-  price: number;
-}
-
-type Procedure = {
-  id: string;
-  title: string;
-  category: 'face' | 'body' | 'hair' | 'nails' | 'other';
-  date: string;
-  duration?: number;
-
-  price?: number;
-  location?: 'home' | 'salon' | 'other';
-  master?: string;
-
-  notes?: string;
-
-  images?: {
-    before?: string[];
-    after?: string[];
-  }
-
-  products?: Product[];
-
-  rating?: number;
-  feeling?: 'bad' | 'neutral' | 'good' | 'excellent';
-
-  repeat?: {
-    intervalDays: number;
-    nextDate?: string;
-  }
-}
-
 export type RepeatPreset = 'none'
   | 'daily'
   | 'weekly'
@@ -105,13 +70,4 @@ export type AuthUser = {
 export type LoginPayload = {
   login: string;
   password: string;
-};
-
-export type LoginResponseDto = {
-  accessToken: string;
-  user: AuthUser;
-};
-
-export type MeResponseDto = {
-  user: AuthUser;
 };
