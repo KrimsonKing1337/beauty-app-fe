@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, reactive } from 'vue';
 import { useRouter } from 'vue-router';
-import { Button } from 'primevue';
+
 import { useAuthStore } from '@/stores/authStore.ts';
 import { useLoginMutation } from '@/composables/mutations/auth/useLoginMutation.ts';
-import { Input } from '@/components';
+import { Inputs, RememberMe, Buttons } from './components';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -51,24 +51,10 @@ const submitHandler = async () => {
 
 <template>
   <form class="Form" @submit.prevent="submitHandler">
-    <div class="Fields">
-      <Input v-model="form.login" id="auth-email">
-        Логин
-      </Input>
-
-      <Input v-model="form.password" id="auth-password" type="password">
-        Пароль
-      </Input>
-    </div>
+    <Inputs :form="form" />
 
     <div class="Row">
-      <label class="Checkbox">
-        <input v-model="form.rememberMe" id="auth-remember-me" type="checkbox">
-
-        <span>
-          Запомнить меня
-        </span>
-      </label>
+      <RememberMe v-model="form.rememberMe" />
 
       <button type="button" class="Link">
         Забыли пароль?
@@ -79,29 +65,7 @@ const submitHandler = async () => {
       {{ errorMessage }}
     </p>
 
-    <Button
-      class="Login"
-      :loading="loginMutation.isPending.value"
-      label="Войти"
-      type="submit"
-      fluid
-      :disabled="isSubmitDisabled"
-    />
-
-    <div class="Divider">
-      <span>
-        или
-      </span>
-    </div>
-
-    <Button
-      class="CreateAccount"
-      label="Создать аккаунт"
-      severity="secondary"
-      variant="outlined"
-      type="button"
-      fluid
-    />
+    <Buttons :isLoading="loginMutation.isPending.value" :isSubmitDisabled="isSubmitDisabled" />
   </form>
 </template>
 
@@ -112,33 +76,11 @@ const submitHandler = async () => {
   gap: 18px;
 }
 
-.Fields {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
 .Row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-}
-
-.Checkbox {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 14px;
-  color: var(--text-secondary);
-  cursor: pointer;
-
-  input {
-    width: 16px;
-    height: 16px;
-    accent-color: var(--accent);
-    cursor: pointer;
-  }
 }
 
 .Link {
