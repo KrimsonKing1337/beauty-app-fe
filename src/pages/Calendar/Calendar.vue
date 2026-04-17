@@ -15,7 +15,7 @@ import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQ
 
 import { ProcedureCards, Reminders } from '@/components';
 
-import { createErrorMessage, getTodayItems } from './utils.ts';
+import { createErrorMessage, getTodayItems, useGetAttrs } from './utils';
 
 const {
   data: procedures,
@@ -31,41 +31,9 @@ const {
   error: remindersError,
 } = useRemindersQuery();
 
-const attrs = computed<typeof DatePicker['attributes']>(() => {
-  const today = {
-    key: 'today',
-    highlight: {
-      fillMode: 'outline',
-      color: true,
-    },
-    dates: [new Date()],
-  };
-
-  if (!procedures?.value || !reminders.value) {
-    return today;
-  }
-
-  const daysOfProcedures = procedures.value.map((procedureCur) => {
-    const { id, date } = procedureCur;
-
-    return {
-      key: id,
-      dot: true,
-      dates: [date],
-    }
-  });
-
-  const daysOfReminders = reminders.value.map((reminderCur) => {
-    const { id, dateTime } = reminderCur;
-
-    return {
-      key: id,
-      dot: 'red',
-      dates: [dateTime],
-    }
-  });
-
-  return [today, ...daysOfProcedures, ...daysOfReminders];
+const attrs = useGetAttrs({
+  procedures,
+  reminders,
 });
 
 const dateRef = ref(new Date());

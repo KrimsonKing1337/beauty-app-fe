@@ -1,14 +1,8 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
 
-import {
-  PageHeader,
-  ProcedureCardsWrapper,
-  RemindersWrapper,
-  BottomNav,
-} from '@/components';
-
-import { Calendar } from '@/pages';
+import { PageHeader, BottomNav } from '@/components';
+import { Calendar, ProcedureCardsPage, RemindersPage } from '@/pages';
 
 const route = useRoute();
 </script>
@@ -18,8 +12,8 @@ const route = useRoute();
     <div class="Content">
       <PageHeader />
 
-      <ProcedureCardsWrapper v-if="route.path === '/'" />
-      <RemindersWrapper v-if="route.path === '/reminders'" />
+      <ProcedureCardsPage v-if="route.path === '/'" />
+      <RemindersPage v-if="route.path === '/reminders'" />
       <Calendar v-if="route.path === '/calendar'" />
 
       <BottomNav />
