@@ -1,4 +1,4 @@
-import type { RepeatCustomUnit } from '@/components/Reminders/@types.ts';
+import type { RepeatCustomUnit } from '@/pages/RemindersPage/components/Reminders/@types.ts';
 
 export type RepeatPreset = 'none'
   | 'daily'

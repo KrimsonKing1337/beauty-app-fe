@@ -3,10 +3,14 @@ import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 
 import type { Reminder as ReminderType } from '@/@types';
+
 import { useRemindersStore } from '@/stores/remindersStore';
+
 import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQuery';
-import { Reminders } from '@/components/Reminders';
+
 import { CardPlaceholder } from '@/components';
+
+import { Reminders } from './components';
 
 const remindersStore = useRemindersStore();
 

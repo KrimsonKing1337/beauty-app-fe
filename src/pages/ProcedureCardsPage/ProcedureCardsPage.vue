@@ -7,7 +7,9 @@ import type { ProcedureDto } from '@/api/procedures';
 import { useProcedureCardsStore } from '@/stores/procedureCardsStore';
 import { useProceduresQuery } from '@/composables/queries/procedures/useProceduresQuery';
 
-import { CardPlaceholder, ProcedureCards } from '@/components';
+import { CardPlaceholder } from '@/components';
+
+import { ProcedureCards } from './components';
 
 const procedureCardStore = useProcedureCardsStore();
 const { draftCard, lastTouchedCardId } = storeToRefs(procedureCardStore);
