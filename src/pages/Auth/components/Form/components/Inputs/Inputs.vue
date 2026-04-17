@@ -2,10 +2,8 @@
 import { Input } from '@/components';
 
 type Props = {
-  form: {
-    login: string;
-    password: string;
-  };
+  login: string;
+  password: string;
 }
 
 defineProps<Props>();
@@ -20,7 +18,7 @@ const emit = defineEmits<{
   <div class="Inputs">
     <Input
       id="auth-email"
-      :modelValue="form.login"
+      :modelValue="login"
       @update:modelValue="value => emit('update:login', value)"
     >
       Логин
@@ -29,7 +27,7 @@ const emit = defineEmits<{
     <Input
       id="auth-password"
       type="password"
-      :modelValue="form.password"
+      :modelValue="password"
       @update:modelValue="value => emit('update:password', value)"
     >
       Пароль

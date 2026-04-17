@@ -51,7 +51,7 @@ const submitHandler = async () => {
 
 <template>
   <form class="Form" @submit.prevent="submitHandler">
-    <Inputs :form="form" />
+    <Inputs v-model:login="form.login" v-model:password="form.password" />
 
     <div class="Row">
       <RememberMe v-model="form.rememberMe" />
