@@ -9,7 +9,10 @@ export type UseGetAttrsArgs = {
   reminders: Ref<ReminderType[] | undefined>;
 }
 
-export const useGetAttrs = ({ procedures, reminders }: UseGetAttrsArgs) => {
+export const useGetAttrs = ({
+  procedures,
+  reminders,
+}: UseGetAttrsArgs) => {
   return computed<typeof DatePicker['attributes']>(() => {
     const today = {
       key: 'today',
