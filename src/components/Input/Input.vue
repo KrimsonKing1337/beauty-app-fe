@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { InputText, FloatLabel } from 'primevue';
 
-const model = defineModel<string>();
+import { InputText, FloatLabel } from 'primevue';
 
 const props = withDefaults(defineProps<{
   id: string;
@@ -14,6 +13,8 @@ const props = withDefaults(defineProps<{
   placeholder: '',
   disabled: false,
 });
+
+const model = defineModel<string>();
 
 const inputType = computed(() => props.type);
 </script>

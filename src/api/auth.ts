@@ -1,5 +1,5 @@
-import { apiClient } from './client.ts';
 import { authTokenStorage } from './authTokenStorage';
+import { apiClient } from './client.ts';
 
 type LoginPayloadDto = {
   login: string;

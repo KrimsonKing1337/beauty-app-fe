@@ -1,8 +1,8 @@
 import { computed, type Ref } from 'vue';
+
 import { DatePicker } from 'v-calendar';
 
-import type { Reminder as ReminderType } from '@/@types';
-import type { ProcedureDto } from '@/api/procedures.ts';
+import type { ProcedureDto, Reminder as ReminderType } from '@/@types';
 
 export type UseGetAttrsArgs = {
   procedures: Ref<ProcedureDto[] | undefined>;
@@ -34,7 +34,7 @@ export const useGetAttrs = ({
         key: id,
         dot: true,
         dates: [date],
-      }
+      };
     });
 
     const daysOfReminders = reminders.value.map((reminderCur) => {
@@ -44,9 +44,9 @@ export const useGetAttrs = ({
         key: id,
         dot: 'red',
         dates: [dateTime],
-      }
+      };
     });
 
     return [today, ...daysOfProcedures, ...daysOfReminders];
   });
-}
+};

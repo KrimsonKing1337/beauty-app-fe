@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
+import { ref } from 'vue';
 
 import {
   type FileUploadSelectEvent,
@@ -10,6 +10,11 @@ import {
   DatePicker,
 } from 'primevue';
 
+import { storeToRefs } from 'pinia';
+
+
+import { uploadFile } from '@/api/uploads.ts';
+
 import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
 
 import {
@@ -17,8 +22,10 @@ import {
 } from '@/composables/mutations/procedures/useSaveProcedureMutation.ts';
 
 import { Input } from '@/components';
-import { ref } from 'vue';
-import { uploadFile } from '@/api/uploads.ts';
+
+
+
+
 
 const procedureCardsStore = useProcedureCardsStore();
 const saveProcedureMutation = useSaveProcedureMutation();
@@ -46,7 +53,7 @@ const uploadImages = async (procedureId: string) => {
       type: 'after',
     });
   }
-}
+};
 
 const saveButtonClickHandler = async () => {
   if (!procedureCardsStore.draftCard) {
@@ -111,8 +118,8 @@ const imageAfterUploadSelectHandler = (event: FileUploadSelectEvent) => {
 <template v-if="!!draftCard">
   <div class="ProcedureCardEditItem">
     <Input
-      v-model="draftCard!.procedureName"
       id="input-title"
+      v-model="draftCard!.procedureName"
       class="ReminderEditItem"
     >
       Название процедуры
@@ -124,33 +131,33 @@ const imageAfterUploadSelectHandler = (event: FileUploadSelectEvent) => {
       </label>
 
       <DatePicker
-        v-model="draftCard!.date"
         id="input-date"
+        v-model="draftCard!.date"
         placeholder="Дата"
-        dateFormat="dd.mm.yy"
+        date-format="dd.mm.yy"
         fluid
       />
     </FloatLabel>
 
     <Input
-      v-model="draftCard!.place"
       id="input-place"
+      v-model="draftCard!.place"
       class="ProcedureCardEditItem"
     >
       Место проведения
     </Input>
 
     <Input
-      v-model="draftCard!.duration"
       id="input-duration"
+      v-model="draftCard!.duration"
       class="ProcedureCardEditItem"
     >
       Длительность
     </Input>
 
     <Input
-      v-model="draftCard!.notes"
       id="input-note"
+      v-model="draftCard!.notes"
       class="ProcedureCardEditItem"
     >
       Описание
@@ -159,8 +166,8 @@ const imageAfterUploadSelectHandler = (event: FileUploadSelectEvent) => {
     <div class="ProcedureCardEditItem">
       <FileUpload
         accept="image/*"
-        chooseLabel="Фото до"
-        customUpload
+        choose-label="Фото до"
+        custom-upload
         mode="basic"
         @select="imageBeforeUploadSelectHandler"
       />
@@ -169,9 +176,9 @@ const imageAfterUploadSelectHandler = (event: FileUploadSelectEvent) => {
     <div class="ProcedureCardEditItem">
       <FileUpload
         accept="image/*"
-        chooseLabel="Фото после"
+        choose-label="Фото после"
         mode="basic"
-        customUpload
+        custom-upload
         @select="imageAfterUploadSelectHandler"
       />
     </div>

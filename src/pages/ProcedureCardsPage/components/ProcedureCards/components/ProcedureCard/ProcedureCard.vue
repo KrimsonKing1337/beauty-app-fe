@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { ProcedureCard as ProcedureCardType } from '@/stores/procedureCardsStore';
+
 import {
   type ChipsProps,
 
@@ -8,7 +10,6 @@ import {
   Card,
 } from '@/components';
 
-import type { ProcedureCard as ProcedureCardType } from '@/stores/procedureCardsStore';
 
 import { Header } from './components';
 
@@ -27,7 +28,7 @@ const chips: ChipsProps['chips'] = [
   {
     id: '3',
     label: 'Чип 3',
-  }
+  },
 ];
 </script>
 
@@ -36,8 +37,8 @@ const chips: ChipsProps['chips'] = [
     <Header :card="card" />
 
     <BeforeAfter
-      :beforeImagePaths="card.beforeImagePaths"
-      :afterImagePaths="card.afterImagePaths"
+      :before-image-paths="card.beforeImagePaths"
+      :after-image-paths="card.afterImagePaths"
     />
 
     <Notes v-if="props.card.notes">

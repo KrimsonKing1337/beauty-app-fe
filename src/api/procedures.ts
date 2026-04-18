@@ -5,8 +5,9 @@ import type {
   UpdateProcedurePayload,
 } from '@/@types';
 
-import { apiClient } from './client';
 import { mapProcedureDtoToModel } from '@/utils';
+
+import { apiClient } from './client';
 
 const mapCreateProcedurePayloadToDto = (
   payload: CreateProcedurePayload,

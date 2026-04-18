@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
-import { type Reminder, useRemindersStore } from '@/stores/remindersStore.ts';
+import type { Reminder } from '@/@types';
 
-import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQuery.ts';
+
+import { useRemindersStore } from '@/stores/remindersStore.ts';
+
 import {
   useDeleteReminderMutation,
 } from '@/composables/mutations/reminders/useDeleteReminderMutation.ts';
@@ -12,8 +14,11 @@ import {
   useUpdateReminderMutation,
 } from '@/composables/mutations/reminders/useUpdateReminderMutation.ts';
 
+import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQuery.ts';
+
+import { getToggleReminderCompletePayload } from '@/pages/RemindersPage/components/Reminders/utils';
+
 import { CardHeader } from '@/components';
-import { getToggleReminderCompletePayload } from '@/components/Reminders/utils';
 
 const props = defineProps<{
   reminder: Reminder;
@@ -92,11 +97,11 @@ const menuItems = computed(() => [
 
 <template>
   <CardHeader
-    :leftTop="props.leftTop"
-    :leftBottom="props.leftBottom"
-    :rightTop="props.rightTop"
-    :rightBottom="props.rightBottom"
-    :menuItems="menuItems"
+    :left-top="props.leftTop"
+    :left-bottom="props.leftBottom"
+    :right-top="props.rightTop"
+    :right-bottom="props.rightBottom"
+    :menu-items="menuItems"
   />
 </template>
 

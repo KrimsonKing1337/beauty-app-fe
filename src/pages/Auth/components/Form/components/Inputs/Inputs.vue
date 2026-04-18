@@ -18,8 +18,8 @@ const emit = defineEmits<{
   <div class="Inputs">
     <Input
       id="auth-email"
-      :modelValue="login"
-      @update:modelValue="value => emit('update:login', value)"
+      :model-value="login"
+      @update:model-value="value => emit('update:login', value)"
     >
       Логин
     </Input>
@@ -27,8 +27,8 @@ const emit = defineEmits<{
     <Input
       id="auth-password"
       type="password"
-      :modelValue="password"
-      @update:modelValue="value => emit('update:password', value)"
+      :model-value="password"
+      @update:model-value="value => emit('update:password', value)"
     >
       Пароль
     </Input>

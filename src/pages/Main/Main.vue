@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
 
-import { PageHeader, BottomNav } from '@/components';
 import { Calendar, ProcedureCardsPage, RemindersPage } from '@/pages';
+
+import { PageHeader, BottomNav } from '@/components';
 
 const route = useRoute();
 </script>

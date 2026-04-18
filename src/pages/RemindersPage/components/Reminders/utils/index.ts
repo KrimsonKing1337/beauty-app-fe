@@ -29,7 +29,7 @@ export const formatReminderDate = (date: Date) => {
   target.setHours(0, 0, 0, 0);
 
   const dayDiff = Math.round(
-    (target.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+    (target.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
   );
 
   let mainText = '';
@@ -116,68 +116,68 @@ export type RepeatFormRef = {
 
 export const repeatUiToStore =
   (repeatFormRef: RepeatFormRef): ReminderRepeat => {
-  const { preset, daysOfWeek, customUnit, customInterval } = repeatFormRef;
+    const { preset, daysOfWeek, customUnit, customInterval } = repeatFormRef;
 
-  const sortedDaysOfWeek = [...daysOfWeek]
-    .sort((a, b) => a - b);
+    const sortedDaysOfWeek = [...daysOfWeek]
+      .sort((a, b) => a - b);
 
-  switch (preset) {
-    case 'none':
-      return {
-        preset: 'none',
-        interval: 1,
-        unit: 'day',
-        daysOfWeek: [],
-      };
+    switch (preset) {
+      case 'none':
+        return {
+          preset: 'none',
+          interval: 1,
+          unit: 'day',
+          daysOfWeek: [],
+        };
 
-    case 'daily':
-      return {
-        preset: 'daily',
-        interval: 1,
-        unit: 'day',
-        daysOfWeek: [],
-      };
+      case 'daily':
+        return {
+          preset: 'daily',
+          interval: 1,
+          unit: 'day',
+          daysOfWeek: [],
+        };
 
-    case 'weekly':
-      return {
-        preset: 'weekly',
-        interval: 1,
-        unit: 'week',
-        daysOfWeek: [],
-      };
+      case 'weekly':
+        return {
+          preset: 'weekly',
+          interval: 1,
+          unit: 'week',
+          daysOfWeek: [],
+        };
 
-    case 'daysOfWeek':
-      return {
-        preset: 'daysOfWeek',
-        interval: 1,
-        unit: 'week',
-        daysOfWeek: sortedDaysOfWeek,
-      };
+      case 'daysOfWeek':
+        return {
+          preset: 'daysOfWeek',
+          interval: 1,
+          unit: 'week',
+          daysOfWeek: sortedDaysOfWeek,
+        };
 
-    case 'monthly':
-      return {
-        preset: 'monthly',
-        interval: 1,
-        unit: 'month',
-        daysOfWeek: [],
-      };
+      case 'monthly':
+        return {
+          preset: 'monthly',
+          interval: 1,
+          unit: 'month',
+          daysOfWeek: [],
+        };
 
-    case 'yearly':
-      return {
-        preset: 'yearly',
-        interval: 1,
-        unit: 'year',
-        daysOfWeek: [],
-      };
+      case 'yearly':
+        return {
+          preset: 'yearly',
+          interval: 1,
+          unit: 'year',
+          daysOfWeek: [],
+        };
 
-    case 'custom':
-      return {
-        preset: 'custom',
-        interval: customInterval,
-        unit: customUnit,
-        daysOfWeek: [],
-      };
-  }
-};
+      case 'custom':
+        return {
+          preset: 'custom',
+          interval: customInterval,
+          unit: customUnit,
+          daysOfWeek: [],
+        };
+    }
+  };
 
 export { getToggleReminderCompletePayload } from './getToggleReminderCompletePayload';

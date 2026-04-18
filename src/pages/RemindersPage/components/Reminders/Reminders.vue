@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { nextTick, watch } from 'vue';
 
-import { Reminder, ReminderEdit } from './components';
 import type { Reminder as ReminderType } from '@/@types';
+
+import { Reminder, ReminderEdit } from './components';
 
 type Props = {
   reminders: ReminderType[];

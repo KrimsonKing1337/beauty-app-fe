@@ -8,7 +8,7 @@ const props = defineProps<ChipsProps>();
 
 <template>
   <div class="Chips">
-    <Chip v-for="chipCur in props.chips" :key="chipCur.id" :isActive="chipCur.isActive">
+    <Chip v-for="chipCur in props.chips" :key="chipCur.id" :is-active="chipCur.isActive">
       {{ chipCur.label }}
     </Chip>
   </div>

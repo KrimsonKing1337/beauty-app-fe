@@ -24,10 +24,10 @@ const model = defineModel<number>({ required: true });
     <Select
       v-model="model"
       :options="notificationMinutesBeforeOptions"
-      optionLabel="label"
-      optionValue="value"
+      option-label="label"
+      option-value="value"
       fluid
-      inputId="input-notifications-minutes-before"
+      input-id="input-notifications-minutes-before"
     />
   </FloatLabel>
 </template>

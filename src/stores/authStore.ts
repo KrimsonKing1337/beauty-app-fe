@@ -1,4 +1,5 @@
 import { computed, ref } from 'vue';
+
 import { defineStore } from 'pinia';
 
 import type { AuthUser } from '@/@types';

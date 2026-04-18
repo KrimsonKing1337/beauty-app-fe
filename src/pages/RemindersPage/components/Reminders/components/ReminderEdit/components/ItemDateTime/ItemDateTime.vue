@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { type DatePickerState, Button, DatePicker, FloatLabel } from 'primevue';
 import { ref } from 'vue';
+
+import { type DatePickerState, Button, DatePicker, FloatLabel } from 'primevue';
 
 const model = defineModel<Date>({ required: true });
 
@@ -20,13 +21,13 @@ const saveDateTimeButtonClickHandler = () => {
     </label>
 
     <DatePicker
+      id="input-date-time"
       ref="calendarRef"
       v-model="model"
-      id="input-date-time"
-      dateFormat="dd.mm.yy"
-      showTime
+      date-format="dd.mm.yy"
+      show-time
       fluid
-      showButtonBar
+      show-button-bar
       placeholder="Дата напоминания"
     >
       <template #buttonbar>

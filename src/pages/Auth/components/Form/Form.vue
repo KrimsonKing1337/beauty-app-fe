@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { computed, reactive } from 'vue';
+
 import { useRouter } from 'vue-router';
 
 import { useAuthStore } from '@/stores/authStore.ts';
+
 import { useLoginMutation } from '@/composables/mutations/auth/useLoginMutation.ts';
+
 import { Inputs, RememberMe, Buttons } from './components';
 
 const router = useRouter();
@@ -65,7 +68,7 @@ const submitHandler = async () => {
       {{ errorMessage }}
     </p>
 
-    <Buttons :isLoading="loginMutation.isPending.value" :isSubmitDisabled="isSubmitDisabled" />
+    <Buttons :is-loading="loginMutation.isPending.value" :is-submit-disabled="isSubmitDisabled" />
   </form>
 </template>
 

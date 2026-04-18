@@ -3,22 +3,25 @@ import { computed, ref } from 'vue';
 
 import {
   type ProcedureCard as ProcedureCardType,
-  useProcedureCardsStore
+  useProcedureCardsStore,
 } from '@/stores/procedureCardsStore';
-import { CardHeader } from '@/components';
 
-import { useProceduresQuery } from '@/composables/queries/procedures/useProceduresQuery';
 import {
   useDeleteProcedureMutation,
 } from '@/composables/mutations/procedures/useDeleteProcedureMutation';
 
+import { useProceduresQuery } from '@/composables/queries/procedures/useProceduresQuery';
+
+import { CardHeader } from '@/components';
+
+
+
 import { getCardInfo } from '../../utils';
 
+const props = defineProps<{ card: ProcedureCardType }>();
 const deleteProcedureMutation = useDeleteProcedureMutation();
 const proceduresQuery = useProceduresQuery();
 const procedureCardsStore = useProcedureCardsStore();
-
-const props = defineProps<{ card: ProcedureCardType }>();
 
 const cardInfo = computed(() => getCardInfo(props.card));
 const meta = computed(() => cardInfo.value.meta);
@@ -77,7 +80,7 @@ const menuItems = ref([
     :left-top="props.card.procedureName"
     :left-bottom="meta"
     :right-top="price"
-    :menuItems="menuItems"
+    :menu-items="menuItems"
   />
 </template>
 

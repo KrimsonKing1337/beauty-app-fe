@@ -46,15 +46,15 @@ const rightBottom = computed(() => {
 
 <template>
   <Card
-    :isDisabled="reminder.isCompleted"
-    :isDanger="formattedDate.isPast"
+    :is-disabled="reminder.isCompleted"
+    :is-danger="formattedDate.isPast"
   >
     <Header
       :reminder="reminder"
-      :leftTop="leftTop"
-      :leftBottom="leftBottom"
-      :rightTop="rightTop"
-      :rightBottom="rightBottom"
+      :left-top="leftTop"
+      :left-bottom="leftBottom"
+      :right-top="rightTop"
+      :right-bottom="rightBottom"
     />
   </Card>
 </template>

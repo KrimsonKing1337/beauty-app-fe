@@ -1,10 +1,15 @@
 import { createApp } from 'vue';
-import { createPinia } from 'pinia';
-import PrimeVue from 'primevue/config';
-import Aura from '@primeuix/themes/aura';
+
 import { definePreset } from '@primeuix/themes';
-import { VueQueryPlugin, QueryClient } from '@tanstack/vue-query';
+import Aura from '@primeuix/themes/aura';
+
 import VCalendar from 'v-calendar';
+
+import { createPinia } from 'pinia';
+
+import { VueQueryPlugin, QueryClient } from '@tanstack/vue-query';
+
+import PrimeVue from 'primevue/config';
 
 import App from './App.vue';
 import router from './router';

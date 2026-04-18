@@ -1,19 +1,25 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { storeToRefs } from 'pinia';
 
 import { DatePicker } from 'v-calendar';
 
+import { storeToRefs } from 'pinia';
+
+
 import type { Reminder as ReminderType } from '@/@types';
+
 import type { ProcedureDto } from '@/api/procedures.ts';
 
 import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
+
 import { useRemindersStore } from '@/stores/remindersStore.ts';
 
 import { useProceduresQuery } from '@/composables/queries/procedures/useProceduresQuery.ts';
 import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQuery.ts';
 
 import { ProcedureCards, Reminders } from '@/components';
+
+
 
 import { createErrorMessage, getTodayItems, useGetAttrs } from './utils';
 
@@ -70,7 +76,7 @@ const remindersErrorMessage = createErrorMessage(isRemindersError, remindersErro
     v-model="dateRef"
     :attributes="attrs"
     expanded
-    titlePosition="right"
+    title-position="right"
     class="Calendar"
   />
 
@@ -78,19 +84,19 @@ const remindersErrorMessage = createErrorMessage(isRemindersError, remindersErro
     <ProcedureCards
       v-if="proceduresComputed.length"
       :cards="proceduresComputed"
-      :isLoading="isProceduresLoading"
-      :errorMessage="proceduresErrorMessage"
-      :isEditing="isProcedureEditing"
-      :lastTouchedCardId="lastTouchedCardId"
+      :is-loading="isProceduresLoading"
+      :error-message="proceduresErrorMessage"
+      :is-editing="isProcedureEditing"
+      :last-touched-card-id="lastTouchedCardId"
     />
 
     <Reminders
       v-if="remindersComputed.length"
       :reminders="remindersComputed"
-      :isLoading="isRemindersLoading"
-      :errorMessage="remindersErrorMessage"
-      :isEditing="isReminderEditing"
-      :lastTouchedReminderId="lastTouchedReminderId"
+      :is-loading="isRemindersLoading"
+      :error-message="remindersErrorMessage"
+      :is-editing="isReminderEditing"
+      :last-touched-reminder-id="lastTouchedReminderId"
     />
   </div>
 </template>

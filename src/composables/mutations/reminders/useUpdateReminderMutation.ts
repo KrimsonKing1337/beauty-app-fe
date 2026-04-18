@@ -1,8 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/vue-query';
 
+import type { UpdateReminderPayload } from '@/@types';
+
 import { updateReminder } from '@/api/reminders';
 
-import type { UpdateReminderPayload } from '@/@types';
 
 type UpdateReminderMutationArgs = {
   id: string;

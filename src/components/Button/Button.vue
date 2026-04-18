@@ -17,7 +17,7 @@ const props = withDefaults(defineProps<{
     :type="props.nativeType"
     :disabled="props.disabled"
   >
-    <slot />
+    <slot></slot>
   </button>
 </template>
 

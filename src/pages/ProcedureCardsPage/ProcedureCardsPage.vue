@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+
 import { storeToRefs } from 'pinia';
 
-import type { ProcedureDto } from '@/api/procedures';
+import type { Procedure } from '@/@types';
 
 import { useProcedureCardsStore } from '@/stores/procedureCardsStore';
+
 import { useProceduresQuery } from '@/composables/queries/procedures/useProceduresQuery';
 
 import { CardPlaceholder } from '@/components';
+
 
 import { ProcedureCards } from './components';
 
@@ -23,7 +26,7 @@ const {
   error,
 } = useProceduresQuery();
 
-const cards = computed<ProcedureDto[]>(() => data.value ?? []);
+const cards = computed<Procedure[]>(() => data.value ?? []);
 
 const errorMessage = computed<string | null>(() => {
   if (!isError.value) {
@@ -45,10 +48,10 @@ const showPlaceholder = computed(() => {
 
   <ProcedureCards
     :cards="cards"
-    :isLoading="isLoading"
-    :errorMessage="errorMessage"
-    :isEditing="isEditing"
-    :lastTouchedCardId="lastTouchedCardId"
+    :is-loading="isLoading"
+    :error-message="errorMessage"
+    :is-editing="isEditing"
+    :last-touched-card-id="lastTouchedCardId"
   />
 </template>
 

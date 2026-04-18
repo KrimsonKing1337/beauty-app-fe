@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { nextTick, watch } from 'vue';
 
-import type { ProcedureDto } from '@/api/procedures';
+import type { Procedure } from '@/@types';
 
 import { ProcedureCard, ProcedureCardEdit } from './components';
 
 type Props = {
-  cards: ProcedureDto[];
+  cards: Procedure[];
   isLoading: boolean;
   errorMessage: string | null;
   isEditing: boolean;
@@ -57,7 +57,9 @@ watch(
       <div
         v-for="cardCur in cards"
         :key="cardCur.id"
-        :ref="(el) => setCardRef(cardCur.id, el as HTMLElement)" class="FullWidth">
+        :ref="(el) => setCardRef(cardCur.id, el as HTMLElement)"
+        class="FullWidth"
+      >
         <ProcedureCard :card="cardCur" />
       </div>
     </div>

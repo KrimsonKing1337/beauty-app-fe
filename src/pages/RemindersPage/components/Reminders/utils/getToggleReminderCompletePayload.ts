@@ -1,5 +1,4 @@
-import type { UpdateReminderPayload } from '@/@types';
-import { type Reminder } from '@/stores/remindersStore.ts';
+import type { UpdateReminderPayload, Reminder } from '@/@types';
 
 const DAYS_IN_WEEK = 7;
 const MIN_REPEAT_INTERVAL = 1;

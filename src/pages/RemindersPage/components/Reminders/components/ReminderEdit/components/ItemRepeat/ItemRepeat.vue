@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+
 import { FloatLabel, Select, Checkbox, InputNumber } from 'primevue';
 
 import type { RepeatPreset } from '@/components/Reminders/@types';
@@ -41,8 +42,8 @@ const daysOfWeekOptions = [
 const model = defineModel<RepeatFormModel>({ required: true });
 
 const isActive = computed(() => {
-    return model.value.preset === 'daysOfWeek' || model.value.preset === 'custom';
-  }
+  return model.value.preset === 'daysOfWeek' || model.value.preset === 'custom';
+},
 );
 </script>
 
@@ -56,10 +57,10 @@ const isActive = computed(() => {
       <Select
         v-model="model.preset"
         :options="options"
-        optionLabel="label"
-        optionValue="value"
+        option-label="label"
+        option-value="value"
         fluid
-        inputId="input-repeat"
+        input-id="input-repeat"
       />
     </FloatLabel>
 
@@ -71,7 +72,7 @@ const isActive = computed(() => {
       >
         <Checkbox
           v-model="model.daysOfWeek"
-          :inputId="`input-repeat-days-of-week-${dayCur.value}`"
+          :input-id="`input-repeat-days-of-week-${dayCur.value}`"
           name="category"
           :value="dayCur.value"
         />
@@ -91,10 +92,10 @@ const isActive = computed(() => {
         <Select
           v-model="model.customUnit"
           :options="customUnitOptions"
-          optionLabel="label"
-          optionValue="value"
+          option-label="label"
+          option-value="value"
           fluid
-          inputId="input-repeat-custom-unit"
+          input-id="input-repeat-custom-unit"
         />
       </FloatLabel>
 
@@ -105,11 +106,11 @@ const isActive = computed(() => {
 
         <InputNumber
           v-model="model.customInterval"
-          inputId="input-repeat-custom-interval"
-          showButtons
+          input-id="input-repeat-custom-interval"
+          show-buttons
           :min="1"
           :max="999"
-          :allowEmpty="false"
+          :allow-empty="false"
         />
       </FloatLabel>
     </div>

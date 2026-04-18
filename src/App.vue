@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { watch } from 'vue';
+
 import { RouterView, useRouter } from 'vue-router';
 
 import { setUnauthorizedHandler } from '@/api/client.ts';
+
 import { useAuthStore } from '@/stores/authStore';
+
 import { useMeQuery } from '@/composables/queries/auth/useMeQuery';
 
 const router = useRouter();

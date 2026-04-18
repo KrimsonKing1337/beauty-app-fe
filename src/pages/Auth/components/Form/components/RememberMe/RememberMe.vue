@@ -5,11 +5,12 @@ type Props = {
 
 defineProps<Props>();
 
-const model = defineModel<boolean>();
-
 const emit = defineEmits<{
   (e: 'update:rememberMe', value?: boolean): void;
 }>();
+
+const model = defineModel<boolean>();
+
 </script>
 
 <template>
@@ -19,7 +20,7 @@ const emit = defineEmits<{
       type="checkbox"
       :checked="model"
       @change="emit('update:rememberMe', ($event.target as HTMLInputElement).checked)"
-    >
+    />
     <span>
       Запомнить меня
     </span>

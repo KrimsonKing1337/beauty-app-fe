@@ -1,21 +1,27 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { storeToRefs } from 'pinia';
+
 
 import { Button } from 'primevue';
 
-import { useRemindersStore } from '@/stores/remindersStore.ts';
+import { storeToRefs } from 'pinia';
 
-import {
-  useUpdateReminderMutation,
-} from '@/composables/mutations/reminders/useUpdateReminderMutation.ts';
+
+
+
+import { useRemindersStore } from '@/stores/remindersStore.ts';
 
 import {
   useCreateReminderMutation,
 } from '@/composables/mutations/reminders/useCreateReminderMutation.ts';
 
+import {
+  useUpdateReminderMutation,
+} from '@/composables/mutations/reminders/useUpdateReminderMutation.ts';
+
 import { Input } from '@/components';
 import { repeatStoreToUi, repeatUiToStore } from '@/components/Reminders/utils';
+
 
 import { ItemRepeat, ItemDateTime, ItemMinutesBefore } from './components';
 
@@ -70,16 +76,16 @@ const cancelButtonClickHandler = () => {
 <template v-if="!!draftReminder">
   <div class="ReminderEdit">
     <Input
-      v-model="draftReminder!.name"
       id="input-name"
+      v-model="draftReminder!.name"
       class="ReminderEditItem"
     >
       Название
     </Input>
 
     <Input
-      v-model="draftReminder!.description"
       id="input-description"
+      v-model="draftReminder!.description"
       class="ReminderEditItem"
     >
       Описание

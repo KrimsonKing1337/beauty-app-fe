@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+
 import { useRoute, useRouter } from 'vue-router';
 
 import { useAuthStore } from '@/stores/authStore';
-import { formatDate } from '@/utils';
+
 import { Button } from '@/components';
+
+import { formatDate } from '@/utils';
 
 const route = useRoute();
 const router = useRouter();
@@ -19,7 +22,7 @@ const title = computed(() => {
     case '/reminders':
       return 'Мои напоминания';
     case '/calendar':
-      return 'Мой календарь'
+      return 'Мой календарь';
     default:
       return '';
   }

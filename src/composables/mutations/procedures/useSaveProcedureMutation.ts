@@ -1,7 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/vue-query';
+
+import type {
+  CreateProcedurePayload,
+  UpdateProcedurePayload,
+} from '@/@types';
+
 import {
-  type CreateProcedurePayload,
-  type UpdateProcedurePayload,
   createProcedure,
   updateProcedure,
 } from '@/api/procedures';
@@ -17,7 +21,7 @@ export const useSaveProcedureMutation = () => {
         return updateProcedure(payload);
       }
 
-      return createProcedure(payload);
+      return createProcedure(payload as CreateProcedurePayload);
     },
     onSuccess: (savedProcedure) => {
       queryClient.invalidateQueries({ queryKey: ['procedures'] });

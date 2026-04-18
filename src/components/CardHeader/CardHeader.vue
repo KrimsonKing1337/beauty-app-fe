@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+
 import { Button, Menu } from 'primevue';
 
 import type { CardHeaderProps } from './CardHeader.types.ts';
@@ -38,14 +39,14 @@ const menuTriggerClickHandler = (e: MouseEvent) => {
     <Button
       class="MenuTrigger"
       icon="pi pi-ellipsis-v"
-      ariaHaspopup="true"
-      ariaControls="CardHeaderMenu"
+      aria-haspopup="true"
+      aria-controls="CardHeaderMenu"
       @click="menuTriggerClickHandler"
     />
 
     <Menu
-      ref="menuRef"
       id="CardHeaderMenu"
+      ref="menuRef"
       :model="props.menuItems"
       :popup="true"
     />

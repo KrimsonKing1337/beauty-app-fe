@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+
 import { storeToRefs } from 'pinia';
 
 import type { Reminder as ReminderType } from '@/@types';
@@ -47,10 +48,10 @@ const showPlaceholder = computed(() => {
 
   <Reminders
     :reminders="reminders"
-    :isLoading="isLoading"
-    :errorMessage="errorMessage"
-    :isEditing="isEditing"
-    :lastTouchedReminderId="lastTouchedReminderId"
+    :is-loading="isLoading"
+    :error-message="errorMessage"
+    :is-editing="isEditing"
+    :last-touched-reminder-id="lastTouchedReminderId"
   />
 </template>
 

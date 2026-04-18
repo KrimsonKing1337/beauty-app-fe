@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/vue-query';
 
 import { getMe } from '@/api/auth';
+
 import { useAuthStore } from '@/stores/authStore';
 
 export const useMeQuery = () => {

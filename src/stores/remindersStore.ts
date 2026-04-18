@@ -1,5 +1,7 @@
-import { ref } from 'vue'
-import { defineStore } from 'pinia'
+import { ref } from 'vue';
+
+import { defineStore } from 'pinia';
+
 import type { Reminder } from '@/@types';
 
 const createEmptyReminder = (): Reminder => ({

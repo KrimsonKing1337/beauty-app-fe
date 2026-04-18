@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/vue-query';
+
 import { deleteProcedure } from '@/api/procedures';
 
 export const useDeleteProcedureMutation = () => {

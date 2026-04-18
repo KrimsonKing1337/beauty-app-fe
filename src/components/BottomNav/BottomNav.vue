@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { useRouter, useRoute } from 'vue-router';
 import { Button } from 'primevue';
+
+import { useRouter, useRoute } from 'vue-router';
 
 import { useProcedureCardsStore } from '@/stores/procedureCardsStore';
 import { useRemindersStore } from '@/stores/remindersStore';
@@ -11,16 +12,16 @@ const route = useRoute();
 const procedureCardsStore = useProcedureCardsStore();
 const remindersStore = useRemindersStore();
 
-const buttonProceduresClickHandler = () => {
-  router.push('/');
+const buttonProceduresClickHandler = async () => {
+  await router.push('/');
 };
 
-const buttonRemindersClickHandler = () => {
-  router.push('/reminders');
+const buttonRemindersClickHandler = async () => {
+  await router.push('/reminders');
 };
 
-const buttonCalendarClickHandler = () => {
-  router.push('/calendar');
+const buttonCalendarClickHandler = async () => {
+  await router.push('/calendar');
 };
 
 const buttonCreateClickHandler = () => {
@@ -29,41 +30,41 @@ const buttonCreateClickHandler = () => {
   } else {
     procedureCardsStore.startCreateCard();
   }
-}
+};
 </script>
 
 <template>
- <nav class="BottomNav">
-   <div class="Inner">
-     <Button
-       class="Item"
-       :class="{ isActive: route.path === '/' }"
-       @click="buttonProceduresClickHandler"
-     >
-       Процедуры
-     </Button>
+  <nav class="BottomNav">
+    <div class="Inner">
+      <Button
+        class="Item"
+        :class="{ isActive: route.path === '/' }"
+        @click="buttonProceduresClickHandler"
+      >
+        Процедуры
+      </Button>
 
-     <Button
-       class="Item"
-       :class="{ isActive: route.path === '/reminders' }"
-       @click="buttonRemindersClickHandler"
-     >
-       Напоминания
-     </Button>
+      <Button
+        class="Item"
+        :class="{ isActive: route.path === '/reminders' }"
+        @click="buttonRemindersClickHandler"
+      >
+        Напоминания
+      </Button>
 
-     <Button
-       class="Item"
-       :class="{ isActive: route.path === '/calendar' }"
-       @click="buttonCalendarClickHandler"
-     >
-       Календарь
-     </Button>
+      <Button
+        class="Item"
+        :class="{ isActive: route.path === '/calendar' }"
+        @click="buttonCalendarClickHandler"
+      >
+        Календарь
+      </Button>
 
-     <Button v-if="route.path !== '/calendar'" class="Item CreateButton" @click="buttonCreateClickHandler">
-       <i class="pi pi-plus" />
-     </Button>
-   </div>
- </nav>
+      <Button v-if="route.path !== '/calendar'" class="Item CreateButton" @click="buttonCreateClickHandler">
+        <i class="pi pi-plus"></i>
+      </Button>
+    </div>
+  </nav>
 </template>
 
 <style scoped lang="scss">

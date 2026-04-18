@@ -1,4 +1,5 @@
 import type { ProcedureDto } from '@/api/procedures.ts';
+
 import type { ProcedureCard } from '@/stores/procedureCardsStore.ts';
 
 export const formatDate = (date: string | null) => {
