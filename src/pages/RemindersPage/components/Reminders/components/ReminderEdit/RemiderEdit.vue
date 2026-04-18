@@ -1,13 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-
 import { Button } from 'primevue';
 
 import { storeToRefs } from 'pinia';
-
-
-
 
 import { useRemindersStore } from '@/stores/remindersStore.ts';
 
@@ -19,9 +15,9 @@ import {
   useUpdateReminderMutation,
 } from '@/composables/mutations/reminders/useUpdateReminderMutation.ts';
 
-import { Input } from '@/components';
-import { repeatStoreToUi, repeatUiToStore } from '@/components/Reminders/utils';
+import { repeatStoreToUi, repeatUiToStore } from '@/pages/RemindersPage/components/Reminders/utils';
 
+import { Input } from '@/components';
 
 import { ItemRepeat, ItemDateTime, ItemMinutesBefore } from './components';
 

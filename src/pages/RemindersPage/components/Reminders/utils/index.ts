@@ -1,4 +1,4 @@
-import type { ReminderRepeat, RepeatPreset } from '../@types.ts';
+import type { ReminderRepeat, RepeatPreset } from '@/@types';
 
 export const formatReminderDate = (date: Date) => {
   const now = new Date();

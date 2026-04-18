@@ -4,12 +4,14 @@ import { computed } from 'vue';
 import type { Reminder } from '@/@types';
 
 import { Card } from '@/components';
+
+import { Header } from './components';
+
 import {
   formatReminderDate,
   getHumanReadableRepeatPreset,
-} from '@/components/Reminders/utils';
+} from '../../../Reminders/utils';
 
-import { Header } from './components';
 
 const props = defineProps<{
   reminder: Reminder;

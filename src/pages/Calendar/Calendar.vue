@@ -5,10 +5,7 @@ import { DatePicker } from 'v-calendar';
 
 import { storeToRefs } from 'pinia';
 
-
-import type { Reminder as ReminderType } from '@/@types';
-
-import type { ProcedureDto } from '@/api/procedures.ts';
+import type { Reminder as ReminderType, ProcedureDto } from '@/@types';
 
 import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
 
@@ -17,9 +14,8 @@ import { useRemindersStore } from '@/stores/remindersStore.ts';
 import { useProceduresQuery } from '@/composables/queries/procedures/useProceduresQuery.ts';
 import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQuery.ts';
 
-import { ProcedureCards, Reminders } from '@/components';
-
-
+import { ProcedureCards } from '@/pages/ProcedureCardsPage/components';
+import { Reminders } from '@/pages/RemindersPage/components';
 
 import { createErrorMessage, getTodayItems, useGetAttrs } from './utils';
 
