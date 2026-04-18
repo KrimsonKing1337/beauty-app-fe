@@ -76,10 +76,9 @@ export default defineConfigWithVueTs(
           { pattern: '@/types{,/**}', group: 'internal', position: 'after' },
         ],
         pathGroupsExcludedImportTypes: ['builtin'],
-        alphabetize: {
-          order: 'asc',
-          caseInsensitive: true,
-        },
+        'alphabetize': {
+          'order': 'ignore'
+        }
       }],
 
       'eol-last': ['error', 'always'],

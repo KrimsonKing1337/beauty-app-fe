@@ -1,6 +1,8 @@
 import { authTokenStorage } from './authTokenStorage';
 import { refreshAccessToken } from './refreshAccessToken';
 
+import { getApiUrl } from './config';
+
 type RequestHeaders = Record<string, string>;
 
 type ApiClientOptions = Omit<RequestInit, 'headers'> & {
@@ -63,8 +65,9 @@ export const apiClient = async <T>(
   } = options;
 
   const accessToken = authTokenStorage.getAccessToken();
+  const url = getApiUrl(path);
 
-  const response = await fetch(`/api${path}`, {
+  const response = await fetch(url, {
     ...restOptions,
     body,
     headers: buildHeaders(accessToken, headers, body),
@@ -74,7 +77,7 @@ export const apiClient = async <T>(
     try {
       const freshAccessToken = await getFreshAccessToken();
 
-      const retryResponse = await fetch(`/api${path}`, {
+      const retryResponse = await fetch(url, {
         ...restOptions,
         body,
         headers: buildHeaders(freshAccessToken, headers, body),

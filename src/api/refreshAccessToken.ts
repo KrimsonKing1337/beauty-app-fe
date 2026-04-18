@@ -1,4 +1,5 @@
 import { authTokenStorage } from './authTokenStorage';
+import { getApiUrl } from './config.ts';
 
 type RefreshResponseDto = {
   accessToken: string;
@@ -12,7 +13,7 @@ export const refreshAccessToken = async (): Promise<string> => {
     throw new Error('Refresh token is missing');
   }
 
-  const response = await fetch('/api/auth/refresh', {
+  const response = await fetch(getApiUrl('/auth/refresh'), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
