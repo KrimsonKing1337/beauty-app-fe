@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 
-import {
-  type ProcedureCard as ProcedureCardType,
-  useProcedureCardsStore,
-} from '@/stores/procedureCardsStore';
+import type { Procedure } from '@/@types';
+
+import { useProcedureCardsStore } from '@/stores/procedureCardsStore';
 
 import {
   useDeleteProcedureMutation,
@@ -14,11 +13,10 @@ import { useProceduresQuery } from '@/composables/queries/procedures/useProcedur
 
 import { CardHeader } from '@/components';
 
-
-
 import { getCardInfo } from '../../utils';
 
-const props = defineProps<{ card: ProcedureCardType }>();
+const props = defineProps<{ card: Procedure }>();
+
 const deleteProcedureMutation = useDeleteProcedureMutation();
 const proceduresQuery = useProceduresQuery();
 const procedureCardsStore = useProcedureCardsStore();

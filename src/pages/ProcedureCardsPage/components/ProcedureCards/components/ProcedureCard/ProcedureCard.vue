@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ProcedureCard as ProcedureCardType } from '@/stores/procedureCardsStore';
+import type { Procedure } from '@/@types';
 
 import {
   type ChipsProps,
@@ -13,7 +13,7 @@ import {
 
 import { Header } from './components';
 
-const props = defineProps<{ card: ProcedureCardType }>();
+const props = defineProps<{ card: Procedure }>();
 
 const chips: ChipsProps['chips'] = [
   {

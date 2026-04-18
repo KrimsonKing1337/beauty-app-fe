@@ -1,6 +1,4 @@
-import type { ProcedureDto } from '@/api/procedures.ts';
-
-import type { ProcedureCard } from '@/stores/procedureCardsStore.ts';
+import type { ProcedureDto, Procedure } from '@/@types';
 
 export const formatDate = (date: string | null) => {
   if (!date) {
@@ -16,7 +14,7 @@ export const formatDate = (date: string | null) => {
     .replace(' г.', '');
 };
 
-export const mapProcedureDtoToModel = (dto: ProcedureDto): ProcedureCard => ({
+export const mapProcedureDtoToModel = (dto: ProcedureDto): Procedure => ({
   id: dto.id,
   procedureName: dto.procedureName,
   date: new Date(dto.date),

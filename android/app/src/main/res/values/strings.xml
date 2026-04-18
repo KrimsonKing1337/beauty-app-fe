@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Beauty App</string>
+    <string name="title_activity_main">Beauty App</string>
+    <string name="package_name">ru.kk1337.beautyapp</string>
+    <string name="custom_url_scheme">ru.kk1337.beautyapp</string>
+</resources>

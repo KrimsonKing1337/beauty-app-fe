@@ -5,7 +5,7 @@ import { DatePicker } from 'v-calendar';
 
 import { storeToRefs } from 'pinia';
 
-import type { Reminder as ReminderType, ProcedureDto } from '@/@types';
+import type { Reminder as ReminderType, Procedure } from '@/@types';
 
 import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
 
@@ -50,7 +50,7 @@ const isReminderEditing = computed(() => draftReminder.value !== null);
 const isProcedureEditing = computed(() => draftCard.value !== null);
 
 const proceduresComputed = computed(() => {
-  return getTodayItems<ProcedureDto>({
+  return getTodayItems<Procedure>({
     items: procedures.value,
     date: dateRef.value,
   });

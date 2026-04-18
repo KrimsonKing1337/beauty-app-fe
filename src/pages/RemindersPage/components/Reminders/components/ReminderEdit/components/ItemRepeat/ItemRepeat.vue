@@ -3,7 +3,7 @@ import { computed } from 'vue';
 
 import { FloatLabel, Select, Checkbox, InputNumber } from 'primevue';
 
-import type { RepeatPreset } from '@/components/Reminders/@types';
+import type { RepeatPreset } from '@/@types';
 
 type RepeatFormModel = {
   preset: RepeatPreset;

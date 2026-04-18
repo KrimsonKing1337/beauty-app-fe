@@ -1,9 +1,9 @@
-import type { ProcedureCard as ProcedureCardType } from '@/stores/procedureCardsStore';
+import type { Procedure } from '@/@types';
 
 import { formatDate } from '@/utils';
 
-export const getCardInfo = (card: ProcedureCardType) => {
-  const date = formatDate(card.date);
+export const getCardInfo = (card: Procedure) => {
+  const date = formatDate(card.date.toISOString());
 
   const meta = `${date} - ${card.place} - ${card.duration};`;
   const price = card.price ? `${card.price} Р` : '0 Р';

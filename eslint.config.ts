@@ -10,7 +10,7 @@ import vitest from '@vitest/eslint-plugin';
 
 const ignores = [
   '**/*.js',
-  'eslint.config.js',
+  'capacitor.config.ts',
   'eslint.config.ts',
   '**/dist/**',
   '**/dist-ssr/**',

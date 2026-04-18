@@ -2,10 +2,10 @@ import { computed, type Ref } from 'vue';
 
 import { DatePicker } from 'v-calendar';
 
-import type { ProcedureDto, Reminder as ReminderType } from '@/@types';
+import type { Procedure, Reminder as ReminderType } from '@/@types';
 
 export type UseGetAttrsArgs = {
-  procedures: Ref<ProcedureDto[] | undefined>;
+  procedures: Ref<Procedure[] | undefined>;
   reminders: Ref<ReminderType[] | undefined>;
 }
 
