@@ -23,15 +23,31 @@ const { data } = useRemindersQuery();
 const updateReminderMutation = useUpdateReminderMutation();
 
 const now = ref(new Date());
+
+const syncNow = () => {
+  now.value = new Date();
+};
+
 let intervalId: number | null = null;
+let timeoutId: number | null = null;
 
 onMounted(() => {
-  intervalId = window.setInterval(() => {
-    now.value = new Date();
-  }, 60_000);
+  syncNow();
+
+  const delayToNextMinute = 60_000 - (Date.now() % 60_000);
+
+  timeoutId = window.setTimeout(() => {
+    syncNow();
+
+    intervalId = window.setInterval(syncNow, 60_000);
+  }, delayToNextMinute);
 });
 
 onUnmounted(() => {
+  if (timeoutId !== null) {
+    window.clearTimeout(timeoutId);
+  }
+
   if (intervalId !== null) {
     window.clearInterval(intervalId);
   }
