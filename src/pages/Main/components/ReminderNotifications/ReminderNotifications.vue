@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import {
-  ref,
-  computed,
-  onMounted,
-  onUnmounted,
-} from 'vue';
+import { computed } from 'vue';
 
 import { useRouter } from 'vue-router';
 
@@ -12,6 +7,7 @@ import type { Reminder as ReminderType } from '@/@types';
 
 import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQuery.ts';
 import { useUpdateReminderMutation } from '@/composables/mutations/reminders/useUpdateReminderMutation.ts';
+import { useNowByMinute } from '@/composables/common/useNowByMinute.ts';
 
 import { formatReminderDate } from '@/pages/RemindersPage/components/Reminders/utils';
 
@@ -22,36 +18,7 @@ const router = useRouter();
 const { data } = useRemindersQuery();
 const updateReminderMutation = useUpdateReminderMutation();
 
-const now = ref(new Date());
-
-const syncNow = () => {
-  now.value = new Date();
-};
-
-let intervalId: number | null = null;
-let timeoutId: number | null = null;
-
-onMounted(() => {
-  syncNow();
-
-  const delayToNextMinute = 60_000 - (Date.now() % 60_000);
-
-  timeoutId = window.setTimeout(() => {
-    syncNow();
-
-    intervalId = window.setInterval(syncNow, 60_000);
-  }, delayToNextMinute);
-});
-
-onUnmounted(() => {
-  if (timeoutId !== null) {
-    window.clearTimeout(timeoutId);
-  }
-
-  if (intervalId !== null) {
-    window.clearInterval(intervalId);
-  }
-});
+const { now } = useNowByMinute();
 
 const reminders = computed<ReminderType[]>(() => data.value ?? []);
 

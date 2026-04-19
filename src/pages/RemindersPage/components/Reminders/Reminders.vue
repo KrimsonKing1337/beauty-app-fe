@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+import { nextTick, watch } from 'vue';
 
 import type { Reminder as ReminderType } from '@/@types';
+
+import { useNowByMinute } from '@/composables/common/useNowByMinute.ts';
 
 import { Reminder, ReminderEdit } from './components';
 
@@ -42,38 +44,7 @@ watch(
   },
 );
 
-const now = ref(new Date());
-
-let syncTimeoutId: number | null = null;
-let syncIntervalId: number | null = null;
-
-const syncNow = () => {
-  now.value = new Date();
-};
-
-onMounted(() => {
-  syncNow();
-
-  const delayToNextMinute = 60_000 - (Date.now() % 60_000);
-
-  syncTimeoutId = window.setTimeout(() => {
-    syncNow();
-
-    syncIntervalId = window.setInterval(() => {
-      syncNow();
-    }, 60_000);
-  }, delayToNextMinute);
-});
-
-onUnmounted(() => {
-  if (syncTimeoutId !== null) {
-    window.clearTimeout(syncTimeoutId);
-  }
-
-  if (syncIntervalId !== null) {
-    window.clearInterval(syncIntervalId);
-  }
-});
+const { now } = useNowByMinute();
 </script>
 
 <template>
