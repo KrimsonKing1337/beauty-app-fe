@@ -1,5 +1,6 @@
 <script setup lang="ts">
 type Props = {
+  id: string;
   title: string;
   description?: string | null;
   scheduledLabel: string;
@@ -14,10 +15,10 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-  complete: [];
-  snooze: [];
-  open: [];
-  close: [];
+  complete: [id: string];
+  snooze: [id: string];
+  open: [id: string];
+  close: [id: string];
 }>();
 </script>
 
@@ -45,7 +46,7 @@ const emit = defineEmits<{
         type="button"
         class="CloseButton"
         aria-label="Закрыть уведомление"
-        @click="emit('close')"
+        @click="emit('close', props.id)"
       >
         ×
       </button>
@@ -62,7 +63,7 @@ const emit = defineEmits<{
         <button
           type="button"
           class="ActionButton isSecondary"
-          @click="emit('snooze')"
+          @click="emit('snooze', props.id)"
         >
           Отложить
         </button>
@@ -70,7 +71,7 @@ const emit = defineEmits<{
         <button
           type="button"
           class="ActionButton isGhost"
-          @click="emit('open')"
+          @click="emit('open', props.id)"
         >
           Открыть
         </button>
@@ -78,7 +79,7 @@ const emit = defineEmits<{
         <button
           type="button"
           class="ActionButton isPrimary"
-          @click="emit('complete')"
+          @click="emit('complete', props.id)"
         >
           Завершить
         </button>
