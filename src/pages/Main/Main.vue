@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router';
 
 import { Calendar, ProcedureCardsPage, RemindersPage } from '@/pages';
 
-import { PageHeader, BottomNav } from '@/components';
+import { PageHeader, BottomNav, ReminderNotification } from '@/components';
 
 const route = useRoute();
 </script>
@@ -12,6 +12,13 @@ const route = useRoute();
   <div class="MainPage">
     <div class="Content">
       <PageHeader />
+
+      <ReminderNotification
+        title="123"
+        scheduled-label="777"
+        overdue-label="888"
+        :is-overdue="true"
+      />
 
       <ProcedureCardsPage v-if="route.path === '/'" />
       <RemindersPage v-if="route.path === '/reminders'" />

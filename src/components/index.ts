@@ -9,3 +9,4 @@ export * from './Notes';
 export * from './BottomNav';
 export * from './Chips';
 export * from './Divider';
+export * from './ReminderNotification';
