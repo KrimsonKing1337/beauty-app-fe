@@ -1,7 +1,7 @@
 import type { ReminderRepeat, RepeatPreset } from '@/@types';
 
-export const formatReminderDate = (date: Date) => {
-  const now = new Date();
+export const formatReminderDate = (date: Date, currentNow?: Date) => {
+  const now = currentNow? currentNow : new Date();
 
   const diffMs = date.getTime() - now.getTime();
   const diffMinutes = Math.round(diffMs / (1000 * 60));

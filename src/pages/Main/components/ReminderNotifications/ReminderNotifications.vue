@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import {
+  ref,
+  computed,
+  onMounted,
+  onUnmounted,
+} from 'vue';
 
 import { useRouter } from 'vue-router';
 
@@ -17,13 +22,30 @@ const router = useRouter();
 const { data } = useRemindersQuery();
 const updateReminderMutation = useUpdateReminderMutation();
 
+const now = ref(new Date());
+let intervalId: number | null = null;
+
+onMounted(() => {
+  intervalId = window.setInterval(() => {
+    now.value = new Date();
+  }, 60_000);
+});
+
+onUnmounted(() => {
+  if (intervalId !== null) {
+    window.clearInterval(intervalId);
+  }
+});
+
 const reminders = computed<ReminderType[]>(() => data.value ?? []);
 
 const remindersWithFormattedDate = computed(() => {
+  const currentNow = now.value;
+
   return reminders.value.map((reminderCur) => {
     return {
       ...reminderCur,
-      formattedDate: formatReminderDate(reminderCur.dateTime),
+      formattedDate: formatReminderDate(reminderCur.dateTime, currentNow),
     };
   });
 });
@@ -35,16 +57,16 @@ const filteredRemindersWithFormattedDate = computed(() => {
 });
 
 const handleComplete = (id: string) => {
-  updateReminderMutation.mutateAsync({
+  updateReminderMutation.mutate({
     id,
     payload: { isCompleted: true },
   });
 };
 
 const handleSnooze = (id: string) => {
-  const dateTimePlus15Minutes = new Date(new Date().getTime() + 15 * 60_000);
+  const dateTimePlus15Minutes = new Date(Date.now() + 15 * 60_000);
 
-  updateReminderMutation.mutateAsync({
+  updateReminderMutation.mutate({
     id,
     payload: { dateTime: dateTimePlus15Minutes },
   });
