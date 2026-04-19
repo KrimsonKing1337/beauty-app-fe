@@ -7,10 +7,7 @@ import { Card } from '@/components';
 
 import { Header } from './components';
 
-import {
-  formatReminderDate,
-  getHumanReadableRepeatPreset,
-} from '../../../Reminders/utils';
+import { formatReminderDate, getHumanReadableRepeatPreset } from '../../../Reminders/utils';
 
 const props = defineProps<{
   reminder: Reminder;
