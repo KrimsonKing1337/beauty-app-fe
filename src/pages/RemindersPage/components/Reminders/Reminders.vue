@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, watch } from 'vue';
+import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 
 import type { Reminder as ReminderType } from '@/@types';
 
@@ -41,6 +41,39 @@ watch(
     });
   },
 );
+
+const now = ref(new Date());
+
+let syncTimeoutId: number | null = null;
+let syncIntervalId: number | null = null;
+
+const syncNow = () => {
+  now.value = new Date();
+};
+
+onMounted(() => {
+  syncNow();
+
+  const delayToNextMinute = 60_000 - (Date.now() % 60_000);
+
+  syncTimeoutId = window.setTimeout(() => {
+    syncNow();
+
+    syncIntervalId = window.setInterval(() => {
+      syncNow();
+    }, 60_000);
+  }, delayToNextMinute);
+});
+
+onUnmounted(() => {
+  if (syncTimeoutId !== null) {
+    window.clearTimeout(syncTimeoutId);
+  }
+
+  if (syncIntervalId !== null) {
+    window.clearInterval(syncIntervalId);
+  }
+});
 </script>
 
 <template>
@@ -60,7 +93,10 @@ watch(
         :ref="(el) => setReminderRef(reminderCur.id, el as HTMLElement)"
         class="FullWidth"
       >
-        <Reminder :reminder="reminderCur" />
+        <Reminder
+          :key="`${reminderCur.id}___${now.getTime()}`"
+          :reminder="reminderCur"
+        />
       </div>
     </div>
 
