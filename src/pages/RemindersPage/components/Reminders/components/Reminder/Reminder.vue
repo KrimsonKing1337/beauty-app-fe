@@ -12,7 +12,6 @@ import {
   getHumanReadableRepeatPreset,
 } from '../../../Reminders/utils';
 
-
 const props = defineProps<{
   reminder: Reminder;
 }>();
@@ -47,10 +46,7 @@ const rightBottom = computed(() => {
 </script>
 
 <template>
-  <Card
-    :is-disabled="reminder.isCompleted"
-    :is-danger="formattedDate.isPast"
-  >
+  <Card :is-disabled="reminder.isCompleted" :is-danger="formattedDate.isPast">
     <Header
       :reminder="reminder"
       :left-top="leftTop"
