@@ -1,0 +1,58 @@
+<script setup lang="ts">
+import { computed } from 'vue';
+
+import type { Reminder as ReminderType } from '@/@types';
+
+import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQuery.ts';
+
+import { formatReminderDate } from '@/pages/RemindersPage/components/Reminders/utils';
+
+import { ReminderNotification } from '@/components';
+
+const { data } = useRemindersQuery();
+
+const reminders = computed<ReminderType[]>(() => data.value ?? []);
+
+const remindersWithFormattedDate = computed(() => {
+  return reminders.value.map((reminderCur) => {
+    return {
+      ...reminderCur,
+      formattedDate: formatReminderDate(reminderCur.dateTime),
+    };
+  });
+});
+
+const filteredRemindersWithFormattedDate = computed(() => {
+  return remindersWithFormattedDate.value.filter((reminderCur) => {
+    return reminderCur.formattedDate.isPast;
+  });
+});
+</script>
+
+<template>
+  <div class="ReminderNotifications">
+    <ReminderNotification
+      v-for="reminderCur in filteredRemindersWithFormattedDate"
+      :key="reminderCur.id"
+      :title="reminderCur.name"
+      :description="reminderCur.description"
+      :scheduled-label="reminderCur.formattedDate.main"
+      :overdue-label="reminderCur.formattedDate.relative"
+      :is-overdue="reminderCur.formattedDate.isPast"
+    />
+  </div>
+</template>
+
+<style scoped lang="scss">
+.ReminderNotifications {
+  position: absolute;
+  z-index: 1;
+  top: 25px;
+  right: 25px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 15px;
+}
+</style>

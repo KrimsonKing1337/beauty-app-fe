@@ -41,6 +41,7 @@ const emit = defineEmits<{
       </div>
 
       <button
+        v-if="false"
         type="button"
         class="CloseButton"
         aria-label="Закрыть уведомление"
@@ -60,7 +61,7 @@ const emit = defineEmits<{
       <div class="Actions">
         <button
           type="button"
-          class="ActionButton ActionButton_Secondary"
+          class="ActionButton isSecondary"
           @click="emit('snooze')"
         >
           Отложить
@@ -68,7 +69,7 @@ const emit = defineEmits<{
 
         <button
           type="button"
-          class="ActionButton ActionButton_Ghost"
+          class="ActionButton isGhost"
           @click="emit('open')"
         >
           Открыть
@@ -76,7 +77,7 @@ const emit = defineEmits<{
 
         <button
           type="button"
-          class="ActionButton ActionButton_Primary"
+          class="ActionButton isPrimary"
           @click="emit('complete')"
         >
           Завершить
@@ -97,9 +98,8 @@ const emit = defineEmits<{
   border: 1px solid #e7d7d7;
   border-radius: 18px;
   background: #ffffff;
-  box-shadow:
-    0 10px 30px rgba(0, 0, 0, 0.08),
-    0 2px 10px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08),
+  0 2px 10px rgba(0, 0, 0, 0.04);
 
   &.isOverdue {
     border-color: #efb7b7;
@@ -152,14 +152,15 @@ const emit = defineEmits<{
 }
 
 .Description {
-  display: -webkit-box;
   margin: 0;
-  overflow: hidden;
   color: #6b7280;
   font-size: 14px;
   line-height: 1.35;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  width: 100%;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .CloseButton {
@@ -177,14 +178,13 @@ const emit = defineEmits<{
   font-size: 20px;
   line-height: 1;
   cursor: pointer;
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
-}
+  transition: background-color 0.2s ease,
+  color 0.2s ease;
 
-.CloseButton:hover {
-  background: rgba(0, 0, 0, 0.06);
-  color: #1f1f1f;
+  &:hover {
+    background: rgba(0, 0, 0, 0.06);
+    color: #1f1f1f;
+  }
 }
 
 .Footer {
@@ -223,33 +223,32 @@ const emit = defineEmits<{
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition:
-    transform 0.15s ease,
-    opacity 0.2s ease,
-    background-color 0.2s ease;
-}
+  transition: transform 0.15s ease,
+  opacity 0.2s ease,
+  background-color 0.2s ease;
 
-.ActionButton:hover {
-  transform: translateY(-1px);
-}
+  &:hover {
+    transform: translateY(-1px);
+  }
 
-.ActionButton_Primary {
-  background: #1f1f1f;
-  color: #ffffff;
-}
+  &.isPrimary {
+    background: var(--accent);
+    color: #ffffff;
+  }
 
-.ActionButton_Secondary {
-  background: #f3f4f6;
-  color: #1f1f1f;
-}
+  &.isSecondary {
+    background: #f3f4f6;
+    color: #1f1f1f;
+  }
 
-.ActionButton_Ghost {
-  background: transparent;
-  color: #4b5563;
-}
+  &.isGhost {
+    background: transparent;
+    color: #4b5563;
 
-.ActionButton_Ghost:hover {
-  background: #f9fafb;
+    &:hover {
+      background: #f9fafb;
+    }
+  }
 }
 
 @media (max-width: 480px) {
