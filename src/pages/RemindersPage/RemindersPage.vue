@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
+
+import { useRoute } from 'vue-router';
 
 import { storeToRefs } from 'pinia';
 
@@ -39,6 +41,16 @@ const errorMessage = computed<string | null>(() => {
 const showPlaceholder = computed(() => {
   return !reminders.value.length && !isEditing.value;
 });
+
+const route = useRoute();
+
+watch(
+  () => route.query.scrollTo,
+  (id) => {
+    lastTouchedReminderId.value = typeof id === 'string' ? id : null;
+  },
+  { immediate: true },
+);
 </script>
 
 <template>

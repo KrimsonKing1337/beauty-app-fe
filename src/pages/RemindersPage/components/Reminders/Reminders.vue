@@ -29,8 +29,8 @@ const setReminderRef = (id: string, el: HTMLElement | null) => {
 };
 
 watch(
-  () => props.lastTouchedReminderId,
-  (id) => {
+  [() => props.lastTouchedReminderId, () => props.reminders],
+  ([id]) => {
     if (!id) {
       return;
     }

@@ -56,7 +56,12 @@ const handleSnooze = (id: string) => {
 };
 
 const handleOpen = (id: string) => {
-  router.push(`/reminders/${id}`);
+  router.push({
+    path: '/reminders',
+    query: {
+      scrollTo: id,
+    },
+  });
 };
 
 const handleClose = (id: string) => {
