@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, watch } from 'vue';
 
 import { useRoute } from 'vue-router';
 
@@ -14,6 +14,8 @@ import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQ
 import { CardPlaceholder } from '@/components';
 
 import { Reminders } from './components';
+
+const route = useRoute();
 
 const remindersStore = useRemindersStore();
 
@@ -41,8 +43,6 @@ const errorMessage = computed<string | null>(() => {
 const showPlaceholder = computed(() => {
   return !reminders.value.length && !isEditing.value;
 });
-
-const route = useRoute();
 
 watch(
   () => route.query.scrollTo,
