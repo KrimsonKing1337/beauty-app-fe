@@ -11,6 +11,8 @@ import { VueQueryPlugin, QueryClient } from '@tanstack/vue-query';
 
 import PrimeVue from 'primevue/config';
 
+import { initReminderNotifications } from '@/utils/reminderNotifications';
+
 import App from './App.vue';
 import router from './router';
 
@@ -63,5 +65,7 @@ app.use(VueQueryPlugin, {
 app.use(VCalendar, {});
 app.use(createPinia());
 app.use(router);
+
+initReminderNotifications(router);
 
 app.mount('#app');

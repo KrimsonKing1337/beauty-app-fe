@@ -4,10 +4,16 @@ import { watch } from 'vue';
 import { RouterView, useRouter } from 'vue-router';
 
 import { setUnauthorizedHandler } from '@/api/client.ts';
+import { getReminders } from '@/api/reminders';
 
 import { useAuthStore } from '@/stores/authStore';
 
 import { useMeQuery } from '@/composables/queries/auth/useMeQuery';
+
+import {
+  clearAllReminderNotifications,
+  syncAllReminderNotifications,
+} from '@/utils/reminderNotifications';
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -16,17 +22,23 @@ const meQuery = useMeQuery();
 setUnauthorizedHandler(() => {
   authStore.clearAuth();
 
+  clearAllReminderNotifications();
+
   router.push('/login');
 });
 
 watch(
   () => meQuery.data.value,
-  (data) => {
+  async (data) => {
     if (!data) {
       return;
     }
 
     authStore.setUser(data.user);
+
+    const reminders = await getReminders();
+
+    await syncAllReminderNotifications(reminders);
   },
   {
     immediate: true,
@@ -41,6 +53,8 @@ watch(
     }
 
     authStore.clearAuth();
+
+    clearAllReminderNotifications();
   },
 );
 </script>
