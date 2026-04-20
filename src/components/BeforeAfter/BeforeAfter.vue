@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { ImageFullScreen } from './components';
 
@@ -8,24 +8,68 @@ type Props = {
   afterImagePaths: string[];
 };
 
-defineProps<Props>();
+const props = defineProps<Props>();
 
-const isBeforeFullScreenOpen = ref(false);
-const isAfterFullScreenOpen = ref(false);
+type FullScreenType = 'before' | 'after' | null;
+
+const fullScreenType = ref<FullScreenType>(null);
+
+const beforeImagePath = computed(() => props.beforeImagePaths[0] ?? null);
+const afterImagePath = computed(() => props.afterImagePaths[0] ?? null);
+
+const fullScreenImagePath = computed<string | null>(() => {
+  if (fullScreenType.value === 'before') {
+    return beforeImagePath.value;
+  }
+
+  if (fullScreenType.value === 'after') {
+    return afterImagePath.value;
+  }
+
+  return null;
+});
+
+const openBeforeFullScreen = () => {
+  if (!beforeImagePath.value) {
+    return;
+  }
+
+  fullScreenType.value = 'before';
+};
+
+const openAfterFullScreen = () => {
+  if (!afterImagePath.value) {
+    return;
+  }
+
+  fullScreenType.value = 'after';
+};
+
+const closeFullScreen = () => {
+  fullScreenType.value = null;
+};
+
+const showNextFullScreen = () => {
+  if (fullScreenType.value === 'before' && afterImagePath.value) {
+    fullScreenType.value = 'after';
+  }
+};
+
+const showPreviousFullScreen = () => {
+  if (fullScreenType.value === 'after' && beforeImagePath.value) {
+    fullScreenType.value = 'before';
+  }
+};
 </script>
 
 <template>
   <div class="BeforeAfter">
     <ImageFullScreen
-      v-if="isBeforeFullScreenOpen && beforeImagePaths[0]"
-      :image-path="beforeImagePaths[0]"
-      @close="isBeforeFullScreenOpen = false"
-    />
-
-    <ImageFullScreen
-      v-if="isAfterFullScreenOpen && afterImagePaths[0]"
-      :image-path="afterImagePaths[0]"
-      @close="isAfterFullScreenOpen = false"
+      v-if="fullScreenType && fullScreenImagePath"
+      :image-path="fullScreenImagePath"
+      @close="closeFullScreen"
+      @next="showNextFullScreen"
+      @prev="showPreviousFullScreen"
     />
 
     <div class="Item">
@@ -34,15 +78,15 @@ const isAfterFullScreenOpen = ref(false);
       </div>
 
       <div class="Image">
-        <div v-if="!beforeImagePaths.length" class="ImagePlaceholder">
+        <div v-if="!beforeImagePath" class="ImagePlaceholder">
           Фото до
         </div>
 
         <img
           v-else
-          :src="beforeImagePaths[0]"
+          :src="beforeImagePath"
           alt="Фото до"
-          @click="isBeforeFullScreenOpen = true"
+          @click="openBeforeFullScreen"
         />
       </div>
     </div>
@@ -53,15 +97,15 @@ const isAfterFullScreenOpen = ref(false);
       </div>
 
       <div class="Image">
-        <div v-if="!afterImagePaths.length" class="ImagePlaceholder">
+        <div v-if="!afterImagePath" class="ImagePlaceholder">
           Фото после
         </div>
 
         <img
           v-else
-          :src="afterImagePaths[0]"
+          :src="afterImagePath"
           alt="Фото после"
-          @click="isAfterFullScreenOpen = true"
+          @click="openAfterFullScreen"
         />
       </div>
     </div>

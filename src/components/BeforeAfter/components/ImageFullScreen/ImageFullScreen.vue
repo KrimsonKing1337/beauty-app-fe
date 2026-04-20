@@ -1,35 +1,79 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 
 defineProps<{ imagePath: string }>();
 
 const emit = defineEmits<{
   (e: 'close'): void;
+  (e: 'next'): void;
+  (e: 'prev'): void;
 }>();
 
-const handleKeypress = (e: KeyboardEvent) => {
-  if (e.key === 'Escape') {
+const pointerStartX = ref<number | null>(null);
+
+const MIN_SWIPE_DISTANCE = 50;
+
+const handleKeydown = (event: KeyboardEvent) => {
+  if (event.key === 'Escape') {
     emit('close');
   }
+
+  if (event.key === 'ArrowLeft') {
+    emit('prev');
+  }
+
+  if (event.key === 'ArrowRight') {
+    emit('next');
+  }
+};
+
+const onPointerDown = (event: PointerEvent) => {
+  pointerStartX.value = event.clientX;
+};
+
+const onPointerUp = (event: PointerEvent) => {
+  if (pointerStartX.value === null) {
+    return;
+  }
+
+  const diffX = pointerStartX.value - event.clientX;
+
+  pointerStartX.value = null;
+
+  if (Math.abs(diffX) < MIN_SWIPE_DISTANCE) {
+    return;
+  }
+
+  if (diffX > 0) {
+    emit('next');
+
+    return;
+  }
+
+  emit('prev');
 };
 
 onMounted(() => {
   setTimeout(() => {
-    document.addEventListener('keydown', handleKeypress);
+    document.addEventListener('keydown', handleKeydown);
   }, 0);
 });
 
 onUnmounted(() => {
-  document.removeEventListener('keydown', handleKeypress);
+  document.removeEventListener('keydown', handleKeydown);
 });
 </script>
 
 <template>
-  <div class="ImageFullScreen">
+  <div
+    class="ImageFullScreen"
+    @pointerdown="onPointerDown"
+    @pointerup="onPointerUp"
+  >
     <button
       type="button"
       class="CloseButton"
-      aria-label="Закрыть уведомление"
+      aria-label="Закрыть изображение"
       @click="emit('close')"
     >
       ×
@@ -43,14 +87,12 @@ onUnmounted(() => {
 .ImageFullScreen {
   position: absolute;
   z-index: 999;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   background-color: rgba(0, 0, 0, 0.8);
   display: flex;
   justify-content: center;
   align-items: center;
+  touch-action: pan-y;
 }
 
 .CloseButton {
@@ -76,8 +118,8 @@ onUnmounted(() => {
   color 0.2s ease;
 
   &:hover {
-    background: rgba(0, 0, 0, 0.06);
-    color: #1f1f1f;
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
   }
 }
 
@@ -85,5 +127,8 @@ onUnmounted(() => {
   width: 100%;
   height: 100%;
   object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
 }
 </style>
