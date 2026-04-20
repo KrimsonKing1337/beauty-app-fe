@@ -76,20 +76,25 @@ export const initReminderNotifications = async (router: Router) => {
 
   await LocalNotifications.addListener(
     'localNotificationActionPerformed',
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    async (event) => {
-      const reminderId = event.notification.extra?.reminderId;
+    (event) => {
+      void (async () => {
+        try {
+          const reminderId = event.notification.extra?.reminderId;
 
-      if (typeof reminderId !== 'string') {
-        return;
-      }
+          if (typeof reminderId !== 'string') {
+            return;
+          }
 
-      await router.push({
-        path: '/reminders',
-        query: {
-          scrollTo: reminderId,
-        },
-      });
+          await router.push({
+            path: '/reminders',
+            query: {
+              scrollTo: reminderId,
+            },
+          });
+        } catch (e) {
+          console.error('Notification click handling failed', e);
+        }
+      })();
     },
   );
 };
