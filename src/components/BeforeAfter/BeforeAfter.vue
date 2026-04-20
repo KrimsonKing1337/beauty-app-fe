@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { ref } from 'vue';
+
+import { ImageFullScreen } from './components';
 
 type Props = {
   beforeImagePaths: string[];
@@ -6,10 +9,25 @@ type Props = {
 };
 
 defineProps<Props>();
+
+const isBeforeFullScreenOpen = ref(false);
+const isAfterFullScreenOpen = ref(false);
 </script>
 
 <template>
   <div class="BeforeAfter">
+    <ImageFullScreen
+      v-if="isBeforeFullScreenOpen && beforeImagePaths[0]"
+      :image-path="beforeImagePaths[0]"
+      @close="isBeforeFullScreenOpen = false"
+    />
+
+    <ImageFullScreen
+      v-if="isAfterFullScreenOpen && afterImagePaths[0]"
+      :image-path="afterImagePaths[0]"
+      @close="isAfterFullScreenOpen = false"
+    />
+
     <div class="Item">
       <div class="Label">
         До
@@ -20,7 +38,12 @@ defineProps<Props>();
           Фото до
         </div>
 
-        <img v-else :src="beforeImagePaths[0]" alt="Фото до" />
+        <img
+          v-else
+          :src="beforeImagePaths[0]"
+          alt="Фото до"
+          @click="isBeforeFullScreenOpen = true"
+        />
       </div>
     </div>
 
@@ -34,7 +57,12 @@ defineProps<Props>();
           Фото после
         </div>
 
-        <img v-else :src="afterImagePaths[0]" alt="Фото после" />
+        <img
+          v-else
+          :src="afterImagePaths[0]"
+          alt="Фото после"
+          @click="isAfterFullScreenOpen = true"
+        />
       </div>
     </div>
   </div>
