@@ -70,7 +70,7 @@ export const formatReminderDate = ({
     const absDays = Math.floor(Math.abs(eventDiffMs) / (1000 * 60 * 60 * 24));
 
     if (absMinutes < 1) {
-      relativeText = 'только что просрочено';
+      relativeText = 'сейчас';
     } else if (absMinutes < 60) {
       relativeText = `просрочено на ${absMinutes} мин`;
     } else if (absHours < 24) {
@@ -78,8 +78,6 @@ export const formatReminderDate = ({
     } else {
       relativeText = `просрочено на ${absDays} д`;
     }
-  } else if (isTimeToNotify) {
-    relativeText = 'пора напомнить';
   } else {
     if (diffMinutes < 1) {
       relativeText = 'меньше минуты';
