@@ -35,7 +35,19 @@ export const useRemindersStore = defineStore('reminders', () => {
 
   const startEditReminder = (reminder: Reminder) => {
     editingReminderId.value = reminder.id;
-    draftReminder.value = { ...reminder };
+    draftReminder.value = {
+      ...reminder,
+      dateTime: new Date(reminder.dateTime),
+      repeat: {
+        ...reminder.repeat,
+        daysOfWeek: [...reminder.repeat.daysOfWeek],
+      },
+      notifications: {
+        ...reminder.notifications,
+      },
+      createdAt: new Date(reminder.createdAt),
+      updatedAt: new Date(reminder.updatedAt),
+    };
   };
 
   const cancelEdit = () => {

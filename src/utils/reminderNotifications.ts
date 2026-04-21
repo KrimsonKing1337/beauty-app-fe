@@ -6,9 +6,14 @@ import type { Router } from 'vue-router';
 import type { Reminder } from '@/@types';
 
 const REMINDERS_CHANNEL_ID = 'reminders';
+const EXACT_ALARM_THRESHOLD_MS = 5 * 60 * 1000;
 
 const isNativeNotificationsSupported = () => {
   return Capacitor.isNativePlatform();
+};
+
+const isAndroidPlatform = () => {
+  return Capacitor.getPlatform() === 'android';
 };
 
 const getReminderNotificationId = (reminderId: string): number => {
@@ -26,10 +31,24 @@ const getReminderNotificationDate = (reminder: Reminder): Date => {
   const minutesBefore = Math.max(0, reminder.notifications.minutesBefore);
   const timestamp = reminder.dateTime.getTime() - (minutesBefore * 60 * 1000);
 
-  return new Date(timestamp);
+  const date = new Date(timestamp);
+
+  if (date.getTime() <= Date.now()) {
+    return new Date(Date.now() + 3000);
+  }
+
+  return date;
 };
 
-const buildReminderNotification = (reminder: Reminder): LocalNotificationSchema => {
+const shouldUseExactAlarmFlow = (notificationDate: Date): boolean => {
+  const diffMs = notificationDate.getTime() - Date.now();
+
+  return diffMs > 0 && diffMs <= EXACT_ALARM_THRESHOLD_MS;
+};
+
+const buildReminderNotification = (
+  reminder: Reminder,
+): LocalNotificationSchema => {
   const notificationDate = getReminderNotificationDate(reminder);
 
   return {
@@ -48,13 +67,24 @@ const buildReminderNotification = (reminder: Reminder): LocalNotificationSchema 
 };
 
 const isReminderNotificationRelevant = (reminder: Reminder): boolean => {
-  if (reminder.isCompleted) {
-    return false;
-  }
+  const now = Date.now();
+  const reminderTime = reminder.dateTime.getTime();
 
-  const notificationDate = getReminderNotificationDate(reminder);
+  return reminderTime > now;
+};
 
-  return notificationDate.getTime() > Date.now();
+const cancelNotificationById = async (notificationId: number) => {
+  await LocalNotifications.cancel({
+    notifications: [{ id: notificationId }],
+  });
+};
+
+const getPendingNotificationIds = async () => {
+  const pending = await LocalNotifications.getPending();
+
+  return pending.notifications.map((notification) => ({
+    id: notification.id,
+  }));
 };
 
 export const initReminderNotifications = async (router: Router) => {
@@ -62,7 +92,7 @@ export const initReminderNotifications = async (router: Router) => {
     return;
   }
 
-  if (Capacitor.getPlatform() === 'android') {
+  if (isAndroidPlatform()) {
     await LocalNotifications.createChannel({
       id: REMINDERS_CHANNEL_ID,
       name: 'Напоминания',
@@ -91,8 +121,8 @@ export const initReminderNotifications = async (router: Router) => {
               scrollTo: reminderId,
             },
           });
-        } catch (e) {
-          console.error('Notification click handling failed', e);
+        } catch (error) {
+          console.error('Notification click handling failed', error);
         }
       })();
     },
@@ -115,24 +145,62 @@ export const ensureReminderNotificationsPermission = async (): Promise<boolean> 
   return requested.display === 'granted';
 };
 
+export const ensureExactNotificationsPermissionIfNeeded = async (
+  reminder: Reminder,
+): Promise<boolean> => {
+  if (!isNativeNotificationsSupported() || !isAndroidPlatform()) {
+    return true;
+  }
+
+  const notificationDate = getReminderNotificationDate(reminder);
+
+  if (!shouldUseExactAlarmFlow(notificationDate)) {
+    return true;
+  }
+
+  const exact = await LocalNotifications.checkExactNotificationSetting();
+
+  if (exact.exact_alarm === 'granted') {
+    return true;
+  }
+
+  await LocalNotifications.changeExactNotificationSetting();
+
+  return false;
+};
+
 export const syncReminderNotification = async (reminder: Reminder) => {
   if (!isNativeNotificationsSupported()) {
     return;
   }
 
   const notificationId = getReminderNotificationId(reminder.id);
+  const notificationDate = getReminderNotificationDate(reminder);
+  const diffMs = notificationDate.getTime() - Date.now();
 
-  await LocalNotifications.cancel({
-    notifications: [{ id: notificationId }],
-  });
+  console.log('--- syncReminderNotification ---');
+  console.log('reminder.id', reminder.id);
+  console.log('reminder.dateTime', reminder.dateTime);
+  console.log('minutesBefore', reminder.notifications.minutesBefore);
+  console.log('notificationDate', notificationDate);
+  console.log('diffMs', diffMs);
+  console.log('isRelevant', isReminderNotificationRelevant(reminder));
+  console.log('shouldUseExactAlarmFlow', shouldUseExactAlarmFlow(notificationDate));
+
+  await cancelNotificationById(notificationId);
 
   if (!isReminderNotificationRelevant(reminder)) {
+    console.log('skip: not relevant');
     return;
   }
 
+  // ВРЕМЕННО отключаем exact-проверку для диагностики
   await LocalNotifications.schedule({
     notifications: [buildReminderNotification(reminder)],
   });
+
+  const pending = await LocalNotifications.getPending();
+  console.log('pending after schedule', pending.notifications);
 };
 
 export const removeReminderNotification = async (reminderId: string) => {
@@ -140,9 +208,7 @@ export const removeReminderNotification = async (reminderId: string) => {
     return;
   }
 
-  await LocalNotifications.cancel({
-    notifications: [{ id: getReminderNotificationId(reminderId) }],
-  });
+  await cancelNotificationById(getReminderNotificationId(reminderId));
 };
 
 export const syncAllReminderNotifications = async (reminders: Reminder[]) => {
@@ -156,19 +222,29 @@ export const syncAllReminderNotifications = async (reminders: Reminder[]) => {
     return;
   }
 
-  const pending = await LocalNotifications.getPending();
+  const pendingNotificationIds = await getPendingNotificationIds();
 
-  if (pending.notifications.length) {
+  if (pendingNotificationIds.length) {
     await LocalNotifications.cancel({
-      notifications: pending.notifications.map((notification) => ({
-        id: notification.id,
-      })),
+      notifications: pendingNotificationIds,
     });
   }
 
-  const notifications = reminders
-    .filter(isReminderNotificationRelevant)
-    .map(buildReminderNotification);
+  const notifications: LocalNotificationSchema[] = [];
+
+  for (const reminder of reminders) {
+    if (!isReminderNotificationRelevant(reminder)) {
+      continue;
+    }
+
+    const exactReady = await ensureExactNotificationsPermissionIfNeeded(reminder);
+
+    if (!exactReady) {
+      continue;
+    }
+
+    notifications.push(buildReminderNotification(reminder));
+  }
 
   if (!notifications.length) {
     return;
@@ -184,15 +260,13 @@ export const clearAllReminderNotifications = async () => {
     return;
   }
 
-  const pending = await LocalNotifications.getPending();
+  const pendingNotificationIds = await getPendingNotificationIds();
 
-  if (!pending.notifications.length) {
+  if (!pendingNotificationIds.length) {
     return;
   }
 
   await LocalNotifications.cancel({
-    notifications: pending.notifications.map((notification) => ({
-      id: notification.id,
-    })),
+    notifications: pendingNotificationIds,
   });
 };
