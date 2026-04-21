@@ -3,7 +3,7 @@ import { computed } from 'vue';
 
 import type { Reminder } from '@/@types';
 
-import { useSyncedNow } from '@/composables/common/useSyncedNow.ts';
+import { useNow } from '@/composables/common/useNow.ts';
 
 import { Card } from '@/components';
 
@@ -15,7 +15,7 @@ const props = defineProps<{
   reminder: Reminder;
 }>();
 
-const { now } = useSyncedNow();
+const { now } = useNow();
 
 const formattedDate = computed(() => {
   return formatReminderDate({

@@ -7,7 +7,7 @@ import type { Reminder as ReminderType } from '@/@types';
 
 import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQuery.ts';
 import { useUpdateReminderMutation } from '@/composables/mutations/reminders/useUpdateReminderMutation.ts';
-import { useSyncedNow } from '@/composables/common/useSyncedNow.ts';
+import { useNow } from '@/composables/common/useNow.ts';
 
 import { formatReminderDate } from '@/pages/RemindersPage/components/Reminders/utils';
 
@@ -18,7 +18,7 @@ const router = useRouter();
 const { data } = useRemindersQuery();
 const updateReminderMutation = useUpdateReminderMutation();
 
-const { now } = useSyncedNow();
+const { now } = useNow();
 
 const hiddenNotificationIds = ref<Set<string>>(new Set());
 
