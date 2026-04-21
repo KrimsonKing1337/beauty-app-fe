@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import type { Procedure } from '@/@types';
 
+import { getApiOrigin } from '@/api/config.ts';
+
+import {
+  getBeforeAfterImagePaths,
+} from '@/pages/ProcedureCardsPage/components/ProcedureCards/components/ProcedureCard/utils.ts';
+
 import {
   type ChipsProps,
 
@@ -9,7 +15,6 @@ import {
   Notes,
   Card,
 } from '@/components';
-
 
 import { Header } from './components';
 
@@ -30,6 +35,9 @@ const chips: ChipsProps['chips'] = [
     label: 'Чип 3',
   },
 ];
+
+const beforeImagePaths = getBeforeAfterImagePaths(props.card.beforeImagePaths);
+const afterImagePaths = getBeforeAfterImagePaths(props.card.afterImagePaths);
 </script>
 
 <template>
@@ -37,8 +45,8 @@ const chips: ChipsProps['chips'] = [
     <Header :card="card" />
 
     <BeforeAfter
-      :before-image-paths="card.beforeImagePaths"
-      :after-image-paths="card.afterImagePaths"
+      :before-image-paths="beforeImagePaths"
+      :after-image-paths="afterImagePaths"
     />
 
     <Notes v-if="props.card.notes">
