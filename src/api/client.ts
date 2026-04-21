@@ -64,6 +64,9 @@ export const apiClient = async <T>(
     ...restOptions
   } = options;
 
+  const isAuthRoute = path === '/auth/login' || path === '/auth/refresh';
+  const shouldRetryOnUnauthorized = retryOnUnauthorized && !isAuthRoute;
+
   const accessToken = authTokenStorage.getAccessToken();
   const url = getApiUrl(path);
 
@@ -73,7 +76,7 @@ export const apiClient = async <T>(
     headers: buildHeaders(accessToken, headers, body),
   });
 
-  if (response.status === 401 && retryOnUnauthorized) {
+  if (response.status === 401 && shouldRetryOnUnauthorized) {
     try {
       const freshAccessToken = await getFreshAccessToken();
 
@@ -90,11 +93,7 @@ export const apiClient = async <T>(
       return parseResponse<T>(retryResponse);
     } catch (error) {
       authTokenStorage.clearTokens();
-
-      if (onUnauthorized) {
-        onUnauthorized();
-      }
-
+      onUnauthorized?.();
       throw error;
     }
   }
@@ -105,3 +104,4 @@ export const apiClient = async <T>(
 
   return parseResponse<T>(response);
 };
+

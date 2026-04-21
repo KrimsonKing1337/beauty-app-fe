@@ -1,7 +1,7 @@
 import { Capacitor } from '@capacitor/core';
 
 const WEB_API_ORIGIN = '';
-const NATIVE_ANDROID_API_ORIGIN = 'http://10.0.2.2:3000';
+const NATIVE_ANDROID_API_ORIGIN = 'http://192.168.1.12:3000';
 const NATIVE_DEFAULT_API_ORIGIN = import.meta.env.VITE_API_ORIGIN;
 
 export const getApiOrigin = (): string => {
