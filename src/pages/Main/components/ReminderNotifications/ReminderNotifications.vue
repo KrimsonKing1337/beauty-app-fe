@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 import { useRouter } from 'vue-router';
 
@@ -7,7 +7,7 @@ import type { Reminder as ReminderType } from '@/@types';
 
 import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQuery.ts';
 import { useUpdateReminderMutation } from '@/composables/mutations/reminders/useUpdateReminderMutation.ts';
-import { useNowByMinute } from '@/composables/common/useNowByMinute.ts';
+import { useSyncedNow } from '@/composables/common/useSyncedNow.ts';
 
 import { formatReminderDate } from '@/pages/RemindersPage/components/Reminders/utils';
 
@@ -18,9 +18,28 @@ const router = useRouter();
 const { data } = useRemindersQuery();
 const updateReminderMutation = useUpdateReminderMutation();
 
-const { now } = useNowByMinute();
+const { now } = useSyncedNow();
 
-const reminders = computed<ReminderType[]>(() => data.value ?? []);
+const hiddenNotificationIds = ref<Set<string>>(new Set());
+
+type ReminderComputed = ReminderType & {
+  isHidden?: boolean;
+};
+
+const reminders = computed<ReminderComputed[]>(() => {
+  const arr = data.value ?? [];
+
+  return arr.map((itemCur) => {
+    if (hiddenNotificationIds.value.has(itemCur.id)) {
+      return {
+        ...itemCur,
+        isHidden: true,
+      };
+    }
+
+    return itemCur;
+  });
+});
 
 const remindersWithFormattedDate = computed(() => {
   const currentNow = now.value;
@@ -28,14 +47,18 @@ const remindersWithFormattedDate = computed(() => {
   return reminders.value.map((reminderCur) => {
     return {
       ...reminderCur,
-      formattedDate: formatReminderDate(reminderCur.dateTime, currentNow),
+      formattedDate: formatReminderDate({
+        date: reminderCur.dateTime,
+        currentNow,
+        minutesBefore: reminderCur.notifications.minutesBefore,
+      }),
     };
   });
 });
 
 const filteredRemindersWithFormattedDate = computed(() => {
   return remindersWithFormattedDate.value.filter((reminderCur) => {
-    return reminderCur.formattedDate.isPast && !reminderCur.isCompleted;
+    return !reminderCur.isCompleted;
   });
 });
 
@@ -48,6 +71,7 @@ const handleComplete = (id: string) => {
 
 const handleSnooze = (id: string) => {
   const dateTimePlus15Minutes = new Date(Date.now() + 15 * 60_000);
+  dateTimePlus15Minutes.setSeconds(0, 0);
 
   updateReminderMutation.mutate({
     id,
@@ -65,28 +89,38 @@ const handleOpen = (id: string) => {
 };
 
 const handleClose = (id: string) => {
-  console.log('___ handle close id', id);
+  hiddenNotificationIds.value = new Set([
+    ...hiddenNotificationIds.value,
+    id,
+  ]);
+};
+
+const shouldShowNotification = (reminderCur: typeof remindersWithFormattedDate.value[number]) => {
+  return reminderCur.formattedDate.due === 'isPast'
+    || (!!reminderCur.formattedDate.due && !reminderCur.isHidden);
 };
 </script>
-
 <template>
   <div class="ReminderNotifications">
-    <ReminderNotification
+    <div
       v-for="reminderCur in filteredRemindersWithFormattedDate"
-      :id="reminderCur.id"
       :key="reminderCur.id"
+    >
+      <ReminderNotification
+        v-if="shouldShowNotification(reminderCur)"
+        :id="reminderCur.id"
+        :title="reminderCur.name"
+        :description="reminderCur.description"
+        :scheduled-label="reminderCur.formattedDate.main"
+        :due-label="reminderCur.formattedDate.relative"
+        :due="reminderCur.formattedDate.due"
 
-      :title="reminderCur.name"
-      :description="reminderCur.description"
-      :scheduled-label="reminderCur.formattedDate.main"
-      :overdue-label="reminderCur.formattedDate.relative"
-      :is-overdue="reminderCur.formattedDate.isPast"
-
-      @complete="handleComplete"
-      @snooze="handleSnooze"
-      @close="handleClose"
-      @open="handleOpen"
-    />
+        @complete="handleComplete"
+        @snooze="handleSnooze"
+        @close="handleClose"
+        @open="handleOpen"
+      />
+    </div>
   </div>
 </template>
 

@@ -4,24 +4,30 @@ import { defineStore } from 'pinia';
 
 import type { Reminder } from '@/@types';
 
-const createEmptyReminder = (): Reminder => ({
-  id: crypto.randomUUID(),
-  name: '',
-  description: '',
-  dateTime: new Date(),
-  repeat: {
-    unit: 'day',
-    interval: 0,
-    daysOfWeek: [],
-    preset: 'none',
-  },
-  notifications: {
-    minutesBefore: 0,
-  },
-  isCompleted: false,
-  createdAt: new Date(),
-  updatedAt: new Date(),
-});
+const createEmptyReminder = (): Reminder => {
+  const now = new Date();
+
+  now.setSeconds(0, 0);
+
+  return {
+    id: crypto.randomUUID(),
+    name: '',
+    description: '',
+    dateTime: now,
+    repeat: {
+      unit: 'day',
+      interval: 0,
+      daysOfWeek: [],
+      preset: 'none',
+    },
+    notifications: {
+      minutesBefore: 0,
+    },
+    isCompleted: false,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+};
 
 export const useRemindersStore = defineStore('reminders', () => {
   const editingReminderId = ref<string | null>(null);

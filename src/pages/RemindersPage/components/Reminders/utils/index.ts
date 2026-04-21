@@ -1,14 +1,32 @@
 import type { ReminderRepeat, RepeatPreset } from '@/@types';
 
-export const formatReminderDate = (date: Date, currentNow?: Date) => {
-  const now = currentNow? currentNow : new Date();
+export type FormatReminderDateArgs = {
+  date: Date;
+  currentNow?: Date;
+  minutesBefore?: number;
+};
 
-  const diffMs = date.getTime() - now.getTime();
-  const diffMinutes = Math.round(diffMs / (1000 * 60));
-  const diffHours = Math.round(diffMs / (1000 * 60 * 60));
-  const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+export const formatReminderDate = ({
+  date,
+  currentNow,
+  minutesBefore = 0,
+}: FormatReminderDateArgs) => {
+  const now = currentNow ?? new Date();
+  const safeMinutesBefore = Math.max(0, minutesBefore);
 
-  const isPast = diffMs < 0;
+  const notificationDate = new Date(
+    date.getTime() - safeMinutesBefore * 60 * 1000,
+  );
+
+  const eventDiffMs = date.getTime() - now.getTime();
+  const notificationDiffMs = notificationDate.getTime() - now.getTime();
+
+  const diffMinutes = Math.floor(eventDiffMs / (1000 * 60));
+  const diffHours = Math.floor(eventDiffMs / (1000 * 60 * 60));
+  const diffDays = Math.floor(eventDiffMs / (1000 * 60 * 60 * 24));
+
+  const isPast = eventDiffMs < 0;
+  const isTimeToNotify = notificationDiffMs <= 0 && !isPast;
 
   const formatTime = (d: Date) =>
     d.toLocaleTimeString('ru-RU', {
@@ -22,7 +40,7 @@ export const formatReminderDate = (date: Date, currentNow?: Date) => {
       month: 'long',
     });
 
-  const today = new Date();
+  const today = new Date(now);
   const target = new Date(date);
 
   today.setHours(0, 0, 0, 0);
@@ -46,21 +64,13 @@ export const formatReminderDate = (date: Date, currentNow?: Date) => {
 
   let relativeText = '';
 
-  if (!isPast) {
-    if (diffMinutes < 60) {
-      relativeText = `через ${diffMinutes} мин`;
-    } else if (diffHours < 24) {
-      relativeText = `через ${diffHours} ч`;
-    } else if (diffDays < 7) {
-      relativeText = `через ${diffDays} д`;
-    }
-  } else {
-    const absMinutes = Math.abs(diffMinutes);
-    const absHours = Math.abs(diffHours);
-    const absDays = Math.abs(diffDays);
+  if (isPast) {
+    const absMinutes = Math.floor(Math.abs(eventDiffMs) / (1000 * 60));
+    const absHours = Math.floor(Math.abs(eventDiffMs) / (1000 * 60 * 60));
+    const absDays = Math.floor(Math.abs(eventDiffMs) / (1000 * 60 * 60 * 24));
 
-    if (absMinutes === 0) {
-      relativeText = 'сейчас';
+    if (absMinutes < 1) {
+      relativeText = 'только что просрочено';
     } else if (absMinutes < 60) {
       relativeText = `просрочено на ${absMinutes} мин`;
     } else if (absHours < 24) {
@@ -68,12 +78,30 @@ export const formatReminderDate = (date: Date, currentNow?: Date) => {
     } else {
       relativeText = `просрочено на ${absDays} д`;
     }
+  } else if (isTimeToNotify) {
+    relativeText = 'пора напомнить';
+  } else {
+    if (diffMinutes < 1) {
+      relativeText = 'меньше минуты';
+    } else if (diffMinutes < 60) {
+      relativeText = `через ${diffMinutes} мин`;
+    } else if (diffHours < 24) {
+      relativeText = `через ${diffHours} ч`;
+    } else if (diffDays < 7) {
+      relativeText = `через ${diffDays} д`;
+    }
+  }
+
+  let due = '';
+
+  if (isTimeToNotify || isPast) {
+    due = isTimeToNotify ? 'isTimeToNotify' : 'isPast';
   }
 
   return {
     main: `${mainText}, ${formatTime(date)}`,
     relative: relativeText,
-    isPast,
+    due,
   };
 };
 

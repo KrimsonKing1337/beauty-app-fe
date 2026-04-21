@@ -3,6 +3,8 @@ import { computed } from 'vue';
 
 import type { Reminder } from '@/@types';
 
+import { useSyncedNow } from '@/composables/common/useSyncedNow.ts';
+
 import { Card } from '@/components';
 
 import { Header } from './components';
@@ -13,8 +15,13 @@ const props = defineProps<{
   reminder: Reminder;
 }>();
 
+const { now } = useSyncedNow();
+
 const formattedDate = computed(() => {
-  return formatReminderDate(props.reminder.dateTime);
+  return formatReminderDate({
+    date: props.reminder.dateTime,
+    currentNow: now.value,
+  });
 });
 
 const leftTop = computed(() => {
@@ -43,7 +50,7 @@ const rightBottom = computed(() => {
 </script>
 
 <template>
-  <Card :is-disabled="reminder.isCompleted" :is-danger="formattedDate.isPast">
+  <Card :is-disabled="reminder.isCompleted" :is-danger="formattedDate.due === 'isPast'">
     <Header
       :reminder="reminder"
       :left-top="leftTop"

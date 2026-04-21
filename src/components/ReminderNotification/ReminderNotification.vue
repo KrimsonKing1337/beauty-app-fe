@@ -1,17 +1,18 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+
 type Props = {
   id: string;
   title: string;
   description?: string | null;
   scheduledLabel: string;
-  overdueLabel?: string | null;
-  isOverdue?: boolean;
+  dueLabel?: string | null;
+  due: string;
 };
 
 const props = withDefaults(defineProps<Props>(), {
   description: null,
-  overdueLabel: null,
-  isOverdue: false,
+  dueLabel: null,
 });
 
 const emit = defineEmits<{
@@ -20,10 +21,26 @@ const emit = defineEmits<{
   open: [id: string];
   close: [id: string];
 }>();
+
+const dueLabelShow = computed(() => {
+  return props.dueLabel && props.due === 'isPast';
+});
+
+const timeLabel = computed(() => {
+  if (props.due === 'isPast') {
+    return props.scheduledLabel;
+  }
+
+  if (props.due === 'isTimeToNotify') {
+    return props.dueLabel;
+  }
+
+  return '';
+});
 </script>
 
 <template>
-  <div class="ReminderNotification" :class="{ isOverdue: props.isOverdue }">
+  <div class="ReminderNotification" :class="{ isOverdue: props.due === 'isPast' }">
     <div class="Header">
       <div class="Main">
         <div class="TitleRow">
@@ -31,8 +48,8 @@ const emit = defineEmits<{
             {{ props.title }}
           </h4>
 
-          <span v-if="props.isOverdue && props.overdueLabel" class="Badge">
-            {{ props.overdueLabel }}
+          <span v-if="dueLabelShow" class="Badge">
+            {{ props.dueLabel }}
           </span>
         </div>
 
@@ -42,7 +59,7 @@ const emit = defineEmits<{
       </div>
 
       <button
-        v-if="false"
+        v-if="props.due === 'isTimeToNotify'"
         type="button"
         class="CloseButton"
         aria-label="Закрыть уведомление"
@@ -55,7 +72,7 @@ const emit = defineEmits<{
     <div class="Footer">
       <div class="Meta">
         <span class="Time">
-          {{ props.scheduledLabel }}
+          {{ timeLabel }}
         </span>
       </div>
 
@@ -150,6 +167,12 @@ const emit = defineEmits<{
   font-size: 12px;
   font-weight: 600;
   line-height: 1;
+
+  &.isNotOverdue {
+    background: none;
+    color: #1f1f1f;
+    padding: 4px;
+  }
 }
 
 .Description {
@@ -165,6 +188,7 @@ const emit = defineEmits<{
 }
 
 .CloseButton {
+  border: 1px red solid;
   display: inline-flex;
   align-items: center;
   justify-content: center;

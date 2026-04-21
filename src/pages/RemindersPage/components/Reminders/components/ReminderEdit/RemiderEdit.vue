@@ -19,6 +19,8 @@ import { repeatStoreToUi, repeatUiToStore } from '@/pages/RemindersPage/componen
 
 import { Input } from '@/components';
 
+import { trimSeconds } from '@/utils';
+
 import { ItemRepeat, ItemDateTime, ItemMinutesBefore } from './components';
 
 const remindersStore = useRemindersStore();
@@ -42,7 +44,7 @@ const saveButtonClickHandler = async () => {
   const basePayload = {
     name: draft.name,
     description: draft.description,
-    dateTime: draft.dateTime,
+    dateTime: trimSeconds(draft.dateTime),
     repeat: repeat,
     notifications: draft.notifications,
     isCompleted: draft.isCompleted,

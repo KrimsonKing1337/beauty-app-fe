@@ -36,3 +36,11 @@ export const isSameDate = (a: Date, b: Date) => {
     && a.getDate() === b.getDate()
   );
 };
+
+export const trimSeconds = (date: Date): Date => {
+  const nextDate = new Date(date);
+
+  nextDate.setSeconds(0, 0);
+
+  return nextDate;
+};

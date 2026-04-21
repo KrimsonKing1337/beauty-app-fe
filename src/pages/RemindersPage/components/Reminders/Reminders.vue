@@ -3,8 +3,6 @@ import { nextTick, watch } from 'vue';
 
 import type { Reminder as ReminderType } from '@/@types';
 
-import { useNowByMinute } from '@/composables/common/useNowByMinute.ts';
-
 import { Reminder, ReminderEdit } from './components';
 
 type Props = {
@@ -43,8 +41,6 @@ watch(
     });
   },
 );
-
-const { now } = useNowByMinute();
 </script>
 
 <template>
@@ -64,10 +60,7 @@ const { now } = useNowByMinute();
         :ref="(el) => setReminderRef(reminderCur.id, el as HTMLElement)"
         class="FullWidth"
       >
-        <Reminder
-          :key="`${reminderCur.id}___${now.getTime()}`"
-          :reminder="reminderCur"
-        />
+        <Reminder :key="reminderCur.id" :reminder="reminderCur" />
       </div>
     </div>
 

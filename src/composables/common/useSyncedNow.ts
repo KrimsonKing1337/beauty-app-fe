@@ -1,14 +1,6 @@
 import { onMounted, onUnmounted, ref } from 'vue';
 
-import type { Ref } from 'vue';
-
-type UseNowByMinuteReturn = {
-  now: Ref<Date>;
-};
-
-const ONE_MINUTE_MS = 60_000;
-
-export const useNowByMinute = (): UseNowByMinuteReturn => {
+export const useSyncedNow = () => {
   const now = ref(new Date());
 
   let syncTimeoutId: number | null = null;
@@ -21,24 +13,25 @@ export const useNowByMinute = (): UseNowByMinuteReturn => {
   onMounted(() => {
     syncNow();
 
-    const delayToNextMinute = ONE_MINUTE_MS - (Date.now() % ONE_MINUTE_MS);
+    const current = new Date();
+    const msUntilNextMinute = (60 - current.getSeconds()) * 1000 - current.getMilliseconds();
 
     syncTimeoutId = window.setTimeout(() => {
       syncNow();
 
       syncIntervalId = window.setInterval(() => {
         syncNow();
-      }, ONE_MINUTE_MS);
-    }, delayToNextMinute);
+      }, 60_000);
+    }, msUntilNextMinute);
   });
 
   onUnmounted(() => {
     if (syncTimeoutId !== null) {
-      window.clearTimeout(syncTimeoutId);
+      clearTimeout(syncTimeoutId);
     }
 
     if (syncIntervalId !== null) {
-      window.clearInterval(syncIntervalId);
+      clearInterval(syncIntervalId);
     }
   });
 
@@ -46,3 +39,4 @@ export const useNowByMinute = (): UseNowByMinuteReturn => {
     now,
   };
 };
+
