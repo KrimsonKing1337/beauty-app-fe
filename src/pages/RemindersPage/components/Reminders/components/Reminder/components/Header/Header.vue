@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 import type { Reminder } from '@/@types';
 
@@ -68,31 +68,41 @@ const handleRemoveReminder = async (id: string) => {
   }
 };
 
+const dialogIsOpen = ref(false);
+
 const menuItems = computed(() => [
   {
+    id: 'complete',
     label: completed.value.label,
-    icon: 'pi pi-check',
-    command: () => {
+    icon: 'mdi-check-all',
+    action: () => {
       handlerToggleReminderComplete(props.reminder);
     },
   },
   {
+    id: 'edit',
     label: 'Редактировать',
-    icon: 'pi pi-pencil',
-    command: () => {
+    icon: 'mdi-pencil',
+    action: () => {
       remindersStore.startEditReminder(props.reminder);
     },
   },
   {
+    id: 'delete',
     label: 'Удалить',
-    icon: 'pi pi-trash',
+    icon: 'mdi-trash-can',
     class: 'MenuDeleteButton',
-    command: () => {
-      handleRemoveReminder(props.reminder.id);
+    action: () => {
+      dialogIsOpen.value = true;
     },
   },
 ]);
 
+const btnRemoveCardClickHandler = () => {
+  handleRemoveReminder(props.reminder.id);
+
+  dialogIsOpen.value = false;
+};
 </script>
 
 <template>
@@ -103,6 +113,26 @@ const menuItems = computed(() => [
     :right-bottom="props.rightBottom"
     :menu-items="menuItems"
   />
+
+  <VDialog v-model="dialogIsOpen" max-width="500">
+    <VCard
+      prepend-icon="mdi-exclamation-thick"
+      title="Точно удалить?"
+      text="Это действие отменить нельзя"
+    >
+      <template #actions>
+        <VSpacer></VSpacer>
+
+        <VBtn @click="dialogIsOpen = false">
+          Не удалять
+        </VBtn>
+
+        <VBtn color="red" @click="btnRemoveCardClickHandler">
+          Удалить
+        </VBtn>
+      </template>
+    </VCard>
+  </VDialog>
 </template>
 
 <style scoped lang="scss">

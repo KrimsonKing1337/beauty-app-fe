@@ -47,6 +47,8 @@ const handleRemoveCard = async (id: string) => {
   }
 };
 
+const dialogIsOpen = ref(false);
+
 const menuItems = ref([
   {
     id: 'edit',
@@ -69,10 +71,16 @@ const menuItems = ref([
     label: 'Удалить',
     icon: 'mdi-trash-can',
     action: () => {
-      handleRemoveCard(props.card.id);
+      dialogIsOpen.value = true;
     },
   },
 ]);
+
+const btnRemoveCardClickHandler = () => {
+  handleRemoveCard(props.card.id);
+
+  dialogIsOpen.value = false;
+};
 </script>
 
 <template>
@@ -82,6 +90,26 @@ const menuItems = ref([
     :right-top="price"
     :menu-items="menuItems"
   />
+
+  <VDialog v-model="dialogIsOpen" max-width="500">
+    <VCard
+      prepend-icon="mdi-exclamation-thick"
+      title="Точно удалить?"
+      text="Это действие отменить нельзя"
+    >
+      <template #actions>
+        <VSpacer></VSpacer>
+
+        <VBtn @click="dialogIsOpen = false">
+          Не удалять
+        </VBtn>
+
+        <VBtn color="red" @click="btnRemoveCardClickHandler">
+          Удалить
+        </VBtn>
+      </template>
+    </VCard>
+  </VDialog>
 </template>
 
 <style scoped lang="scss">
