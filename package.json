@@ -23,6 +23,7 @@
     ]
   },
   "dependencies": {
+    "@mdi/font": "^7.4.47",
     "@popperjs/core": "^2.11.8",
     "@primeuix/themes": "^2.0.3",
     "@tanstack/vue-query": "^5.95.2",
@@ -31,7 +32,8 @@
     "primevue": "^4.5.4",
     "v-calendar": "^3.1.2",
     "vue": "^3.5.29",
-    "vue-router": "^5.0.3"
+    "vue-router": "^5.0.3",
+    "vuetify": "^4.0.6"
   },
   "devDependencies": {
     "@capacitor/android": "^8.3.1",

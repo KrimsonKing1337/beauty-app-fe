@@ -1,17 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import {
-  type FileUploadSelectEvent,
-
-  FileUpload,
-  Button,
-  FloatLabel,
-  DatePicker,
-} from 'primevue';
-
 import { storeToRefs } from 'pinia';
-
 
 import { uploadFile } from '@/api/uploads.ts';
 
@@ -20,11 +10,6 @@ import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
 import {
   useSaveProcedureMutation,
 } from '@/composables/mutations/procedures/useSaveProcedureMutation.ts';
-
-import { Input } from '@/components';
-
-
-
 
 
 const procedureCardsStore = useProcedureCardsStore();
@@ -105,92 +90,89 @@ const cancelButtonClickHandler = () => {
 
   procedureCardsStore.cancelEdit();
 };
-
-const imageBeforeUploadSelectHandler = (event: FileUploadSelectEvent) => {
-  imageBeforeFileUploadRef.value = event.files?.[0];
-};
-
-const imageAfterUploadSelectHandler = (event: FileUploadSelectEvent) => {
-  imageAfterFileUploadRef.value = event.files?.[0];
-};
 </script>
 
 <template v-if="!!draftCard">
   <div class="ProcedureCardEditItem">
-    <Input
-      id="input-title"
+    <VTextField
       v-model="draftCard!.procedureName"
-      class="ReminderEditItem"
-    >
-      Название процедуры
-    </Input>
+      label="Название процедуры"
+      variant="outlined"
+      bg-color="#fff"
+      class="Input"
+    />
 
-    <FloatLabel class="ProcedureCardEditItem">
-      <label for="input-date">
-        Дата
-      </label>
+    <VDatePicker
+      v-model="draftCard!.date"
+      label="Дата"
+      variant="outlined"
+      class="DatePicker"
+      color="pink-lighten-5"
+      width="100%"
+      first-day-of-week="1"
+      header-date-format="normalDateWithWeekday"
+      title="Дата проведения"
+      rounded="lg"
+    />
 
-      <DatePicker
-        id="input-date"
-        v-model="draftCard!.date"
-        placeholder="Дата"
-        date-format="dd.mm.yy"
-        fluid
-      />
-    </FloatLabel>
-
-    <Input
-      id="input-place"
+    <VTextField
       v-model="draftCard!.place"
-      class="ProcedureCardEditItem"
-    >
-      Место проведения
-    </Input>
+      label="Место проведения"
+      variant="outlined"
+      bg-color="#fff"
+      class="Input"
+    />
 
-    <Input
-      id="input-duration"
+    <VTextField
       v-model="draftCard!.duration"
-      class="ProcedureCardEditItem"
-    >
-      Длительность
-    </Input>
+      label="Длительность"
+      variant="outlined"
+      bg-color="#fff"
+      class="Input"
+    />
 
-    <Input
-      id="input-note"
+    <VTextField
       v-model="draftCard!.notes"
-      class="ProcedureCardEditItem"
-    >
-      Описание
-    </Input>
+      label="Описание"
+      variant="outlined"
+      bg-color="#fff"
+      class="Input"
+    />
 
-    <div class="ProcedureCardEditItem">
-      <FileUpload
-        accept="image/*"
-        choose-label="Фото до"
-        custom-upload
-        mode="basic"
-        @select="imageBeforeUploadSelectHandler"
-      />
-    </div>
+    <VFileInput
+      v-model="imageBeforeFileUploadRef"
+      accept="image/*"
+      label="Фото до"
+      clearable
+      variant="outlined"
+    />
 
-    <div class="ProcedureCardEditItem">
-      <FileUpload
-        accept="image/*"
-        choose-label="Фото после"
-        mode="basic"
-        custom-upload
-        @select="imageAfterUploadSelectHandler"
-      />
-    </div>
+    <VFileInput
+      v-model="imageAfterFileUploadRef"
+      accept="image/*"
+      label="Фото после"
+      clearable
+      variant="outlined"
+    />
 
     <div class="BottomNav">
-      <Button severity="success" :loading="saveButtonIsLoadingRef" @click="saveButtonClickHandler">
+      <VBtn
+        class="Button"
+        color="pink-lighten-3"
+        :loading="saveButtonIsLoadingRef"
+        @click="saveButtonClickHandler"
+      >
         Сохранить
-      </Button>
+      </VBtn>
 
-      <Button severity="secondary" @click="cancelButtonClickHandler">
+      <VBtn
+        style="color: #111"
+        class="Button"
+        color="pink-lighten-5"
+        @click="cancelButtonClickHandler"
+      >
         Отменить
-      </Button>
+      </VBtn>
     </div>
   </div>
 </template>
@@ -219,5 +201,20 @@ const imageAfterUploadSelectHandler = (event: FileUploadSelectEvent) => {
   justify-content: center;
   gap: 18px;
   margin-top: var(--space-32);
+}
+
+.Button {
+  border-radius: 10px;
+  color: #fff;
+}
+
+.Input {
+  :global(.v-field) {
+    border-radius: 10px;
+  }
+}
+
+.DatePicker {
+  margin-bottom: 20px;
 }
 </style>
