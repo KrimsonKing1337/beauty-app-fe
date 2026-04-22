@@ -11,7 +11,7 @@ import {
 
 import { useProceduresQuery } from '@/composables/queries/procedures/useProceduresQuery';
 
-import { CardHeader } from '@/components';
+import { CardHeader, RemovingDialog } from '@/components';
 
 import { getCardInfo } from '../../utils';
 
@@ -76,7 +76,7 @@ const menuItems = ref([
   },
 ]);
 
-const btnRemoveCardClickHandler = () => {
+const confirmHandler = () => {
   handleRemoveCard(props.card.id);
 
   dialogIsOpen.value = false;
@@ -91,25 +91,11 @@ const btnRemoveCardClickHandler = () => {
     :menu-items="menuItems"
   />
 
-  <VDialog v-model="dialogIsOpen" max-width="500">
-    <VCard
-      prepend-icon="mdi-exclamation-thick"
-      title="Точно удалить?"
-      text="Это действие отменить нельзя"
-    >
-      <template #actions>
-        <VSpacer></VSpacer>
-
-        <VBtn @click="dialogIsOpen = false">
-          Не удалять
-        </VBtn>
-
-        <VBtn color="red" @click="btnRemoveCardClickHandler">
-          Удалить
-        </VBtn>
-      </template>
-    </VCard>
-  </VDialog>
+  <RemovingDialog
+    :is-open="dialogIsOpen"
+    @close="dialogIsOpen = false"
+    @confirm="confirmHandler"
+  />
 </template>
 
 <style scoped lang="scss">

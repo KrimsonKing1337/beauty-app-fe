@@ -10,3 +10,4 @@ export * from './BottomNav';
 export * from './Chips';
 export * from './Divider';
 export * from './ReminderNotification';
+export * from './RemovingDialog';

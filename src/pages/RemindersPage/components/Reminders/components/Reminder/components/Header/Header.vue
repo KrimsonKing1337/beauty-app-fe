@@ -18,7 +18,7 @@ import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQ
 
 import { getToggleReminderCompletePayload } from '@/pages/RemindersPage/components/Reminders/utils';
 
-import { CardHeader } from '@/components';
+import { CardHeader, RemovingDialog } from '@/components';
 
 const props = defineProps<{
   reminder: Reminder;
@@ -98,7 +98,7 @@ const menuItems = computed(() => [
   },
 ]);
 
-const btnRemoveCardClickHandler = () => {
+const confirmHandler = () => {
   handleRemoveReminder(props.reminder.id);
 
   dialogIsOpen.value = false;
@@ -114,25 +114,11 @@ const btnRemoveCardClickHandler = () => {
     :menu-items="menuItems"
   />
 
-  <VDialog v-model="dialogIsOpen" max-width="500">
-    <VCard
-      prepend-icon="mdi-exclamation-thick"
-      title="Точно удалить?"
-      text="Это действие отменить нельзя"
-    >
-      <template #actions>
-        <VSpacer></VSpacer>
-
-        <VBtn @click="dialogIsOpen = false">
-          Не удалять
-        </VBtn>
-
-        <VBtn color="red" @click="btnRemoveCardClickHandler">
-          Удалить
-        </VBtn>
-      </template>
-    </VCard>
-  </VDialog>
+  <RemovingDialog
+    :is-open="dialogIsOpen"
+    @close="dialogIsOpen = false"
+    @confirm="confirmHandler"
+  />
 </template>
 
 <style scoped lang="scss">
