@@ -102,18 +102,27 @@ const cancelButtonClickHandler = () => {
       class="Input"
     />
 
-    <VDatePicker
-      v-model="draftCard!.date"
-      label="Дата"
-      variant="outlined"
-      class="DatePicker"
-      color="pink-lighten-5"
-      width="100%"
-      first-day-of-week="1"
-      header-date-format="normalDateWithWeekday"
-      title="Дата проведения"
-      rounded="lg"
-    />
+    <VExpansionPanels class="DatePicker">
+      <VExpansionPanel rounded="lg">
+        <VExpansionPanelTitle>
+          <VIcon icon="mdi-calendar" class="mr-2" />
+          Дата проведения
+        </VExpansionPanelTitle>
+
+        <VExpansionPanelText>
+          <VDatePicker
+            v-model="draftCard!.date"
+            label="Дата"
+            variant="outlined"
+            color="pink-lighten-4"
+            width="100%"
+            first-day-of-week="1"
+            header-date-format="normalDateWithWeekday"
+            hide-title
+          />
+        </VExpansionPanelText>
+      </VExpansionPanel>
+    </VExpansionPanels>
 
     <VTextField
       v-model="draftCard!.place"
@@ -145,6 +154,7 @@ const cancelButtonClickHandler = () => {
       label="Фото до"
       clearable
       variant="outlined"
+      bg-color="#fff"
     />
 
     <VFileInput
@@ -153,6 +163,7 @@ const cancelButtonClickHandler = () => {
       label="Фото после"
       clearable
       variant="outlined"
+      bg-color="#fff"
     />
 
     <div class="BottomNav">
@@ -209,12 +220,16 @@ const cancelButtonClickHandler = () => {
 }
 
 .Input {
-  :global(.v-field) {
+  &:deep(.v-field) {
     border-radius: 10px;
   }
 }
 
 .DatePicker {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+
+  &:deep(.v-input__details) {
+    display: none;
+  }
 }
 </style>
