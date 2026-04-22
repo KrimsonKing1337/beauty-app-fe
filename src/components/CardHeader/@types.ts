@@ -1,4 +1,9 @@
-import type { MenuItem } from 'primevue/menuitem';
+export type MenuItem = {
+  id: string;
+  label: string;
+  icon: string;
+  action: () => void;
+};
 
 export type CardHeaderProps = {
   leftTop?: string;

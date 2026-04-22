@@ -1,6 +1,4 @@
-import type { Procedure } from '@/@types';
-
-import { getApiOrigin } from '@/api/config.ts';
+import type { Procedure } from '@/@types';;
 
 import { formatDate } from '@/utils';
 
@@ -14,12 +12,4 @@ export const getCardInfo = (card: Procedure) => {
     meta,
     price,
   };
-};
-
-export const getBeforeAfterImagePaths = (imagePaths: string[] | undefined) => {
-  const apiOrigin = getApiOrigin();
-
-  const imagePathsSafe = imagePaths ?? [];
-
-  return imagePathsSafe.map((c: string) => `${apiOrigin}/${c}`);
 };

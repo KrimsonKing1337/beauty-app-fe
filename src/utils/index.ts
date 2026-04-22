@@ -1,5 +1,7 @@
 import type { ProcedureDto, Procedure } from '@/@types';
 
+import { getApiOrigin } from '@/api/config.ts';
+
 export const formatDate = (date: string | null) => {
   if (!date) {
     return '';
@@ -43,4 +45,12 @@ export const trimSeconds = (date: Date): Date => {
   nextDate.setSeconds(0, 0);
 
   return nextDate;
+};
+
+export const getBeforeAfterImagePaths = (imagePaths: string[] | undefined) => {
+  const apiOrigin = getApiOrigin();
+
+  const imagePathsSafe = imagePaths ?? [];
+
+  return imagePathsSafe.map((c: string) => `${apiOrigin}/${c}`);
 };

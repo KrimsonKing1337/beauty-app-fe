@@ -117,6 +117,7 @@ const showPreviousFullScreen = () => {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
+  margin-top: 16px;
 }
 
 .Item {

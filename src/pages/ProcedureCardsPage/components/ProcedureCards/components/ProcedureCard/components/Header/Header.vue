@@ -49,24 +49,26 @@ const handleRemoveCard = async (id: string) => {
 
 const menuItems = ref([
   {
+    id: 'edit',
     label: 'Редактировать',
-    icon: 'pi pi-pencil',
-    command: () => {
+    icon: 'mdi-pencil',
+    action: () => {
       procedureCardsStore.startEditCard(props.card);
     },
   },
   {
+    id: 'duplicate',
     label: 'Дублировать',
-    icon: 'pi pi-clone',
-    command: () => {
+    icon: 'mdi-content-copy',
+    action: () => {
       procedureCardsStore.duplicateCardDraft(props.card);
     },
   },
   {
+    id: 'delete',
     label: 'Удалить',
-    icon: 'pi pi-trash',
-    class: 'MenuDeleteButton',
-    command: () => {
+    icon: 'mdi-trash-can',
+    action: () => {
       handleRemoveCard(props.card.id);
     },
   },

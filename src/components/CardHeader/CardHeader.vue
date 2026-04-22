@@ -1,16 +1,12 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-
-import { Button, Menu } from 'primevue';
-
-import type { CardHeaderProps } from './CardHeader.types.ts';
+import type { CardHeaderProps } from './@types.ts';
 
 const props = defineProps<CardHeaderProps>();
 
-const menuRef = ref();
-
-const menuTriggerClickHandler = (e: MouseEvent) => {
-  menuRef.value.toggle(e);
+const getStyles = (id: string) => {
+  if (id === 'delete') {
+    return 'color: red';
+  }
 };
 </script>
 
@@ -36,20 +32,31 @@ const menuTriggerClickHandler = (e: MouseEvent) => {
       </div>
     </div>
 
-    <Button
+    <VBtn
+      id="menu-activator"
       class="MenuTrigger"
-      icon="pi pi-ellipsis-v"
-      aria-haspopup="true"
-      aria-controls="CardHeaderMenu"
-      @click="menuTriggerClickHandler"
+      variant="text"
+      density="comfortable"
+      icon="mdi-dots-vertical"
     />
 
-    <Menu
-      id="CardHeaderMenu"
-      ref="menuRef"
-      :model="props.menuItems"
-      :popup="true"
-    />
+    <VMenu activator="#menu-activator" offset="10">
+      <VList>
+        <VListItem
+          v-for="itemCur in props.menuItems"
+          :key="itemCur.id"
+          :title="itemCur.label"
+          :style="getStyles(itemCur.id)"
+          class="ListItem"
+
+          @click="itemCur.action"
+        >
+          <template #prepend>
+            <VIcon :icon="itemCur.icon" class="mr-2" size="small" />
+          </template>
+        </VListItem>
+      </VList>
+    </VMenu>
   </div>
 </template>
 
@@ -87,44 +94,23 @@ const menuTriggerClickHandler = (e: MouseEvent) => {
   align-items: flex-end;
   gap: 4px;
   margin-left: auto;
-  margin-right: 20px;
+  margin-right: 25px;
 }
 
 .MenuTrigger {
   position: absolute;
   z-index: 1;
   top: -5px;
-  right: -10px;
+  right: -15px;
   display: flex;
   align-items: center;
   justify-content: center;
   align-self: flex-start;
-  width: 24px;
-  height: 32px;
-  font-size: 32px;
-  color: var(--text-primary);
-  background: transparent;
-  border-color: transparent;
-  cursor: pointer;
 }
-</style>
 
-<style lang="scss">
-.MenuDeleteButton {
-  .p-menu-item-content {
-    background-color: var(--p-red-500);
-
-    &:hover {
-      .p-menu-item-icon,
-      .p-menu-item-label {
-        color: var(--p-navigation-item-icon-focus-color);
-      }
-    }
-  }
-
-  .p-menu-item-icon,
-  .p-menu-item-label {
-    color: var(--p-red-50);
+.ListItem {
+  :deep(.v-list-item__spacer) {
+    display: none;
   }
 }
 </style>
