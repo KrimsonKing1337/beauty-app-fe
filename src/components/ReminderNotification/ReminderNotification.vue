@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
+import type { ReminderDue } from '@/pages/RemindersPage/components/Reminders/utils';
+
 type Props = {
   id: string;
   title: string;
   description?: string | null;
   scheduledLabel: string;
   dueLabel?: string | null;
-  due: string;
+  due: ReminderDue;
 };
 
 const props = withDefaults(defineProps<Props>(), {
@@ -37,10 +39,21 @@ const timeLabel = computed(() => {
 
   return '';
 });
+
+const cssClassIsOverdue = computed(() => {
+  return props.due === 'isPast';
+});
+
+const cssClassIsNow = computed(() => {
+  return props.due === 'isNow';
+});
 </script>
 
 <template>
-  <div class="ReminderNotification" :class="{ isOverdue: props.due === 'isPast' }">
+  <div
+    class="ReminderNotification"
+    :class="{ isOverdue: cssClassIsOverdue, isNow: cssClassIsNow }"
+  >
     <div class="Header">
       <div class="Main">
         <div class="TitleRow">
@@ -96,6 +109,7 @@ const timeLabel = computed(() => {
         <button
           type="button"
           class="ActionButton isPrimary"
+          :class="{ isNow: cssClassIsNow }"
           @click="emit('complete', props.id)"
         >
           Завершить
@@ -122,6 +136,11 @@ const timeLabel = computed(() => {
   &.isOverdue {
     border-color: #efb7b7;
     background: #fff8f8;
+  }
+
+  &.isNow {
+    border-color: var(--success);
+    background-color: var(--success);
   }
 }
 
@@ -259,6 +278,11 @@ const timeLabel = computed(() => {
   &.isPrimary {
     background: var(--accent);
     color: #ffffff;
+
+    &.isNow {
+      background: #ffffff;
+      color: var(--success);
+    }
   }
 
   &.isSecondary {

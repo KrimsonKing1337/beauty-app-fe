@@ -50,7 +50,11 @@ const rightBottom = computed(() => {
 </script>
 
 <template>
-  <Card :is-disabled="reminder.isCompleted" :is-danger="formattedDate.due === 'isPast'">
+  <Card
+    :is-disabled="reminder.isCompleted"
+    :is-success="formattedDate.due === 'isNow'"
+    :is-danger="formattedDate.due === 'isPast'"
+  >
     <Header
       :reminder="reminder"
       :left-top="leftTop"

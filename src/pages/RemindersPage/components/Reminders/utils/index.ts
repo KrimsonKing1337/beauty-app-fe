@@ -6,6 +6,11 @@ export type FormatReminderDateArgs = {
   minutesBefore?: number;
 };
 
+export type ReminderDue = ''
+  | 'isNow'
+  | 'isTimeToNotify'
+  | 'isPast';
+
 export const formatReminderDate = ({
   date,
   currentNow,
@@ -27,6 +32,12 @@ export const formatReminderDate = ({
 
   const isPast = eventDiffMs < 0;
   const isTimeToNotify = notificationDiffMs <= 0 && !isPast;
+
+  const isNow = now.getFullYear() === date.getFullYear()
+    && now.getMonth() === date.getMonth()
+    && now.getDate() === date.getDate()
+    && now.getHours() === date.getHours()
+    && now.getMinutes() === date.getMinutes();
 
   const formatTime = (d: Date) =>
     d.toLocaleTimeString('ru-RU', {
@@ -79,7 +90,9 @@ export const formatReminderDate = ({
       relativeText = `просрочено на ${absDays} д`;
     }
   } else {
-    if (diffMinutes < 1) {
+    if (isNow) {
+      relativeText = 'сейчас';
+    } else if (diffMinutes < 1) {
       relativeText = 'меньше минуты';
     } else if (diffMinutes < 60) {
       relativeText = `через ${diffMinutes} мин`;
@@ -90,10 +103,14 @@ export const formatReminderDate = ({
     }
   }
 
-  let due = '';
+  let due: ReminderDue = '';
 
-  if (isTimeToNotify || isPast) {
-    due = isTimeToNotify ? 'isTimeToNotify' : 'isPast';
+  if (isNow) {
+    due = 'isNow';
+  } else if (isPast) {
+    due = 'isPast';
+  } else if (isTimeToNotify) {
+    due = 'isTimeToNotify';
   }
 
   return {
@@ -114,7 +131,7 @@ export const getHumanReadableRepeatPreset = (type: RepeatPreset) => {
     case 'monthly':
       return 'Ежемесячно';
     case 'yearly':
-      return 'Ежемесячно';
+      return 'Ежегодно';
     case 'daysOfWeek':
       return 'Дни недели';
     case 'custom':
@@ -144,8 +161,7 @@ export const repeatUiToStore =
   (repeatFormRef: RepeatFormRef): ReminderRepeat => {
     const { preset, daysOfWeek, customUnit, customInterval } = repeatFormRef;
 
-    const sortedDaysOfWeek = [...daysOfWeek]
-      .sort((a, b) => a - b);
+    const sortedDaysOfWeek = [...daysOfWeek].sort((a, b) => a - b);
 
     switch (preset) {
       case 'none':
