@@ -106,7 +106,10 @@ const cancelButtonClickHandler = () => {
       <VExpansionPanel rounded="lg">
         <VExpansionPanelTitle>
           <VIcon icon="mdi-calendar" class="mr-2" />
-          Дата проведения
+
+          <span>
+            Дата проведения
+          </span>
         </VExpansionPanelTitle>
 
         <VExpansionPanelText>
@@ -155,6 +158,7 @@ const cancelButtonClickHandler = () => {
       clearable
       variant="outlined"
       bg-color="#fff"
+      rounded="lg"
     />
 
     <VFileInput
@@ -164,12 +168,14 @@ const cancelButtonClickHandler = () => {
       clearable
       variant="outlined"
       bg-color="#fff"
+      rounded="lg"
     />
 
     <div class="BottomNav">
       <VBtn
         class="Button"
         color="pink-lighten-3"
+        rounded="lg"
         :loading="saveButtonIsLoadingRef"
         @click="saveButtonClickHandler"
       >
@@ -177,8 +183,8 @@ const cancelButtonClickHandler = () => {
       </VBtn>
 
       <VBtn
-        style="color: #111"
-        class="Button"
+        class="Button isSecondary"
+        rounded="lg"
         color="pink-lighten-5"
         @click="cancelButtonClickHandler"
       >
@@ -215,8 +221,11 @@ const cancelButtonClickHandler = () => {
 }
 
 .Button {
-  border-radius: 10px;
   color: #fff;
+
+  &.isSecondary {
+    color: #111;
+  }
 }
 
 .Input {
