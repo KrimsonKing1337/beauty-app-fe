@@ -12,6 +12,7 @@ const emit = defineEmits<{
   (e: 'update:date', value: Date): void;
   (e: 'update:place', value: string): void;
   (e: 'update:duration', value: string): void;
+  (e: 'update:price', value: number): void;
   (e: 'update:notes', value: string): void;
 }>();
 
@@ -77,6 +78,16 @@ const datePickerTitle = computed(() => {
       bg-color="#fff"
       rounded="lg"
       @update:model-value="emit('update:duration', $event)"
+    />
+
+    <VNumberInput
+      :model-value="draftCard.price"
+      label="Цена"
+      variant="outlined"
+      bg-color="#fff"
+      rounded="lg"
+      :min="0"
+      @update:model-value="emit('update:price', $event)"
     />
 
     <VTextField

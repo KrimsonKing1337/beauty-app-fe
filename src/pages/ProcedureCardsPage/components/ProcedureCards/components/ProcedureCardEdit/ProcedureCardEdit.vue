@@ -13,7 +13,6 @@ import { CardActions } from '@/components';
 
 import type { ImageFiles } from './@types';
 
-
 import { Form, UploadImages } from './components';
 
 import { saveButtonClickHandler } from './utils';
@@ -83,6 +82,7 @@ const updateDraftCard = <K extends keyof NonNullable<ProcedureDraft>>(
         @update:date="updateDraftCard('date', $event)"
         @update:place="updateDraftCard('place', $event)"
         @update:duration="updateDraftCard('duration', $event)"
+        @update:price="updateDraftCard('price', $event)"
         @update:notes="updateDraftCard('notes', $event)"
       />
 
