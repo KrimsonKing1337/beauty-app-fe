@@ -58,6 +58,7 @@ const safeCustomIntervalModel = computed({
       :items="options"
       bg-color="#fff"
       variant="outlined"
+      rounded="lg"
     />
 
     <div v-if="model.preset === 'daysOfWeek'">
@@ -78,6 +79,7 @@ const safeCustomIntervalModel = computed({
         :items="customUnitOptions"
         bg-color="#fff"
         variant="outlined"
+        rounded="lg"
       />
 
       <VNumberInput
@@ -86,6 +88,7 @@ const safeCustomIntervalModel = computed({
         :max="999"
         bg-color="#fff"
         variant="outlined"
+        rounded="lg"
       />
     </div>
   </div>

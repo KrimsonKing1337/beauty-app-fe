@@ -9,9 +9,12 @@ import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
 
 import { useSaveProcedureMutation } from '@/composables/mutations/procedures/useSaveProcedureMutation.ts';
 
+import { CardActions } from '@/components';
+
 import type { ImageFiles } from './@types';
 
-import { Actions, Form, UploadImages } from './components';
+
+import { Form, UploadImages } from './components';
 
 import { saveButtonClickHandler } from './utils';
 
@@ -73,10 +76,9 @@ const updateDraftCard = <K extends keyof NonNullable<ProcedureDraft>>(
 
 <template>
   <div v-if="draftCard" class="ProcedureCardEdit">
-    <div class="ProcedureCardEditItem">
+    <div class="Item">
       <Form
         :draft-card="draftCard"
-
         @update:procedure-name="updateDraftCard('procedureName', $event)"
         @update:date="updateDraftCard('date', $event)"
         @update:place="updateDraftCard('place', $event)"
@@ -87,14 +89,12 @@ const updateDraftCard = <K extends keyof NonNullable<ProcedureDraft>>(
       <UploadImages
         :before-file="imageFilesRef.before"
         :after-file="imageFilesRef.after"
-
         @update:before-file="imageFilesRef.before = $event"
         @update:after-file="imageFilesRef.after = $event"
       />
 
-      <Actions
+      <CardActions
         :is-loading="saveButtonIsLoadingRef"
-
         @save="handleSaveClick"
         @cancel="handleCancelClick"
       />
@@ -116,7 +116,7 @@ const updateDraftCard = <K extends keyof NonNullable<ProcedureDraft>>(
   box-shadow: 0 8px 20px rgba(43, 24, 31, 0.04);
 }
 
-.ProcedureCardEditItem {
+.Item {
   margin-top: var(--space-32);
 }
 </style>

@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { computed, ref } from 'vue';
+
 import type { ProcedureDraft } from '@/@types';
 
-defineProps<{
+const props = defineProps<{
   draftCard: ProcedureDraft;
 }>();
 
@@ -12,6 +14,12 @@ const emit = defineEmits<{
   (e: 'update:duration', value: string): void;
   (e: 'update:notes', value: string): void;
 }>();
+
+const firstTouch = ref(false);
+
+const datePickerTitle = computed(() => {
+  return firstTouch.value ? props.draftCard.date.toLocaleDateString() : 'Дата проведения';
+});
 </script>
 
 <template>
@@ -21,7 +29,7 @@ const emit = defineEmits<{
       label="Название процедуры"
       variant="outlined"
       bg-color="#fff"
-      class="Input"
+      rounded="lg"
       @update:model-value="emit('update:procedureName', $event)"
     />
 
@@ -31,7 +39,7 @@ const emit = defineEmits<{
           <VIcon icon="mdi-calendar" class="mr-2" />
 
           <span>
-            Дата проведения
+            {{ datePickerTitle }}
           </span>
         </VExpansionPanelTitle>
 
@@ -46,6 +54,7 @@ const emit = defineEmits<{
             header-date-format="normalDateWithWeekday"
             hide-title
             @update:model-value="emit('update:date', $event)"
+            @click="firstTouch = true"
           />
         </VExpansionPanelText>
       </VExpansionPanel>
@@ -56,7 +65,7 @@ const emit = defineEmits<{
       label="Место проведения"
       variant="outlined"
       bg-color="#fff"
-      class="Input"
+      rounded="lg"
       @update:model-value="emit('update:place', $event)"
     />
 
@@ -65,7 +74,7 @@ const emit = defineEmits<{
       label="Длительность"
       variant="outlined"
       bg-color="#fff"
-      class="Input"
+      rounded="lg"
       @update:model-value="emit('update:duration', $event)"
     />
 
@@ -74,19 +83,13 @@ const emit = defineEmits<{
       label="Описание"
       variant="outlined"
       bg-color="#fff"
-      class="Input"
+      rounded="lg"
       @update:model-value="emit('update:notes', $event)"
     />
   </div>
 </template>
 
 <style scoped lang="scss">
-.Input {
-  &:deep(.v-field) {
-    border-radius: 10px;
-  }
-}
-
 .DatePicker {
   margin-bottom: 25px;
 

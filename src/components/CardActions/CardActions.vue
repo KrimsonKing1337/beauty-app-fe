@@ -45,7 +45,7 @@ const emit = defineEmits<{
   color: #fff;
 
   &.isSecondary {
-    color: #111;
+    color: #000;
   }
 }
 </style>

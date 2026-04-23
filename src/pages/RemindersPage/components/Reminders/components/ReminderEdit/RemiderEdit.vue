@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import { Button } from 'primevue';
-
 import { storeToRefs } from 'pinia';
 
 import { useRemindersStore } from '@/stores/remindersStore.ts';
@@ -17,7 +15,7 @@ import {
 
 import { repeatStoreToUi, repeatUiToStore } from '@/pages/RemindersPage/components/Reminders/utils';
 
-import { Input } from '@/components';
+import { CardActions } from '@/components';
 
 import { trimSeconds } from '@/utils';
 
@@ -29,6 +27,8 @@ const createReminderMutation = useCreateReminderMutation();
 
 const { draftReminder } = storeToRefs(remindersStore);
 
+const saveButtonIsLoadingRef = ref(false);
+
 const repeatValues = repeatStoreToUi(draftReminder.value!.repeat);
 
 const repeatFormRef = ref(repeatValues);
@@ -37,6 +37,8 @@ const saveButtonClickHandler = async () => {
   if (!remindersStore.draftReminder) {
     return;
   }
+
+  saveButtonIsLoadingRef.value = true;
 
   const draft = remindersStore.draftReminder;
   const repeat = repeatUiToStore(repeatFormRef.value);
@@ -64,6 +66,8 @@ const saveButtonClickHandler = async () => {
   }
 
   remindersStore.clearDraft();
+
+  saveButtonIsLoadingRef.value = false;
 };
 
 const cancelButtonClickHandler = () => {
@@ -78,6 +82,7 @@ const cancelButtonClickHandler = () => {
       label="Название"
       variant="outlined"
       bg-color="#fff"
+      rounded="lg"
     />
 
     <VTextField
@@ -85,21 +90,19 @@ const cancelButtonClickHandler = () => {
       label="Описание"
       variant="outlined"
       bg-color="#fff"
+      rounded="lg"
     />
 
     <ItemDateTime v-model="draftReminder!.dateTime" />
-
     <ItemRepeat v-model="repeatFormRef" />
     <ItemMinutesBefore v-model="draftReminder!.notifications.minutesBefore" />
 
     <div class="BottomNav">
-      <Button severity="success" @click="saveButtonClickHandler">
-        Сохранить
-      </Button>
-
-      <Button severity="secondary" @click="cancelButtonClickHandler">
-        Отменить
-      </Button>
+      <CardActions
+        :is-loading="saveButtonIsLoadingRef"
+        @save="saveButtonClickHandler"
+        @cancel="cancelButtonClickHandler"
+      />
     </div>
   </div>
 </template>
