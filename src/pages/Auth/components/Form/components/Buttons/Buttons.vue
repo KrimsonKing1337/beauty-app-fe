@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { Button } from 'primevue';
-
 type Props = {
   isLoading: boolean;
   isSubmitDisabled: boolean;
@@ -10,14 +8,16 @@ defineProps<Props>();
 </script>
 
 <template>
-  <Button
-    class="Login"
+  <VBtn
     :loading="isLoading"
-    label="Войти"
-    type="submit"
-    fluid
     :disabled="isSubmitDisabled"
-  />
+    color="pink-lighten-3"
+    rounded="lg"
+    style="color: #fff"
+    type="submit"
+  >
+    Войти
+  </VBtn>
 
   <div class="Divider">
     <span>
@@ -25,14 +25,13 @@ defineProps<Props>();
     </span>
   </div>
 
-  <Button
-    class="CreateAccount"
-    label="Создать аккаунт"
-    severity="secondary"
-    variant="outlined"
-    type="button"
-    fluid
-  />
+  <VBtn
+    color="pink-lighten-5"
+    rounded="lg"
+    style="color: #000"
+  >
+    Создать аккаунт
+  </VBtn>
 </template>
 
 <style scoped lang="scss">

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { Input } from '@/components';
-
 type Props = {
   login: string;
   password: string;
@@ -16,22 +14,22 @@ const emit = defineEmits<{
 
 <template>
   <div class="Inputs">
-    <Input
-      id="auth-email"
+    <VTextField
       :model-value="login"
+      label="Логин"
+      rounded="lg"
+      variant="outlined"
       @update:model-value="value => emit('update:login', value)"
-    >
-      Логин
-    </Input>
+    />
 
-    <Input
-      id="auth-password"
-      type="password"
+    <VTextField
       :model-value="password"
+      type="password"
+      label="Пароль"
+      rounded="lg"
+      variant="outlined"
       @update:model-value="value => emit('update:password', value)"
-    >
-      Пароль
-    </Input>
+    />
   </div>
 </template>
 
