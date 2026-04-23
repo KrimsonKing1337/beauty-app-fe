@@ -36,6 +36,7 @@ const updateReminderMutation = useUpdateReminderMutation();
 const completed = computed(() => {
   return {
     label: props.reminder.isCompleted ? 'Отменить' : 'Завершить',
+    icon: props.reminder.isCompleted ? 'mdi-arrow-u-left-top ' : 'mdi-check-all',
   };
 });
 
@@ -74,7 +75,7 @@ const menuItems = computed(() => [
   {
     id: 'complete',
     label: completed.value.label,
-    icon: 'mdi-check-all',
+    icon: completed.value.icon,
     action: () => {
       handlerToggleReminderComplete(props.reminder);
     },
