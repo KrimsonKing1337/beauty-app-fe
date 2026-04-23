@@ -1,4 +1,4 @@
-import type { Procedure } from '@/@types';;
+import type { Procedure } from '@/@types';
 
 import { formatDate } from '@/utils';
 
