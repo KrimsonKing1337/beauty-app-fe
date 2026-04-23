@@ -136,7 +136,7 @@ const showPreviousFullScreen = () => {
   aspect-ratio: 4 / 5;
   border-radius: 18px;
   overflow: hidden;
-  background: var(--surface-muted);
+  background: #FCE4EC;
   border: 1px solid var(--border);
 
   img {

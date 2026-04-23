@@ -35,7 +35,7 @@ const props = defineProps<{
   box-shadow: 0 8px 20px rgba(43, 24, 31, 0.04);
 
   &.isSuccess {
-    background-color: var(--success);
+    background-color: #81C784;
   }
 
   &.isWarning {
@@ -43,7 +43,7 @@ const props = defineProps<{
   }
 
   &.isDanger {
-    background-color: var(--danger);
+    background-color: #FF8A80;
   }
 
   &.isDisabled {

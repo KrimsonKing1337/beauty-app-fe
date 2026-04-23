@@ -90,41 +90,40 @@ const cssClassIsNow = computed(() => {
       </div>
 
       <div class="Actions">
-        <button
-          type="button"
-          class="ActionButton isSecondary"
+        <VBtn
+          color="pink-lighten-5"
+          rounded="lg"
           @click="emit('snooze', props.id)"
         >
           Отложить
-        </button>
+        </VBtn>
 
-        <button
-          type="button"
-          class="ActionButton isGhost"
+        <VBtn
+          rounded="lg"
           @click="emit('open', props.id)"
         >
           Открыть
-        </button>
+        </VBtn>
 
-        <button
-          type="button"
-          class="ActionButton isPrimary"
-          :class="{ isNow: cssClassIsNow }"
+        <VBtn
+          rounded="lg"
+          color="pink-lighten-3"
+          style="color: #fff;"
           @click="emit('complete', props.id)"
         >
           Завершить
-        </button>
+        </VBtn>
       </div>
     </div>
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .ReminderNotification {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  width: 360px;
+  width: 365px;
   max-width: calc(100vw - 24px);
   padding: 14px;
   border: 1px solid #e7d7d7;
@@ -134,13 +133,13 @@ const cssClassIsNow = computed(() => {
   0 2px 10px rgba(0, 0, 0, 0.04);
 
   &.isOverdue {
-    border-color: #efb7b7;
-    background: #fff8f8;
+    border-color: #F44336; // red
+    background: #FF8A80; // red-accent-1
   }
 
   &.isNow {
-    border-color: var(--success);
-    background-color: var(--success);
+    border-color: #4CAF50; // green
+    background-color: #81C784; // green-lighten-2
   }
 }
 
@@ -186,12 +185,6 @@ const cssClassIsNow = computed(() => {
   font-size: 12px;
   font-weight: 600;
   line-height: 1;
-
-  &.isNotOverdue {
-    background: none;
-    color: #1f1f1f;
-    padding: 4px;
-  }
 }
 
 .Description {
@@ -254,66 +247,5 @@ const cssClassIsNow = computed(() => {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-}
-
-.ActionButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 34px;
-  padding: 0 12px;
-  border: none;
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.15s ease,
-  opacity 0.2s ease,
-  background-color 0.2s ease;
-
-  &:hover {
-    transform: translateY(-1px);
-  }
-
-  &.isPrimary {
-    background: var(--accent);
-    color: #ffffff;
-
-    &.isNow {
-      background: #ffffff;
-      color: var(--success);
-    }
-  }
-
-  &.isSecondary {
-    background: #f3f4f6;
-    color: #1f1f1f;
-  }
-
-  &.isGhost {
-    background: transparent;
-    color: #4b5563;
-
-    &:hover {
-      background: #f9fafb;
-    }
-  }
-}
-
-@media (max-width: 480px) {
-  . {
-    width: 100%;
-    padding: 12px;
-    border-radius: 16px;
-  }
-
-  .Actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .ActionButton_Primary {
-    grid-column: 1 / -1;
-  }
 }
 </style>
