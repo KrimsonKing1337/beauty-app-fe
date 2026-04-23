@@ -1,52 +1,102 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
-import { type DatePickerState, Button, DatePicker, FloatLabel } from 'primevue';
+const props = defineProps<{
+  modelValue?: Date | null;
+}>();
 
-const model = defineModel<Date>({ required: true });
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: Date): void;
+}>();
 
-const calendarRef = ref<DatePickerState | null>(null);
+const initialDate = props.modelValue ? new Date(props.modelValue) : new Date();
 
-const saveDateTimeButtonClickHandler = () => {
-  if (calendarRef.value) {
-    calendarRef.value.overlayVisible = false;
+const hours = initialDate.getHours().toString().padStart(2, '0');
+const minutes = initialDate.getMinutes().toString().padStart(2, '0');
+const time = `${hours}:${minutes}`;
+
+const dateModel = ref<Date>(initialDate);
+const timeModel = ref<string>(time);
+
+const dateTime = computed(() => {
+  const [hours = 0, minutes = 0] = timeModel.value.split(':').map(Number);
+
+  const result = new Date(dateModel.value);
+  result.setHours(hours, minutes, 0, 0);
+
+  return result;
+});
+
+watch(
+  dateTime,
+  (value) => {
+    emit('update:modelValue', value);
+  },
+  { immediate: true },
+);
+
+const firstTouch = ref(false);
+
+const title = computed(() => {
+  const date = dateTime.value.toLocaleDateString();
+  const time = dateTime.value.toLocaleTimeString();
+  const dateWithTime = `${date} ${time}`;
+
+  if (firstTouch.value) {
+    return dateWithTime;
   }
-};
+
+  return 'Дата и время проведения';
+});
 </script>
 
 <template>
-  <FloatLabel class="ReminderEditItemDateTime" variant="on">
-    <label for="input-date-time">
-      Дата напоминания
-    </label>
+  <VExpansionPanels class="DatePicker">
+    <VExpansionPanel rounded="lg">
+      <VExpansionPanelTitle>
+        <VIcon icon="mdi-calendar" class="mr-2" />
 
-    <DatePicker
-      id="input-date-time"
-      ref="calendarRef"
-      v-model="model"
-      date-format="dd.mm.yy"
-      show-time
-      fluid
-      show-button-bar
-      placeholder="Дата напоминания"
-    >
-      <template #buttonbar>
-        <div class="ButtonBar">
-          <Button severity="success" @click="saveDateTimeButtonClickHandler">
-            Закрыть
-          </Button>
-        </div>
-      </template>
-    </DatePicker>
-  </FloatLabel>
+        <span>
+          {{ title }}
+        </span>
+      </VExpansionPanelTitle>
+
+      <VExpansionPanelText>
+        <VDatePicker
+          v-model="dateModel"
+          variant="outlined"
+          color="pink-lighten-4"
+          width="100%"
+          first-day-of-week="1"
+          header-date-format="normalDateWithWeekday"
+          hide-title
+          @click="firstTouch = true"
+        />
+
+        <VTimePicker
+          v-model="timeModel"
+          format="24hr"
+          color="pink-lighten-3"
+          bg-color="#fff"
+          hide-title
+          theme="light"
+          class="TimePicker"
+          @click="firstTouch = true"
+        />
+      </VExpansionPanelText>
+    </VExpansionPanel>
+  </VExpansionPanels>
 </template>
 
 <style scoped lang="scss">
-.ReminderEditItemDateTime {
-  margin-top: var(--space-32);
+.TimePicker {
+  :deep(.v-time-picker-clock) {
+    background-color: #f8bbd0; // pink-lighten-4
+  }
 
-  label {
-    z-index: 1;
+  :deep(.v-time-picker-controls__time__field .v-field) {
+    background-color: #f8bbd0; // pink-lighten-4
+    color: #000;
   }
 }
 </style>

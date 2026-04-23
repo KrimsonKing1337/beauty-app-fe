@@ -88,6 +88,7 @@ const cancelButtonClickHandler = () => {
     />
 
     <ItemDateTime v-model="draftReminder!.dateTime" />
+
     <ItemRepeat v-model="repeatFormRef" />
     <ItemMinutesBefore v-model="draftReminder!.notifications.minutesBefore" />
 
