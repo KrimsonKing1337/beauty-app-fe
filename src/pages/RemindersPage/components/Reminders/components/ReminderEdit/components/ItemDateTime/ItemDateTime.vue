@@ -70,6 +70,7 @@ const title = computed(() => {
           first-day-of-week="1"
           header-date-format="normalDateWithWeekday"
           hide-title
+          rounded="lg"
           @click="firstTouch = true"
         />
 

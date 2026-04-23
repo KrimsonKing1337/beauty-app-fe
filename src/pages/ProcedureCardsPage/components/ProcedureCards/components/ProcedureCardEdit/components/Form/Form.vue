@@ -53,6 +53,7 @@ const datePickerTitle = computed(() => {
             first-day-of-week="1"
             header-date-format="normalDateWithWeekday"
             hide-title
+            rounded="lg"
             @update:model-value="emit('update:date', $event)"
             @click="firstTouch = true"
           />

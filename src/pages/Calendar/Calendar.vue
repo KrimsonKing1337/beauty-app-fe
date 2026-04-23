@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 
-import { DatePicker } from 'v-calendar';
-
 import { storeToRefs } from 'pinia';
 
 import type { Reminder as ReminderType, Procedure } from '@/@types';
@@ -17,7 +15,11 @@ import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQ
 import { ProcedureCards } from '@/pages/ProcedureCardsPage/components';
 import { Reminders } from '@/pages/RemindersPage/components';
 
-import { createErrorMessage, getTodayItems, useGetAttrs } from './utils';
+import {
+  createErrorMessage,
+  getTodayItems,
+  useGetEvents,
+} from './utils';
 
 const {
   data: procedures,
@@ -33,7 +35,7 @@ const {
   error: remindersError,
 } = useRemindersQuery();
 
-const attrs = useGetAttrs({
+const { events } = useGetEvents({
   procedures,
   reminders,
 });
@@ -68,12 +70,16 @@ const remindersErrorMessage = createErrorMessage(isRemindersError, remindersErro
 </script>
 
 <template>
-  <DatePicker
+  <VDatePicker
     v-model="dateRef"
-    :attributes="attrs"
-    expanded
-    title-position="right"
-    class="Calendar"
+    :events="events"
+    variant="outlined"
+    color="pink-lighten-4"
+    width="100%"
+    first-day-of-week="1"
+    header-date-format="normalDateWithWeekday"
+    hide-title
+    rounded="xl"
   />
 
   <div class="ItemsWrapper">
@@ -100,9 +106,5 @@ const remindersErrorMessage = createErrorMessage(isRemindersError, remindersErro
 <style scoped lang="scss">
 .ItemsWrapper {
   margin-top: 20px;
-}
-
-:global(.Calendar.vc-container.vc-bordered) {
-  border-radius: 24px;
 }
 </style>
