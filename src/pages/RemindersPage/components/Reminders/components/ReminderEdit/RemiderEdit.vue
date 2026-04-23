@@ -73,21 +73,19 @@ const cancelButtonClickHandler = () => {
 
 <template v-if="!!draftReminder">
   <div class="ReminderEdit">
-    <Input
-      id="input-name"
+    <VTextField
       v-model="draftReminder!.name"
-      class="ReminderEditItem"
-    >
-      Название
-    </Input>
+      label="Название"
+      variant="outlined"
+      bg-color="#fff"
+    />
 
-    <Input
-      id="input-description"
+    <VTextField
       v-model="draftReminder!.description"
-      class="ReminderEditItem"
-    >
-      Описание
-    </Input>
+      label="Описание"
+      variant="outlined"
+      bg-color="#fff"
+    />
 
     <ItemDateTime v-model="draftReminder!.dateTime" />
     <ItemRepeat v-model="repeatFormRef" />
@@ -121,10 +119,6 @@ const cancelButtonClickHandler = () => {
 
 .ReminderEditItem {
   margin-top: var(--space-32);
-
-  label {
-    z-index: 1;
-  }
 }
 
 .BottomNav {
