@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { Button } from 'primevue';
-
 import { useRouter, useRoute } from 'vue-router';
 
 import { useProcedureCardsStore } from '@/stores/procedureCardsStore';
@@ -31,38 +29,52 @@ const buttonCreateClickHandler = () => {
     procedureCardsStore.startCreateCard();
   }
 };
+
+const buttons = [
+  {
+    id: 'procedures',
+    label: 'Процедуры',
+    path: '/',
+    click: buttonProceduresClickHandler,
+  },
+  {
+    id: 'reminders',
+    label: 'Напоминания',
+    path: '/reminders',
+    click: buttonRemindersClickHandler,
+  },
+  {
+    id: 'calendar',
+    label: 'Календарь',
+    path: '/calendar',
+    click: buttonCalendarClickHandler,
+  },
+];
 </script>
 
 <template>
   <nav class="BottomNav">
     <div class="Inner">
-      <Button
+      <VBtn
+        v-for="buttonCur in buttons"
+        :key="buttonCur.id"
         class="Item"
-        :class="{ isActive: route.path === '/' }"
-        @click="buttonProceduresClickHandler"
+        :class="{ isActive: route.path === buttonCur.path }"
+        :color="route.path === buttonCur.path ? 'pink-lighten-3' : 'pink-lighten-5'"
+        @click="buttonCur.click"
       >
-        Процедуры
-      </Button>
+        {{ buttonCur.label }}
+      </VBtn>
 
-      <Button
-        class="Item"
-        :class="{ isActive: route.path === '/reminders' }"
-        @click="buttonRemindersClickHandler"
-      >
-        Напоминания
-      </Button>
-
-      <Button
-        class="Item"
+      <VBtn
+        v-if="route.path !== '/calendar'"
+        class="Item CreateButton"
         :class="{ isActive: route.path === '/calendar' }"
-        @click="buttonCalendarClickHandler"
+        color="pink-lighten-3"
+        @click="buttonCreateClickHandler"
       >
-        Календарь
-      </Button>
-
-      <Button v-if="route.path !== '/calendar'" class="Item CreateButton" @click="buttonCreateClickHandler">
-        <i class="pi pi-plus"></i>
-      </Button>
+        <VIcon icon="mdi-plus" />
+      </VBtn>
     </div>
   </nav>
 </template>
@@ -94,18 +106,17 @@ const buttonCreateClickHandler = () => {
   height: 32px;
   min-width: 52px;
   border-radius: 16px;
-  background: transparent;
-  color: var(--text-secondary);
+  color: #000;
   cursor: pointer;
 
   &.isActive {
-    background: var(--accent-soft);
-    color: #8e4e61;
+    color: #fff;
   }
 
   &.CreateButton {
     margin-left: auto;
     border-color: transparent;
+    color: #fff;
   }
 }
 </style>

@@ -5,8 +5,6 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { useAuthStore } from '@/stores/authStore';
 
-import { Button } from '@/components';
-
 import { formatDate } from '@/utils';
 
 const route = useRoute();
@@ -46,9 +44,13 @@ const handleLogout = async () => {
         Сегодня, {{ date }}
       </div>
 
-      <Button @click="handleLogout">
+      <VBtn
+        style="color: #fff; border-radius: 16px;"
+        color="pink-lighten-3"
+        @click="handleLogout"
+      >
         Выйти
-      </Button>
+      </VBtn>
     </div>
 
     <h1 class="Title">
