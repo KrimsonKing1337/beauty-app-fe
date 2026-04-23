@@ -1,1 +1,1 @@
-export * from './ImageFullScreen';
+export * from './ImageCarouselDialog';

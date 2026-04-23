@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 
-import { ImageFullScreen } from './components';
+import { ImageCarouselDialog } from './components';
 
 type Props = {
   beforeImagePaths: string[];
@@ -10,66 +10,74 @@ type Props = {
 
 const props = defineProps<Props>();
 
-type FullScreenType = 'before' | 'after' | null;
+type Slide = {
+  id: string;
+  label: string;
+  imagePath: string;
+  type: 'before' | 'after';
+};
 
-const fullScreenType = ref<FullScreenType>(null);
+const isDialogOpen = ref(false);
+const activeSlideIndex = ref(0);
 
 const beforeImagePath = computed(() => props.beforeImagePaths[0] ?? null);
 const afterImagePath = computed(() => props.afterImagePaths[0] ?? null);
 
-const fullScreenImagePath = computed<string | null>(() => {
-  if (fullScreenType.value === 'before') {
-    return beforeImagePath.value;
+const slides = computed<Slide[]>(() => {
+  const result: Slide[] = [];
+
+  if (beforeImagePath.value) {
+    result.push({
+      id: 'before',
+      label: 'До',
+      imagePath: beforeImagePath.value,
+      type: 'before',
+    });
   }
 
-  if (fullScreenType.value === 'after') {
-    return afterImagePath.value;
+  if (afterImagePath.value) {
+    result.push({
+      id: 'after',
+      label: 'После',
+      imagePath: afterImagePath.value,
+      type: 'after',
+    });
   }
 
-  return null;
+  return result;
 });
 
-const openBeforeFullScreen = () => {
-  if (!beforeImagePath.value) {
+const openSlide = (type: 'before' | 'after') => {
+  const index = slides.value.findIndex((slide) => slide.type === type);
+
+  if (index === -1) {
     return;
   }
 
-  fullScreenType.value = 'before';
+  activeSlideIndex.value = index;
+  isDialogOpen.value = true;
+};
+
+const openBeforeFullScreen = () => {
+  openSlide('before');
 };
 
 const openAfterFullScreen = () => {
-  if (!afterImagePath.value) {
-    return;
-  }
-
-  fullScreenType.value = 'after';
+  openSlide('after');
 };
 
 const closeFullScreen = () => {
-  fullScreenType.value = null;
-};
-
-const showNextFullScreen = () => {
-  if (fullScreenType.value === 'before' && afterImagePath.value) {
-    fullScreenType.value = 'after';
-  }
-};
-
-const showPreviousFullScreen = () => {
-  if (fullScreenType.value === 'after' && beforeImagePath.value) {
-    fullScreenType.value = 'before';
-  }
+  isDialogOpen.value = false;
 };
 </script>
 
 <template>
   <div class="BeforeAfter">
-    <ImageFullScreen
-      v-if="fullScreenType && fullScreenImagePath"
-      :image-path="fullScreenImagePath"
+    <ImageCarouselDialog
+      v-model="isDialogOpen"
+      v-model:index="activeSlideIndex"
+      :slides="slides"
       @close="closeFullScreen"
-      @next="showNextFullScreen"
-      @prev="showPreviousFullScreen"
     />
 
     <div class="Item">
@@ -144,6 +152,7 @@ const showPreviousFullScreen = () => {
     height: 100%;
     object-fit: cover;
     display: block;
+    cursor: pointer;
   }
 }
 
