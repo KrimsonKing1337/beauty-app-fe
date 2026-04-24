@@ -15,17 +15,6 @@ type Props = {
 
 const props = defineProps<Props>();
 
-const reminderRefs = new Map<string, HTMLElement>();
-
-const setReminderRef = (id: string, el: HTMLElement | null) => {
-  if (el) {
-    reminderRefs.set(id, el);
-    return;
-  }
-
-  reminderRefs.delete(id);
-};
-
 watch(
   [() => props.lastTouchedReminderId, () => props.reminders],
   ([id]) => {
@@ -34,10 +23,12 @@ watch(
     }
 
     nextTick(() => {
-      reminderRefs.get(id)?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
+      setTimeout(() => {
+        document.querySelector(`#reminder-${id}`)?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+      }, 300); // animation time
     });
   },
 );
@@ -57,8 +48,8 @@ watch(
       <div v-if="!isEditing" class="RemindersWrapper">
         <div
           v-for="reminderCur in reminders"
+          :id="`reminder-${reminderCur.id}`"
           :key="reminderCur.id"
-          :ref="(el) => setReminderRef(reminderCur.id, el as HTMLElement)"
           class="FullWidth"
         >
           <Reminder :key="reminderCur.id" :reminder="reminderCur" />

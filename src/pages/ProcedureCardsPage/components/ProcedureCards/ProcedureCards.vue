@@ -15,17 +15,6 @@ type Props = {
 
 const props = defineProps<Props>();
 
-const cardRefs = new Map<string, HTMLElement>();
-
-const setCardRef = (id: string, el: HTMLElement | null) => {
-  if (el) {
-    cardRefs.set(id, el);
-    return;
-  }
-
-  cardRefs.delete(id);
-};
-
 watch(
   () => props.lastTouchedCardId,
   (id) => {
@@ -34,10 +23,12 @@ watch(
     }
 
     nextTick(() => {
-      cardRefs.get(id)?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
+      setTimeout(() => {
+        document.querySelector(`#card-${id}`)?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+      }, 300); // animation time
     });
   },
 );
@@ -57,8 +48,8 @@ watch(
       <div v-if="!isEditing" class="ProcedureCardsWrapper">
         <div
           v-for="cardCur in cards"
+          :id="`card-${cardCur.id}`"
           :key="cardCur.id"
-          :ref="(el) => setCardRef(cardCur.id, el as HTMLElement)"
           class="FullWidth"
         >
           <ProcedureCard :card="cardCur" />
