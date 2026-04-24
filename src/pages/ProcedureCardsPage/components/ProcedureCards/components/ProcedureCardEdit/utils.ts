@@ -55,12 +55,14 @@ type ProcedureCardsStore = {
 type SaveButtonClickHandlerArgs = {
   store: ProcedureCardsStore;
   saveProcedureMutation: SaveProcedureMutation;
+  invalidateCacheCallback: () => Promise<void>;
   files: ImageFiles;
 };
 
 export const saveButtonClickHandler = async ({
   store,
   saveProcedureMutation,
+  invalidateCacheCallback,
   files,
 }: SaveButtonClickHandlerArgs): Promise<void> => {
   if (!store.draftCard) {
@@ -79,6 +81,8 @@ export const saveButtonClickHandler = async ({
       procedureId: store.editingCardId,
       files,
     });
+
+    await invalidateCacheCallback();
 
     store.setLastTouchedCardId(saved.id);
   } else {
@@ -104,6 +108,8 @@ export const saveButtonClickHandler = async ({
       files,
     });
   }
+
+  await invalidateCacheCallback();
 
   store.clearDraft();
 };

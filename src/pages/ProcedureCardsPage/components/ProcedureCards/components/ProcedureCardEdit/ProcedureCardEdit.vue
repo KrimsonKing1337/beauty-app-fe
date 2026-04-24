@@ -3,6 +3,8 @@ import { ref } from 'vue';
 
 import { storeToRefs } from 'pinia';
 
+import { useQueryClient } from '@tanstack/vue-query';
+
 import type { ProcedureDraft } from '@/@types';
 
 import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
@@ -16,6 +18,8 @@ import type { ImageFiles } from './@types';
 import { Form, UploadImages } from './components';
 
 import { saveButtonClickHandler } from './utils';
+
+const queryClient = useQueryClient();
 
 const procedureCardsStore = useProcedureCardsStore();
 const saveProcedureMutation = useSaveProcedureMutation();
@@ -36,6 +40,10 @@ const resetImageFiles = () => {
   };
 };
 
+const invalidateCacheCallback = async () => {
+  await queryClient.invalidateQueries({ queryKey: ['procedures'] });
+};
+
 const handleSaveClick = async () => {
   if (!procedureCardsStore.draftCard) {
     return;
@@ -47,6 +55,7 @@ const handleSaveClick = async () => {
     await saveButtonClickHandler({
       store: procedureCardsStore,
       saveProcedureMutation,
+      invalidateCacheCallback,
       files: imageFilesRef.value,
     });
 
