@@ -24,8 +24,6 @@
 }
 
 :root {
-  --font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-
   --fs-display: 28px;
   --fs-h1: 24px;
   --fs-h2: 20px;
@@ -43,16 +41,6 @@
   --fw-regular: 400;
   --fw-medium: 500;
   --fw-semibold: 600;
-}
-
-:root {
-  --space-4: 4px;
-  --space-8: 8px;
-  --space-12: 12px;
-  --space-16: 16px;
-  --space-20: 20px;
-  --space-24: 24px;
-  --space-32: 32px;
 }
 
 body {
