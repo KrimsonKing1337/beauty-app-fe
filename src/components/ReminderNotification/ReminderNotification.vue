@@ -201,7 +201,6 @@ const cssClassIsNow = computed(() => {
 }
 
 .CloseButton {
-  border: 1px red solid;
   display: inline-flex;
   align-items: center;
   justify-content: center;

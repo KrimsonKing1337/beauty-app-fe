@@ -71,17 +71,28 @@ const menuActivatorId = useId();
   align-items: flex-start;
   justify-content: flex-start;
   gap: 12px;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .Left {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  width: 70%;
+
+  @media (max-width: 480px) {
+    width: 50%;
+  }
 }
 
 .Title {
   margin: 0;
   font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .SubTitle {
@@ -96,6 +107,7 @@ const menuActivatorId = useId();
   margin-left: auto;
   margin-right: 25px;
   min-width: 100px;
+  width: 30%;
 }
 
 .MenuTrigger {

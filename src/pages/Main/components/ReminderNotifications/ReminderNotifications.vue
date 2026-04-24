@@ -135,5 +135,12 @@ const shouldShowNotification = (reminderCur: typeof remindersWithFormattedDate.v
   justify-content: flex-start;
   align-items: center;
   gap: 15px;
+
+  @media (max-width: 480px) {
+    top: 5px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+  }
 }
 </style>
