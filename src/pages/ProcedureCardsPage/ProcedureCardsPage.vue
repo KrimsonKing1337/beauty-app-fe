@@ -42,17 +42,19 @@ const showPlaceholder = computed(() => {
 </script>
 
 <template>
-  <CardPlaceholder v-if="showPlaceholder">
-    Здесь будут процедуры
-  </CardPlaceholder>
+  <div>
+    <CardPlaceholder v-if="showPlaceholder">
+      Здесь будут процедуры
+    </CardPlaceholder>
 
-  <ProcedureCards
-    :cards="cards"
-    :is-loading="isLoading"
-    :error-message="errorMessage"
-    :is-editing="isEditing"
-    :last-touched-card-id="lastTouchedCardId"
-  />
+    <ProcedureCards
+      :cards="cards"
+      :is-loading="isLoading"
+      :error-message="errorMessage"
+      :is-editing="isEditing"
+      :last-touched-card-id="lastTouchedCardId"
+    />
+  </div>
 </template>
 
 <style scoped lang="scss">

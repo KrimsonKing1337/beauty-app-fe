@@ -70,36 +70,38 @@ const remindersErrorMessage = createErrorMessage(isRemindersError, remindersErro
 </script>
 
 <template>
-  <VDatePicker
-    v-model="dateRef"
-    :events="events"
-    variant="outlined"
-    color="pink-lighten-4"
-    width="100%"
-    first-day-of-week="1"
-    header-date-format="normalDateWithWeekday"
-    hide-title
-    rounded="xl"
-  />
-
-  <div class="ItemsWrapper">
-    <ProcedureCards
-      v-if="proceduresComputed.length"
-      :cards="proceduresComputed"
-      :is-loading="isProceduresLoading"
-      :error-message="proceduresErrorMessage"
-      :is-editing="isProcedureEditing"
-      :last-touched-card-id="lastTouchedCardId"
+  <div>
+    <VDatePicker
+      v-model="dateRef"
+      :events="events"
+      variant="outlined"
+      color="pink-lighten-4"
+      width="100%"
+      first-day-of-week="1"
+      header-date-format="normalDateWithWeekday"
+      hide-title
+      rounded="xl"
     />
 
-    <Reminders
-      v-if="remindersComputed.length"
-      :reminders="remindersComputed"
-      :is-loading="isRemindersLoading"
-      :error-message="remindersErrorMessage"
-      :is-editing="isReminderEditing"
-      :last-touched-reminder-id="lastTouchedReminderId"
-    />
+    <div class="ItemsWrapper">
+      <ProcedureCards
+        v-if="proceduresComputed.length"
+        :cards="proceduresComputed"
+        :is-loading="isProceduresLoading"
+        :error-message="proceduresErrorMessage"
+        :is-editing="isProcedureEditing"
+        :last-touched-card-id="lastTouchedCardId"
+      />
+
+      <Reminders
+        v-if="remindersComputed.length"
+        :reminders="remindersComputed"
+        :is-loading="isRemindersLoading"
+        :error-message="remindersErrorMessage"
+        :is-editing="isReminderEditing"
+        :last-touched-reminder-id="lastTouchedReminderId"
+      />
+    </div>
   </div>
 </template>
 

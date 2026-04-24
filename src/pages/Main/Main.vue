@@ -16,9 +16,11 @@ const route = useRoute();
       <PageHeader />
       <ReminderNotifications />
 
-      <ProcedureCardsPage v-if="route.path === '/'" />
-      <RemindersPage v-if="route.path === '/reminders'" />
-      <Calendar v-if="route.path === '/calendar'" />
+      <Transition name="page" mode="out-in">
+        <ProcedureCardsPage v-if="route.path === '/'" />
+        <RemindersPage v-else-if="route.path === '/reminders'" />
+        <Calendar v-else-if="route.path === '/calendar'" />
+      </Transition>
 
       <BottomNav />
     </div>
@@ -55,5 +57,22 @@ const route = useRoute();
   justify-content: flex-start;
   align-items: center;
   gap: 15px;
+}
+
+.page-enter-active,
+.page-leave-active {
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
 }
 </style>

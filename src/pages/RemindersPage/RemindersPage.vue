@@ -54,17 +54,19 @@ watch(
 </script>
 
 <template>
-  <CardPlaceholder v-if="showPlaceholder">
-    Здесь будут напоминания
-  </CardPlaceholder>
+  <div>
+    <CardPlaceholder v-if="showPlaceholder">
+      Здесь будут напоминания
+    </CardPlaceholder>
 
-  <Reminders
-    :reminders="reminders"
-    :is-loading="isLoading"
-    :error-message="errorMessage"
-    :is-editing="isEditing"
-    :last-touched-reminder-id="lastTouchedReminderId"
-  />
+    <Reminders
+      :reminders="reminders"
+      :is-loading="isLoading"
+      :error-message="errorMessage"
+      :is-editing="isEditing"
+      :last-touched-reminder-id="lastTouchedReminderId"
+    />
+  </div>
 </template>
 
 <style scoped lang="scss">
