@@ -53,18 +53,20 @@ watch(
       Ошибка: {{ errorMessage }}
     </div>
 
-    <div v-if="!isEditing" class="RemindersWrapper">
-      <div
-        v-for="reminderCur in reminders"
-        :key="reminderCur.id"
-        :ref="(el) => setReminderRef(reminderCur.id, el as HTMLElement)"
-        class="FullWidth"
-      >
-        <Reminder :key="reminderCur.id" :reminder="reminderCur" />
+    <Transition name="fade" mode="out-in">
+      <div v-if="!isEditing" class="RemindersWrapper">
+        <div
+          v-for="reminderCur in reminders"
+          :key="reminderCur.id"
+          :ref="(el) => setReminderRef(reminderCur.id, el as HTMLElement)"
+          class="FullWidth"
+        >
+          <Reminder :key="reminderCur.id" :reminder="reminderCur" />
+        </div>
       </div>
-    </div>
 
-    <ReminderEdit v-if="isEditing" class="FullWidth" />
+      <ReminderEdit v-else class="FullWidth" />
+    </Transition>
   </div>
 </template>
 
@@ -84,5 +86,18 @@ watch(
 
 .FullWidth {
   width: 100%;
+}
+
+.fade-enter-active {
+  transition: opacity 0.2s ease-in-out;
+}
+
+.fade-leave-active {
+  transition: opacity 0.12s ease-in-out;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

@@ -53,18 +53,20 @@ watch(
       Ошибка: {{ errorMessage }}
     </div>
 
-    <div v-if="!isEditing" class="ProcedureCardsWrapper">
-      <div
-        v-for="cardCur in cards"
-        :key="cardCur.id"
-        :ref="(el) => setCardRef(cardCur.id, el as HTMLElement)"
-        class="FullWidth"
-      >
-        <ProcedureCard :card="cardCur" />
+    <Transition name="fade" mode="out-in">
+      <div v-if="!isEditing" class="ProcedureCardsWrapper">
+        <div
+          v-for="cardCur in cards"
+          :key="cardCur.id"
+          :ref="(el) => setCardRef(cardCur.id, el as HTMLElement)"
+          class="FullWidth"
+        >
+          <ProcedureCard :card="cardCur" />
+        </div>
       </div>
-    </div>
 
-    <ProcedureCardEdit v-if="isEditing" class="FullWidth" />
+      <ProcedureCardEdit v-else class="FullWidth" />
+    </Transition>
   </div>
 </template>
 
@@ -80,5 +82,18 @@ watch(
 
 .FullWidth {
   width: 100%;
+}
+
+.fade-enter-active {
+  transition: opacity 0.2s ease-in-out;
+}
+
+.fade-leave-active {
+  transition: opacity 0.12s ease-in-out;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
