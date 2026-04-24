@@ -42,7 +42,7 @@ const showPlaceholder = computed(() => {
 </script>
 
 <template>
-  <div>
+  <div class="ProcedureCardsPage">
     <CardPlaceholder v-if="showPlaceholder">
       Здесь будут процедуры
     </CardPlaceholder>
@@ -58,5 +58,7 @@ const showPlaceholder = computed(() => {
 </template>
 
 <style scoped lang="scss">
-
+.ProcedureCardsPage {
+  width: 100%;
+}
 </style>

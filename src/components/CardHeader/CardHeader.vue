@@ -17,9 +17,9 @@ const menuActivatorId = useId();
 <template>
   <div class="CardHeader">
     <div v-if="props.leftTop || props.leftBottom" class="Left">
-      <h2 v-if="props.leftTop" class="Title text-title-large">
+      <div v-if="props.leftTop" class="Title text-title-large">
         {{ props.leftTop }}
-      </h2>
+      </div>
 
       <div v-if="props.leftBottom" class="SubTitle text-body-medium">
         {{ props.leftBottom }}
@@ -27,9 +27,9 @@ const menuActivatorId = useId();
     </div>
 
     <div v-if="props.rightTop || props.rightBottom" class="Right">
-      <h2 v-if="props.rightTop" class="Title">
+      <div v-if="props.rightTop" class="Title">
         {{ props.rightTop }}
-      </h2>
+      </div>
 
       <div v-if="props.rightBottom" class="SubTitle text-body-medium">
         {{ props.rightBottom }}
@@ -95,6 +95,7 @@ const menuActivatorId = useId();
   gap: 4px;
   margin-left: auto;
   margin-right: 25px;
+  min-width: 100px;
 }
 
 .MenuTrigger {

@@ -111,11 +111,4 @@ const submitHandler = async () => {
 .CreateAccount {
   width: 100%;
 }
-
-@media (max-width: 480px) {
-  .Row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
 </style>
