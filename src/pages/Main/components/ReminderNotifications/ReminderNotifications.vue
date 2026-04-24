@@ -127,7 +127,7 @@ const shouldShowNotification = (reminderCur: typeof remindersWithFormattedDate.v
 <style scoped lang="scss">
 .ReminderNotifications {
   position: absolute;
-  z-index: 1;
+  z-index: 10;
   top: 25px;
   right: 25px;
   display: flex;
