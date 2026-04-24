@@ -73,7 +73,6 @@ const menuActivatorId = useId();
   gap: 12px;
   width: 100%;
   max-width: 100%;
-  overflow: hidden;
 }
 
 .Left {

@@ -101,27 +101,24 @@ const shouldShowNotification = (reminderCur: typeof remindersWithFormattedDate.v
 };
 </script>
 <template>
-  <div class="ReminderNotifications">
-    <div
-      v-for="reminderCur in filteredRemindersWithFormattedDate"
+  <TransitionGroup name="notifications" tag="div" class="ReminderNotifications">
+    <ReminderNotification
+      v-for="reminderCur in filteredRemindersWithFormattedDate.filter(shouldShowNotification)"
+      :id="reminderCur.id"
       :key="reminderCur.id"
-    >
-      <ReminderNotification
-        v-if="shouldShowNotification(reminderCur)"
-        :id="reminderCur.id"
-        :title="reminderCur.name"
-        :description="reminderCur.description"
-        :scheduled-label="reminderCur.formattedDate.main"
-        :due-label="reminderCur.formattedDate.relative"
-        :due="reminderCur.formattedDate.due"
 
-        @complete="handleComplete"
-        @snooze="handleSnooze"
-        @close="handleClose"
-        @open="handleOpen"
-      />
-    </div>
-  </div>
+      :title="reminderCur.name"
+      :description="reminderCur.description"
+      :scheduled-label="reminderCur.formattedDate.main"
+      :due-label="reminderCur.formattedDate.relative"
+      :due="reminderCur.formattedDate.due"
+
+      @complete="handleComplete"
+      @snooze="handleSnooze"
+      @close="handleClose"
+      @open="handleOpen"
+    />
+  </TransitionGroup>
 </template>
 
 <style scoped lang="scss">
@@ -142,5 +139,23 @@ const shouldShowNotification = (reminderCur: typeof remindersWithFormattedDate.v
     right: 0;
     margin: 0 auto;
   }
+}
+
+.notifications-enter-active,
+.notifications-leave-active,
+.notifications-move {
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.notifications-enter-from,
+.notifications-leave-to {
+  opacity: 0;
+  transform: translateX(-8px);
+}
+
+.notifications-leave-active {
+  position: absolute;
 }
 </style>
