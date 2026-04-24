@@ -8,8 +8,6 @@
   --text-tertiary: #9d9398;
 
   --accent: #d98ea1;
-  --accent-hover: #c97b90;
-  --accent-soft: #f6d9e1;
 
   --border: #ece3e7;
   --shadow: 0 10px 30px rgba(43, 24, 31, 0.06);
@@ -17,10 +15,6 @@
   --success: #7eb88a;
   --warning: #d8a55d;
   --danger: #d37a7a;
-
-  --auth-bg-top: #fcf9fa;
-  --auth-bg-bottom: #f6f1f3;
-  --auth-glass: rgba(255, 255, 255, 0.88);
 }
 
 :root {
@@ -49,5 +43,5 @@ body {
   font-size: var(--fs-body);
   line-height: var(--lh-body);
   color: var(--text-primary);
-  background: var(--bg);
+  background: var(--v-grey-lighten-4);
 }

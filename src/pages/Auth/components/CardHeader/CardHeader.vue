@@ -4,13 +4,13 @@
 
 <template>
   <div class="CardHeader">
-    <h2 class="Title">
+    <div class="Title">
       Авторизация
-    </h2>
+    </div>
 
-    <p class="Subtitle">
+    <div class="Subtitle">
       Введи логин и пароль, чтобы продолжить
-    </p>
+    </div>
   </div>
 </template>
 

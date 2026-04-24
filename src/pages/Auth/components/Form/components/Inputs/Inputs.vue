@@ -19,6 +19,7 @@ const emit = defineEmits<{
       label="Логин"
       rounded="lg"
       variant="outlined"
+      hide-details
       @update:model-value="value => emit('update:login', value)"
     />
 
@@ -28,6 +29,7 @@ const emit = defineEmits<{
       label="Пароль"
       rounded="lg"
       variant="outlined"
+      hide-details
       @update:model-value="value => emit('update:password', value)"
     />
   </div>
