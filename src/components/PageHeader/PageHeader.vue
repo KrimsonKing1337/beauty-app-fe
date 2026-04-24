@@ -40,7 +40,7 @@ const handleLogout = async () => {
 <template>
   <header class="PageHeader">
     <div class="PageHeaderTopRow">
-      <div class="Date">
+      <div class="Date text-label-medium">
         Сегодня, {{ date }}
       </div>
 
@@ -53,11 +53,11 @@ const handleLogout = async () => {
       </VBtn>
     </div>
 
-    <h1 class="Title">
+    <h1 class="Title text-headline-medium">
       {{ title }}
     </h1>
 
-    <p class="User">
+    <p class="User text-label-medium">
       {{ userName }}
     </p>
   </header>
@@ -79,14 +79,12 @@ const handleLogout = async () => {
 }
 
 .Date {
-  font-size: var(--fs-caption);
+  font-size: 13px;
   color: var(--text-secondary);
 }
 
 .Title {
-  font-size: var(--fs-display);
-  line-height: var(--lh-display);
-  font-weight: var(--fw-semibold);
+  font-weight: 600;
   margin: 0;
 }
 
@@ -97,7 +95,7 @@ const handleLogout = async () => {
 
 .User {
   margin: 4px 0 0;
-  font-size: var(--fs-caption);
+  font-size: 13px;
   color: var(--text-tertiary);
 }
 

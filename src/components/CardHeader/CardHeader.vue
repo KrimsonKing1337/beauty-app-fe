@@ -13,11 +13,11 @@ const getStyles = (id: string) => {
 <template>
   <div class="CardHeader">
     <div v-if="props.leftTop || props.leftBottom" class="Left">
-      <h2 v-if="props.leftTop" class="Title">
+      <h2 v-if="props.leftTop" class="Title text-title-large">
         {{ props.leftTop }}
       </h2>
 
-      <div v-if="props.leftBottom" class="SubTitle">
+      <div v-if="props.leftBottom" class="SubTitle text-body-medium">
         {{ props.leftBottom }}
       </div>
     </div>
@@ -27,7 +27,7 @@ const getStyles = (id: string) => {
         {{ props.rightTop }}
       </h2>
 
-      <div v-if="props.rightBottom" class="SubTitle">
+      <div v-if="props.rightBottom" class="SubTitle text-body-medium">
         {{ props.rightBottom }}
       </div>
     </div>
@@ -77,14 +77,10 @@ const getStyles = (id: string) => {
 
 .Title {
   margin: 0;
-  font-size: var(--fs-title);
-  line-height: var(--lh-title);
-  font-weight: var(--fw-semibold);
+  font-weight: 600;
 }
 
 .SubTitle {
-  font-size: var(--fs-caption);
-  line-height: var(--lh-caption);
   color: var(--text-secondary);
 }
 

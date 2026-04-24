@@ -78,7 +78,7 @@ watch(
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--space-16);
+  gap: 16px;
   width: 100%;
 }
 

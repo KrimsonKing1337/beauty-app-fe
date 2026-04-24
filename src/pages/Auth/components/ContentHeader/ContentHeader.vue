@@ -31,9 +31,9 @@
   padding: 6px 12px;
   border: 1px solid rgba(217, 142, 161, 0.28);
   border-radius: 999px;
-  font-size: var(--fs-caption);
-  line-height: var(--lh-caption);
-  font-weight: var(--fw-medium);
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 500;
   color: var(--accent-hover);
   background: rgba(255, 255, 255, 0.72);
   backdrop-filter: blur(10px);

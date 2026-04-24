@@ -100,7 +100,7 @@ const safeCustomIntervalModel = computed({
   border-radius: 12px;
   padding: 0;
   transition: border 0.2s, padding 0.2s;
-  margin-top: var(--space-32);
+  margin-top: 32px;
 
   &.isActive {
     border: 1px #ccc solid;
@@ -117,6 +117,6 @@ const safeCustomIntervalModel = computed({
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-top: var(--space-24);
+  margin-top: 24px;
 }
 </style>

@@ -175,26 +175,13 @@ export const syncReminderNotification = async (reminder: Reminder) => {
   }
 
   const notificationId = getReminderNotificationId(reminder.id);
-  const notificationDate = getReminderNotificationDate(reminder);
-  const diffMs = notificationDate.getTime() - Date.now();
-
-  console.log('--- syncReminderNotification ---');
-  console.log('reminder.id', reminder.id);
-  console.log('reminder.dateTime', reminder.dateTime);
-  console.log('minutesBefore', reminder.notifications.minutesBefore);
-  console.log('notificationDate', notificationDate);
-  console.log('diffMs', diffMs);
-  console.log('isRelevant', isReminderNotificationRelevant(reminder));
-  console.log('shouldUseExactAlarmFlow', shouldUseExactAlarmFlow(notificationDate));
 
   await cancelNotificationById(notificationId);
 
   if (!isReminderNotificationRelevant(reminder)) {
-    console.log('skip: not relevant');
     return;
   }
 
-  // ВРЕМЕННО отключаем exact-проверку для диагностики
   await LocalNotifications.schedule({
     notifications: [buildReminderNotification(reminder)],
   });

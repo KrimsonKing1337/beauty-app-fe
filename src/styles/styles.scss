@@ -1,41 +1,16 @@
 :root {
   --surface: #ffffff;
   --surface-muted: #f3eef0;
-
   --text-primary: #1f1b1d;
   --text-secondary: #6f666b;
   --text-tertiary: #9d9398;
-
   --accent: #d98ea1;
-
   --border: #ece3e7;
-}
-
-:root {
-  --fs-display: 28px;
-  --fs-h1: 24px;
-  --fs-h2: 20px;
-  --fs-title: 17px;
-  --fs-body: 15px;
-  --fs-caption: 13px;
-
-  --lh-display: 34px;
-  --lh-h1: 30px;
-  --lh-h2: 26px;
-  --lh-title: 22px;
-  --lh-body: 22px;
-  --lh-caption: 18px;
-
-  --fw-regular: 400;
-  --fw-medium: 500;
-  --fw-semibold: 600;
 }
 
 body {
   margin: 0;
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: var(--fs-body);
-  line-height: var(--lh-body);
   color: var(--text-primary);
-  background: var(--v-grey-lighten-4);
+  background: #f8f6f7;
 }

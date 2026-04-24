@@ -3,7 +3,7 @@ import { Card } from '@/components';
 </script>
 
 <template>
-  <Card class="Wrapper">
+  <Card class="Wrapper text-title-large">
     <slot />
   </Card>
 </template>
@@ -14,6 +14,5 @@ import { Card } from '@/components';
   align-items: center;
   justify-content: center;
   height: 250px;
-  font-size: var(--fs-title);
 }
 </style>

@@ -4,7 +4,7 @@
 
 <template>
   <div class="CardHeader">
-    <div class="Title">
+    <div class="Title text-title-large">
       Авторизация
     </div>
 
@@ -23,9 +23,8 @@
 }
 
 .Title {
-  font-size: var(--fs-h2);
-  line-height: var(--lh-h2);
-  font-weight: var(--fw-semibold);
+  font-size: 20px;
+  font-weight: 600;
   color: var(--text-primary);
 }
 

@@ -26,7 +26,7 @@ const model = defineModel<number>({ required: true });
 
 <style scoped lang="scss">
 .ReminderEditItemMinutesBefore {
-  margin-top: var(--space-32);
+  margin-top: 32px;
 
   label {
     z-index: 1;

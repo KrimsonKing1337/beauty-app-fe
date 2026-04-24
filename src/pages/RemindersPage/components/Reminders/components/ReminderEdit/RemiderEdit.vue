@@ -122,7 +122,7 @@ const cancelButtonClickHandler = () => {
 }
 
 .ReminderEditItem {
-  margin-top: var(--space-32);
+  margin-top: 32px;
 }
 
 .BottomNav {
@@ -130,7 +130,7 @@ const cancelButtonClickHandler = () => {
   align-items: center;
   justify-content: center;
   gap: 18px;
-  margin-top: var(--space-32);
+  margin-top: 32px;
 }
 
 .ButtonBar {

@@ -126,6 +126,7 @@ const cssClassIsNow = computed(() => {
   width: 365px;
   max-width: calc(100vw - 24px);
   padding: 14px;
+  font-size: 15px;
   border: 1px solid #e7d7d7;
   border-radius: 18px;
   background: #ffffff;

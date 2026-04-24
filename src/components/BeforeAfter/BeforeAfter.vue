@@ -135,9 +135,8 @@ const closeFullScreen = () => {
 }
 
 .Label {
-  font-size: var(--fs-caption);
+  font-size: 13px;
   color: var(--text-secondary);
-  font-weight: var(--fw-medium);
 }
 
 .Image {
@@ -162,6 +161,6 @@ const closeFullScreen = () => {
   display: grid;
   place-items: center;
   color: var(--text-tertiary);
-  font-size: var(--fs-caption);
+  font-size: 13px;
 }
 </style>

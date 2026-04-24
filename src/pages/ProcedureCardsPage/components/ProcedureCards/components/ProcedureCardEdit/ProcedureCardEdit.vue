@@ -117,6 +117,6 @@ const updateDraftCard = <K extends keyof NonNullable<ProcedureDraft>>(
 }
 
 .Item {
-  margin-top: var(--space-32);
+  margin-top: 32px;
 }
 </style>
