@@ -30,7 +30,7 @@ const route = useRoute();
   height: 100%;
   min-height: 100vh;
   padding: 20px;
-  background: var(--bg);
+  background: #f8f6f7;
 }
 
 .Content {

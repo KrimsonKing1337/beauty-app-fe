@@ -103,7 +103,7 @@ const submitHandler = async () => {
   padding: 12px 14px;
   border: 1px solid rgba(211, 122, 122, 0.28);
   border-radius: 14px;
-  color: var(--danger);
+  color: #d37a7a;
   background: rgba(211, 122, 122, 0.08);
 }
 

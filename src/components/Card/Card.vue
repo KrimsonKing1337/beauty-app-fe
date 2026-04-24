@@ -39,7 +39,7 @@ const props = defineProps<{
   }
 
   &.isWarning {
-    background-color: var(--warning);
+    background-color: #d8a55d;
   }
 
   &.isDanger {

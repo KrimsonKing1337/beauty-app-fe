@@ -99,7 +99,7 @@ const buttons = [
   border: 1px solid rgba(236, 227, 231, 0.9);
   backdrop-filter: blur(16px);
   border-radius: 22px;
-  box-shadow: var(--shadow);
+  box-shadow: 0 10px 30px rgba(43, 24, 31, 0.06);
 }
 
 .Item {
