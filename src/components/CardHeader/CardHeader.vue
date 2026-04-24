@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { onMounted, useId } from 'vue';
+
 import type { CardHeaderProps } from './@types.ts';
 
 const props = defineProps<CardHeaderProps>();
@@ -8,6 +10,8 @@ const getStyles = (id: string) => {
     return 'color: red';
   }
 };
+
+const menuActivatorId = useId();
 </script>
 
 <template>
@@ -33,14 +37,14 @@ const getStyles = (id: string) => {
     </div>
 
     <VBtn
-      id="menu-activator"
+      :id="menuActivatorId"
       class="MenuTrigger"
       variant="text"
       density="comfortable"
       icon="mdi-dots-vertical"
     />
 
-    <VMenu activator="#menu-activator" offset="10">
+    <VMenu :activator="`#${menuActivatorId}`" offset="10">
       <VList>
         <VListItem
           v-for="itemCur in props.menuItems"

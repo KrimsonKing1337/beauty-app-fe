@@ -46,7 +46,7 @@ const title = computed(() => {
     return dateWithTime;
   }
 
-  return 'Дата и время проведения';
+  return 'Дата и время напоминания';
 });
 </script>
 
