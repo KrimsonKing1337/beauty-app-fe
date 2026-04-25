@@ -46,3 +46,9 @@ android/app/build/
 android/app/release/
 android/.gradle/
 android/build/
+
+*.jks
+*.keystore
+*.aab
+*.apk
+*.dm
