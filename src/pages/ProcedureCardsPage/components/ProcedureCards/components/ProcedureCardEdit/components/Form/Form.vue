@@ -42,7 +42,7 @@ const datePickerTitle = computed(() => {
       @update:model-value="emit('update:procedureName', $event)"
     />
 
-    <VExpansionPanels class="DatePicker">
+    <VExpansionPanels class="Spoiler">
       <VExpansionPanel rounded="lg">
         <VExpansionPanelTitle>
           <VIcon icon="mdi-calendar" class="mr-2" />
@@ -110,11 +110,17 @@ const datePickerTitle = computed(() => {
 </template>
 
 <style scoped lang="scss">
-.DatePicker {
+.Spoiler {
   margin-bottom: 25px;
 
   &:deep(.v-input__details) {
     display: none;
+  }
+
+  :deep(.v-expansion-panel-text__wrapper) {
+    @media (max-width: 400px) {
+      padding: 5px;
+    }
   }
 }
 </style>

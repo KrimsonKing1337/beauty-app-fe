@@ -56,7 +56,7 @@ watch(
         </div>
       </div>
 
-      <ReminderEdit v-else class="FullWidth" />
+      <ReminderEdit v-else />
     </Transition>
   </div>
 </template>

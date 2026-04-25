@@ -55,7 +55,7 @@ const title = computed(() => {
 </script>
 
 <template>
-  <VExpansionPanels class="DatePicker">
+  <VExpansionPanels class="ItemDateTime">
     <VExpansionPanel rounded="lg">
       <VExpansionPanelTitle>
         <VIcon icon="mdi-calendar" class="mr-2" />
@@ -68,6 +68,7 @@ const title = computed(() => {
       <VExpansionPanelText>
         <VDatePicker
           v-model="dateModel"
+          class="DatePicker"
           variant="outlined"
           color="pink-lighten-4"
           width="100%"
@@ -94,6 +95,14 @@ const title = computed(() => {
 </template>
 
 <style scoped lang="scss">
+.ItemDateTime {
+  :deep(.v-expansion-panel-text__wrapper) {
+    @media (max-width: 400px) {
+      padding: 5px;
+    }
+  }
+}
+
 .TimePicker {
   :deep(.v-time-picker-clock) {
     background-color: #f8bbd0; // pink-lighten-4

@@ -33,6 +33,10 @@ const route = useRoute();
   min-height: 100vh;
   padding: 20px;
   background: #f8f6f7;
+
+  @media (max-width: 400px) {
+    padding: 12px;
+  }
 }
 
 .Content {

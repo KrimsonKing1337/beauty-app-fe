@@ -123,9 +123,20 @@ const updateDraftCard = <K extends keyof NonNullable<ProcedureDraft>>(
   border-radius: 24px;
   padding: 20px;
   box-shadow: 0 8px 20px rgba(43, 24, 31, 0.04);
+
+  @media (max-width: 400px) {
+    padding: 16px 8px;
+    border-radius: 16px;
+  }
 }
 
 .Item {
   margin-top: 32px;
+
+  @media (max-width: 400px) {
+    &:first-child {
+      margin-top: 8px;
+    }
+  }
 }
 </style>
