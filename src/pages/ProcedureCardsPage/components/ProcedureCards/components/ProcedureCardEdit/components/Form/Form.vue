@@ -3,6 +3,8 @@ import { computed, ref } from 'vue';
 
 import type { ProcedureDraft } from '@/@types';
 
+import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
+
 const props = defineProps<{
   draftCard: ProcedureDraft;
 }>();
@@ -16,10 +18,16 @@ const emit = defineEmits<{
   (e: 'update:notes', value: string): void;
 }>();
 
+const procedureCardStore = useProcedureCardsStore();
+
 const firstTouch = ref(false);
 
 const datePickerTitle = computed(() => {
-  return firstTouch.value ? props.draftCard.date.toLocaleDateString() : 'Дата проведения';
+  if (firstTouch.value || procedureCardStore.editingCardId) {
+    return props.draftCard.date.toLocaleDateString();
+  }
+
+  return 'Дата проведения';
 });
 </script>
 

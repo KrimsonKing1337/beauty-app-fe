@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 
+import { useRemindersStore } from '@/stores/remindersStore.ts';
+
 const props = defineProps<{
   modelValue?: Date | null;
 }>();
@@ -8,6 +10,8 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'update:modelValue', value: Date): void;
 }>();
+
+const remindersStore = useRemindersStore();
 
 const initialDate = props.modelValue ? new Date(props.modelValue) : new Date();
 
@@ -42,7 +46,7 @@ const title = computed(() => {
   const time = dateTime.value.toLocaleTimeString();
   const dateWithTime = `${date} ${time}`;
 
-  if (firstTouch.value) {
+  if (firstTouch.value || remindersStore.editingReminderId) {
     return dateWithTime;
   }
 
