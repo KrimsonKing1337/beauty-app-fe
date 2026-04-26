@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'ru.kk1337.beautyapp',
+  appId: 'ru.beautyappp.app',
   appName: 'Beauty App',
   webDir: 'dist',
   server: {
