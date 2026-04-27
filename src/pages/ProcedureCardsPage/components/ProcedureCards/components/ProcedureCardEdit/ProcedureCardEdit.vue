@@ -15,7 +15,7 @@ import { CardActions } from '@/components';
 
 import type { ImageFiles } from './@types';
 
-import { Form, UploadImages } from './components';
+import { Form, UploadImages, ProcedureTypeSelect } from './components';
 
 import { saveButtonClickHandler } from './utils';
 
@@ -27,7 +27,6 @@ const saveProcedureMutation = useSaveProcedureMutation();
 const { draftCard } = storeToRefs(procedureCardsStore);
 
 const saveButtonIsLoadingRef = ref(false);
-const typeValue = ref('');
 
 const imageFilesRef = ref<ImageFiles>({
   before: null,
@@ -97,13 +96,7 @@ const updateDraftCard = <K extends keyof NonNullable<ProcedureDraft>>(
         @update:notes="updateDraftCard('notes', $event)"
       />
 
-      <VTextField
-        v-model="typeValue"
-        label="Тип процедуры"
-        variant="outlined"
-        bg-color="#fff"
-        rounded="lg"
-      />
+      <ProcedureTypeSelect />
 
       <UploadImages
         :before-file="imageFilesRef.before"

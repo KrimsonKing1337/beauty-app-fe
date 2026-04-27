@@ -17,6 +17,7 @@ const model = defineModel<number>({ required: true });
   <VSelect
     v-model="model"
     :items="notificationMinutesBeforeOptions"
+    class="ReminderEditItemMinutesBefore"
     label="Напоминать за"
     variant="outlined"
     bg-color="#fff"
@@ -27,9 +28,5 @@ const model = defineModel<number>({ required: true });
 <style scoped lang="scss">
 .ReminderEditItemMinutesBefore {
   margin-top: 32px;
-
-  label {
-    z-index: 1;
-  }
 }
 </style>

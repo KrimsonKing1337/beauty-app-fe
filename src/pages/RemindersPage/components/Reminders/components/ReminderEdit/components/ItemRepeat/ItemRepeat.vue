@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue';
+import { computed } from 'vue';
 
 import type { RepeatPreset } from '@/@types';
 
@@ -105,10 +105,6 @@ const safeCustomIntervalModel = computed({
   &.isActive {
     border: 1px #ccc solid;
     padding: 20px;
-  }
-
-  label {
-    z-index: 1;
   }
 }
 

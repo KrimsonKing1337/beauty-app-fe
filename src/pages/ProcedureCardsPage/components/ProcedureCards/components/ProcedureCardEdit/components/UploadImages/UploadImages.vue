@@ -35,3 +35,9 @@ const emit = defineEmits<{
     />
   </div>
 </template>
+
+<style scoped lang="scss">
+.ProcedureCardEditImages {
+  margin-top: 32px;
+}
+</style>
