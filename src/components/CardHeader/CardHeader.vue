@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, useId } from 'vue';
+import { useId } from 'vue';
 
 import type { CardHeaderProps } from './@types.ts';
 

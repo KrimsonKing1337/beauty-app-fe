@@ -3,7 +3,8 @@ export type Procedure = {
   procedureName: string;
   date: Date;
   place?: string;
-  duration?: string;
+  durationHours?: number;
+  durationMinutes?: number;
   price?: number;
   beforeAfter: string[];
   beforeImagePaths: string[];
@@ -18,7 +19,8 @@ export type ProcedureDto = {
   procedureName: string;
   date: string;
   place?: string;
-  duration?: string;
+  durationHours?: number;
+  durationMinutes?: number;
   price?: number;
   beforeAfter: string[];
   beforeImagePaths: string[];

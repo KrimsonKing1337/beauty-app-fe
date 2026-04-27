@@ -27,6 +27,7 @@ const saveProcedureMutation = useSaveProcedureMutation();
 const { draftCard } = storeToRefs(procedureCardsStore);
 
 const saveButtonIsLoadingRef = ref(false);
+const typeValue = ref('');
 
 const imageFilesRef = ref<ImageFiles>({
   before: null,
@@ -90,9 +91,18 @@ const updateDraftCard = <K extends keyof NonNullable<ProcedureDraft>>(
         @update:procedure-name="updateDraftCard('procedureName', $event)"
         @update:date="updateDraftCard('date', $event)"
         @update:place="updateDraftCard('place', $event)"
-        @update:duration="updateDraftCard('duration', $event)"
+        @update:duration-hours="updateDraftCard('durationHours', $event)"
+        @update:duration-minutes="updateDraftCard('durationMinutes', $event)"
         @update:price="updateDraftCard('price', $event)"
         @update:notes="updateDraftCard('notes', $event)"
+      />
+
+      <VTextField
+        v-model="typeValue"
+        label="Тип процедуры"
+        variant="outlined"
+        bg-color="#fff"
+        rounded="lg"
       />
 
       <UploadImages

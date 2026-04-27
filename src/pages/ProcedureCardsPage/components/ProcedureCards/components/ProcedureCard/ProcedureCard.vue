@@ -21,6 +21,10 @@ const afterImagePaths = getBeforeAfterImagePaths(props.card.afterImagePaths);
   <Card>
     <Header :card="card" />
 
+    <div class="Type">
+      Тип: эпиляция
+    </div>
+
     <BeforeAfter
       :before-image-paths="beforeImagePaths"
       :after-image-paths="afterImagePaths"
@@ -29,9 +33,25 @@ const afterImagePaths = getBeforeAfterImagePaths(props.card.afterImagePaths);
     <Notes v-if="props.card.notes">
       {{ props.card.notes }}
     </Notes>
+
+    <VChipGroup class="ChipGroup">
+      <VChip link color="pink-lighten-3">
+        Подмышки
+      </VChip>
+
+      <VChip link color="pink-lighten-3">
+        Дорого
+      </VChip>
+    </VChipGroup>
   </Card>
 </template>
 
 <style scoped lang="scss">
+.Type {
+  color: var(--text-secondary);
+}
 
+.ChipGroup {
+  margin-top: 10px;
+}
 </style>

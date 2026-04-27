@@ -13,7 +13,8 @@ const emit = defineEmits<{
   (e: 'update:procedureName', value: string): void;
   (e: 'update:date', value: Date): void;
   (e: 'update:place', value: string): void;
-  (e: 'update:duration', value: string): void;
+  (e: 'update:durationHours', value: number): void;
+  (e: 'update:durationMinutes', value: number): void;
   (e: 'update:price', value: number): void;
   (e: 'update:notes', value: string): void;
 }>();
@@ -79,14 +80,29 @@ const datePickerTitle = computed(() => {
       @update:model-value="emit('update:place', $event)"
     />
 
-    <VTextField
-      :model-value="draftCard.duration"
-      label="Длительность"
-      variant="outlined"
-      bg-color="#fff"
-      rounded="lg"
-      @update:model-value="emit('update:duration', $event)"
-    />
+    <div class="DurationInputs">
+      <VNumberInput
+        :model-value="draftCard.durationHours"
+        label="Длительность: часы"
+        variant="outlined"
+        bg-color="#fff"
+        rounded="lg"
+        :min="0"
+        :max="24"
+        @update:model-value="emit('update:durationHours', $event)"
+      />
+
+      <VNumberInput
+        :model-value="draftCard.durationMinutes"
+        label="Длительность: минуты"
+        variant="outlined"
+        bg-color="#fff"
+        rounded="lg"
+        :min="0"
+        :max="59"
+        @update:model-value="emit('update:durationMinutes', $event)"
+      />
+    </div>
 
     <VNumberInput
       :model-value="draftCard.price"
@@ -122,5 +138,10 @@ const datePickerTitle = computed(() => {
       padding: 5px;
     }
   }
+}
+
+.DurationInputs {
+  display: flex;
+  gap: 10px;
 }
 </style>

@@ -26,7 +26,9 @@ const {
   error,
 } = useProceduresQuery();
 
-const cards = computed<Procedure[]>(() => data.value ?? []);
+const cards = computed<Procedure[]>(() => {
+  return data.value ?? [];
+});
 
 const errorMessage = computed<string | null>(() => {
   if (!isError.value) {
