@@ -1,21 +1,39 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
-const typeValue = ref(1);
+import { useProcedureTypesQuery } from '@/composables/queries/procedureTypes/useProcedureTypesQuery.ts';
+
+const { data: procedureTypes } = useProcedureTypesQuery();
+
+const procedureTypesMapped = computed(() => {
+  if (!procedureTypes.value) {
+    return [];
+  }
+
+  return procedureTypes.value.map((procedureTypeCur) => {
+    return {
+      title: procedureTypeCur.name,
+      value: procedureTypeCur.id,
+    };
+  });
+});
+
+const procedureTypesOptions = computed(() => {
+  return [
+    ...procedureTypesMapped.value,
+    {
+      title: 'Добавить свой',
+      value: 0,
+    },
+  ];
+});
+
+const typeValue = ref(null);
 const customTypeValue = ref('');
-
-const procedureTypesOptions = [
-  { title: 'Эпиляция', value: 1 },
-  { title: 'Массаж', value: 2 },
-  { title: 'Маникюр', value: 3 },
-  { title: 'Педикюр', value: 4 },
-  { title: 'Волосы', value: 5 },
-  { title: 'Добавить свой', value: 6 },
-];
 </script>
 
 <template>
-  <div class="ProcedureTypeSelect" :class="{ isActive: typeValue === 6 }">
+  <div class="ProcedureTypeSelect" :class="{ isActive: typeValue === 0 }">
     <VSelect
       v-model="typeValue"
       :items="procedureTypesOptions"
@@ -26,7 +44,7 @@ const procedureTypesOptions = [
     />
 
     <VTextField
-      v-if="typeValue === 6"
+      v-if="typeValue === 0"
       v-model="customTypeValue"
       label="Название нового типа"
       variant="outlined"
