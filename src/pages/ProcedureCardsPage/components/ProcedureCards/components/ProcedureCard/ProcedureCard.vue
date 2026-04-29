@@ -22,7 +22,7 @@ const afterImagePaths = getBeforeAfterImagePaths(props.card.afterImagePaths);
     <Header :card="card" />
 
     <div class="Type">
-      Тип: эпиляция
+      Тип: {{ props.card.typeId }}
     </div>
 
     <BeforeAfter

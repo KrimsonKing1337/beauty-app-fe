@@ -9,6 +9,8 @@ import type { ProcedureDraft } from '@/@types';
 
 import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
 
+import { useProcedureTypesStore } from '@/stores/procedureTypesStore.ts';
+
 import { useSaveProcedureMutation } from '@/composables/mutations/procedures/useSaveProcedureMutation';
 
 import {
@@ -26,17 +28,14 @@ import { saveButtonClickHandler } from './utils';
 const queryClient = useQueryClient();
 
 const procedureCardsStore = useProcedureCardsStore();
+const procedureTypesStore = useProcedureTypesStore();
+
 const saveProcedureMutation = useSaveProcedureMutation();
 const createProcedureTypeMutation = useCreateProcedureTypeMutation();
 
 const { draftCard } = storeToRefs(procedureCardsStore);
 
 const saveButtonIsLoadingRef = ref(false);
-
-const typeModel = ref({
-  typeValue: null,
-  customTypeValue: '',
-});
 
 const imageFilesRef = ref<ImageFiles>({
   before: null,
@@ -62,14 +61,17 @@ const handleSaveClick = async () => {
   saveButtonIsLoadingRef.value = true;
 
   try {
-    if (typeModel.value.customTypeValue) {
-      // если такой уже есть в бд - не добавлять его
-      await createProcedureTypeMutation.mutateAsync({
-        name: typeModel.value.customTypeValue,
+    if (procedureTypesStore.procedureTypeModel.customTypeValue) {
+      // todo: если такой уже есть в бд - не добавлять его
+      const newType = await createProcedureTypeMutation.mutateAsync({
+        name: procedureTypesStore.procedureTypeModel.customTypeValue,
       });
+
+      procedureCardsStore.draftCard.typeId = newType.id;
     }
 
-    // если кастом тип - сразу его и ставим
+    procedureCardsStore.draftCard.typeId = procedureTypesStore.procedureTypeModel.typeValue;
+
     await saveButtonClickHandler({
       store: procedureCardsStore,
       saveProcedureMutation,
@@ -114,7 +116,7 @@ const updateDraftCard = <K extends keyof NonNullable<ProcedureDraft>>(
         @update:notes="updateDraftCard('notes', $event)"
       />
 
-      <ProcedureTypeSelect v-model="typeModel" />
+      <ProcedureTypeSelect v-model="procedureTypesStore.procedureTypeModel" />
 
       <UploadImages
         :before-file="imageFilesRef.before"

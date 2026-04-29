@@ -27,6 +27,7 @@ export const mapProcedureDtoToModel = (dto: ProcedureDto): Procedure => ({
   beforeImagePaths: dto.beforeImagePaths,
   afterImagePaths: dto.afterImagePaths,
   notes: dto.notes,
+  typeId: dto.typeId,
   createdAt: dto.createdAt,
   updatedAt: dto.updatedAt,
 });

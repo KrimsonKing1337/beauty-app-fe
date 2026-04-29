@@ -17,3 +17,8 @@ export type ProcedureType = {
 export type CreateProcedureTypePayload = {
   name: string;
 };
+
+export type ProcedureTypeModel = {
+  typeValue: string | null;
+  customTypeValue: string;
+};
