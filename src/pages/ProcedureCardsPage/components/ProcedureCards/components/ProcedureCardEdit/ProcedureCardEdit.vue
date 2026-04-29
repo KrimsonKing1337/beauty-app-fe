@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { reactive, ref } from 'vue';
 
 import { storeToRefs } from 'pinia';
 
@@ -28,8 +28,10 @@ const { draftCard } = storeToRefs(procedureCardsStore);
 
 const saveButtonIsLoadingRef = ref(false);
 
-const typeValue = ref<string | null>(null);
-const customTypeValue = ref('');
+const typeModel = ref({
+  typeValue: null,
+  customTypeValue: '',
+});
 
 const imageFilesRef = ref<ImageFiles>({
   before: null,
@@ -99,12 +101,7 @@ const updateDraftCard = <K extends keyof NonNullable<ProcedureDraft>>(
         @update:notes="updateDraftCard('notes', $event)"
       />
 
-      <ProcedureTypeSelect
-        :type-value="typeValue"
-        :custom-type-value="customTypeValue"
-        @update:type-value="typeValue = $event"
-        @update:custom-type-value="customTypeValue = $event"
-      />
+      <ProcedureTypeSelect v-model="typeModel" />
 
       <UploadImages
         :before-file="imageFilesRef.before"

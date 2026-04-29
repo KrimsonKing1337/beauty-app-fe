@@ -5,57 +5,59 @@ import { useProcedureTypesQuery } from '@/composables/queries/procedureTypes/use
 
 import { getProcedureTypesOptions } from './utils.ts';
 
-defineProps<{
+type ProcedureTypeSelectModel = {
   typeValue: string | null;
   customTypeValue: string;
-}>();
+};
 
-const emit = defineEmits<{
-  (e: 'update:typeValue', value: string | null): void;
-  (e: 'update:customTypeValue', value: string): void;
-}>();
+const model = defineModel<ProcedureTypeSelectModel>({
+  required: true,
+});
 
 const { data: procedureTypes } = useProcedureTypesQuery();
 
 const procedureTypesOptions = computed(() => {
   return getProcedureTypesOptions(procedureTypes.value ?? []);
 });
+
+const updateTypeValue = (value: string | null) => {
+  model.value = {
+    ...model.value,
+    typeValue: value,
+  };
+};
+
+const updateCustomTypeValue = (value: string) => {
+  model.value = {
+    ...model.value,
+    customTypeValue: value,
+  };
+};
 </script>
 
 <template>
-  <div class="ProcedureTypeSelect" :class="{ isActive: typeValue === 'custom' }">
+  <div
+    class="ProcedureTypeSelect"
+    :class="{ isActive: model.typeValue === 'custom' }"
+  >
     <VSelect
-      :model-value="typeValue"
+      :model-value="model.typeValue"
       :items="procedureTypesOptions"
       label="Тип процедуры"
       variant="outlined"
       bg-color="#fff"
       rounded="lg"
-      @update:model-value="emit('update:typeValue', $event)"
+      @update:model-value="updateTypeValue"
     />
 
     <VTextField
-      v-if="typeValue === 'custom'"
-      :model-value="customTypeValue"
+      v-if="model.typeValue === 'custom'"
+      :model-value="model.customTypeValue"
       label="Название нового типа"
       variant="outlined"
       bg-color="#fff"
       rounded="lg"
-      @update:model-value="emit('update:customTypeValue', $event)"
+      @update:model-value="updateCustomTypeValue"
     />
   </div>
 </template>
-
-<style scoped lang="scss">
-.ProcedureTypeSelect {
-  border: 0 transparent solid;
-  border-radius: 12px;
-  padding: 0;
-  transition: border 0.2s, padding 0.2s;
-
-  &.isActive {
-    border: 1px #ccc solid;
-    padding: 20px;
-  }
-}
-</style>
