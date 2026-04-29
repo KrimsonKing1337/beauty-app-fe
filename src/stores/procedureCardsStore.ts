@@ -12,7 +12,6 @@ const createEmptyProcedureCard = (): ProcedureDraft => ({
   durationHours: 0,
   durationMinutes: 0,
   price: 0,
-  beforeAfter: [],
   beforeImagePaths: [],
   afterImagePaths: [],
   notes: '',

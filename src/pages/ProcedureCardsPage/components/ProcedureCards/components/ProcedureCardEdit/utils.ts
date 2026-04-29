@@ -93,7 +93,6 @@ export const saveButtonClickHandler = async ({
       durationHours: draft.durationHours,
       durationMinutes: draft.durationMinutes,
       price: draft.price,
-      beforeAfter: draft.beforeAfter,
       beforeImagePaths: [],
       afterImagePaths: [],
       notes: draft.notes,

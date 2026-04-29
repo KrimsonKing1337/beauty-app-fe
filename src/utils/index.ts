@@ -24,7 +24,6 @@ export const mapProcedureDtoToModel = (dto: ProcedureDto): Procedure => ({
   durationHours: dto.durationHours,
   durationMinutes: dto.durationMinutes,
   price: dto.price,
-  beforeAfter: dto.beforeAfter,
   beforeImagePaths: dto.beforeImagePaths,
   afterImagePaths: dto.afterImagePaths,
   notes: dto.notes,

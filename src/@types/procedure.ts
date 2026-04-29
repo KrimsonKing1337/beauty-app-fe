@@ -6,7 +6,6 @@ export type Procedure = {
   durationHours?: number;
   durationMinutes?: number;
   price?: number;
-  beforeAfter: string[];
   beforeImagePaths: string[];
   afterImagePaths: string[];
   notes?: string;
@@ -22,7 +21,6 @@ export type ProcedureDto = {
   durationHours?: number;
   durationMinutes?: number;
   price?: number;
-  beforeAfter: string[];
   beforeImagePaths: string[];
   afterImagePaths: string[];
   notes?: string;

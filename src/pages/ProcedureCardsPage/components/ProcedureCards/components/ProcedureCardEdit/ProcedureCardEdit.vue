@@ -62,19 +62,20 @@ const handleSaveClick = async () => {
   saveButtonIsLoadingRef.value = true;
 
   try {
-    await saveButtonClickHandler({
-      store: procedureCardsStore,
-      saveProcedureMutation,
-      invalidateCacheCallback,
-      files: imageFilesRef.value,
-    });
-
     if (typeModel.value.customTypeValue) {
       // если такой уже есть в бд - не добавлять его
       await createProcedureTypeMutation.mutateAsync({
         name: typeModel.value.customTypeValue,
       });
     }
+
+    // если кастом тип - сразу его и ставим
+    await saveButtonClickHandler({
+      store: procedureCardsStore,
+      saveProcedureMutation,
+      invalidateCacheCallback,
+      files: imageFilesRef.value,
+    });
 
     resetImageFiles();
   } finally {
