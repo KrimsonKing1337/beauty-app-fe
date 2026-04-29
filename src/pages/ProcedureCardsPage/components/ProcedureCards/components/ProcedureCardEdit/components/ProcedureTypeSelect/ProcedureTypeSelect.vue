@@ -5,7 +5,7 @@ import { useProcedureTypesQuery } from '@/composables/queries/procedureTypes/use
 
 import {
   useDeleteProcedureTypeMutation,
-} from '@/composables/mutations/proceduresTypes/useDeleteProcedureTypeMutation.ts';
+} from '@/composables/mutations/proceduresTypes/useDeleteProcedureTypeMutation';
 
 import { getProcedureTypesOptions } from './utils';
 
@@ -41,6 +41,8 @@ const updateCustomTypeValue = (value: string) => {
 
 const deleteButtonClickHandler = (id: string) => {
   deleteProcedureTypeMutation.mutateAsync(id);
+
+  updateTypeValue(null);
 };
 </script>
 

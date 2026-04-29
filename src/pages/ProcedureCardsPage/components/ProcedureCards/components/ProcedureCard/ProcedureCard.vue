@@ -1,5 +1,9 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+
 import type { Procedure } from '@/@types';
+
+import { useProcedureTypesQuery } from '@/composables/queries/procedureTypes/useProcedureTypesQuery.ts';
 
 import {
   BeforeAfter,
@@ -15,14 +19,46 @@ const props = defineProps<{ card: Procedure }>();
 
 const beforeImagePaths = getBeforeAfterImagePaths(props.card.beforeImagePaths);
 const afterImagePaths = getBeforeAfterImagePaths(props.card.afterImagePaths);
+
+const { data: procedureTypes } = useProcedureTypesQuery();
+
+const procedureTypesById = computed(() => {
+  const types = procedureTypes.value ?? [];
+
+  const entries = types.map((type) => {
+    const id = type.id;
+
+    return [id, type] as const;
+  });
+
+  return new Map(entries);
+});
+
+const typeName = computed(() => {
+  const typeId = props.card.typeId;
+
+  if (!typeId) {
+    return null;
+  }
+
+  const map = procedureTypesById.value;
+
+  const type = map.get(typeId);
+
+  if (!type) {
+    return null;
+  }
+
+  return type.name;
+});
 </script>
 
 <template>
   <Card>
     <Header :card="card" />
 
-    <div class="Type">
-      Тип: {{ props.card.typeId }}
+    <div v-if="typeName" class="Type">
+      Тип: {{ typeName }}
     </div>
 
     <BeforeAfter

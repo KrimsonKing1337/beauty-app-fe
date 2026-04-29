@@ -5,11 +5,9 @@ import { storeToRefs } from 'pinia';
 
 import { useQueryClient } from '@tanstack/vue-query';
 
-import type { ProcedureDraft } from '@/@types';
+import type { ProcedureDraft, ProcedureTypeModel } from '@/@types';
 
 import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
-
-import { useProcedureTypesStore } from '@/stores/procedureTypesStore.ts';
 
 import { useSaveProcedureMutation } from '@/composables/mutations/procedures/useSaveProcedureMutation';
 
@@ -28,7 +26,6 @@ import { saveButtonClickHandler } from './utils';
 const queryClient = useQueryClient();
 
 const procedureCardsStore = useProcedureCardsStore();
-const procedureTypesStore = useProcedureTypesStore();
 
 const saveProcedureMutation = useSaveProcedureMutation();
 const createProcedureTypeMutation = useCreateProcedureTypeMutation();
@@ -36,6 +33,11 @@ const createProcedureTypeMutation = useCreateProcedureTypeMutation();
 const { draftCard } = storeToRefs(procedureCardsStore);
 
 const saveButtonIsLoadingRef = ref(false);
+
+const procedureTypeModel = ref<ProcedureTypeModel>({
+  typeValue: draftCard.value?.typeId ?? null,
+  customTypeValue: '',
+});
 
 const imageFilesRef = ref<ImageFiles>({
   before: null,
@@ -61,16 +63,16 @@ const handleSaveClick = async () => {
   saveButtonIsLoadingRef.value = true;
 
   try {
-    if (procedureTypesStore.procedureTypeModel.customTypeValue) {
+    if (procedureTypeModel.value.customTypeValue) {
       // todo: если такой уже есть в бд - не добавлять его
       const newType = await createProcedureTypeMutation.mutateAsync({
-        name: procedureTypesStore.procedureTypeModel.customTypeValue,
+        name: procedureTypeModel.value.customTypeValue,
       });
 
       procedureCardsStore.draftCard.typeId = newType.id;
     }
 
-    procedureCardsStore.draftCard.typeId = procedureTypesStore.procedureTypeModel.typeValue;
+    procedureCardsStore.draftCard.typeId = procedureTypeModel.value.typeValue;
 
     await saveButtonClickHandler({
       store: procedureCardsStore,
@@ -116,7 +118,7 @@ const updateDraftCard = <K extends keyof NonNullable<ProcedureDraft>>(
         @update:notes="updateDraftCard('notes', $event)"
       />
 
-      <ProcedureTypeSelect v-model="procedureTypesStore.procedureTypeModel" />
+      <ProcedureTypeSelect v-model="procedureTypeModel" />
 
       <UploadImages
         :before-file="imageFilesRef.before"
