@@ -19,7 +19,7 @@ import { CardActions } from '@/components';
 
 import type { ImageFiles } from './@types';
 
-import { Form, UploadImages, ProcedureTypeSelect } from './components';
+import { Form, UploadImages, ProcedureTypeSelect, ProcedureTagsSelect } from './components';
 
 import { saveButtonClickHandler } from './utils';
 
@@ -64,7 +64,6 @@ const handleSaveClick = async () => {
 
   try {
     if (procedureTypeModel.value.customTypeValue) {
-      // todo: если такой уже есть в бд - не добавлять его
       const newType = await createProcedureTypeMutation.mutateAsync({
         name: procedureTypeModel.value.customTypeValue,
       });
@@ -119,6 +118,7 @@ const updateDraftCard = <K extends keyof NonNullable<ProcedureDraft>>(
       />
 
       <ProcedureTypeSelect v-model="procedureTypeModel" />
+      <ProcedureTagsSelect />
 
       <UploadImages
         :before-file="imageFilesRef.before"

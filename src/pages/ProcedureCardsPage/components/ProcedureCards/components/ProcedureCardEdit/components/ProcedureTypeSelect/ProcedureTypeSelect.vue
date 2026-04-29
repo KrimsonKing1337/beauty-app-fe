@@ -86,6 +86,19 @@ const deleteButtonClickHandler = (id: string) => {
 </template>
 
 <style scoped lang="scss">
+.ProcedureTypeSelect {
+  border: 0 transparent solid;
+  border-radius: 12px;
+  padding: 0;
+  transition: border 0.2s, padding 0.2s;
+  margin-top: 32px;
+
+  &.isActive {
+    border: 1px #ccc solid;
+    padding: 20px;
+  }
+}
+
 .SelectItem {
   :deep(.v-list-item__content) {
     display: flex;
