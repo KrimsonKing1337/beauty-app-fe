@@ -5,6 +5,7 @@ export const getProcedureTypesOptions = (procedureTypes: ProcedureType[]) => {
     return {
       title: procedureTypeCur.name,
       value: procedureTypeCur.id,
+      isCustom: !!procedureTypeCur.userId,
     };
   });
 
@@ -13,6 +14,7 @@ export const getProcedureTypesOptions = (procedureTypes: ProcedureType[]) => {
     {
       title: 'Добавить свой',
       value: 'custom',
+      isCustom: false,
     },
   ];
 };

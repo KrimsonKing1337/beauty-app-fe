@@ -3,7 +3,11 @@ import { computed } from 'vue';
 
 import { useProcedureTypesQuery } from '@/composables/queries/procedureTypes/useProcedureTypesQuery';
 
-import { getProcedureTypesOptions } from './utils.ts';
+import {
+  useDeleteProcedureTypeMutation,
+} from '@/composables/mutations/proceduresTypes/useDeleteProcedureTypeMutation.ts';
+
+import { getProcedureTypesOptions } from './utils';
 
 type ProcedureTypeSelectModel = {
   typeValue: string | null;
@@ -15,6 +19,7 @@ const model = defineModel<ProcedureTypeSelectModel>({
 });
 
 const { data: procedureTypes } = useProcedureTypesQuery();
+const deleteProcedureTypeMutation = useDeleteProcedureTypeMutation();
 
 const procedureTypesOptions = computed(() => {
   return getProcedureTypesOptions(procedureTypes.value ?? []);
@@ -33,6 +38,10 @@ const updateCustomTypeValue = (value: string) => {
     customTypeValue: value,
   };
 };
+
+const deleteButtonClickHandler = (id: string) => {
+  deleteProcedureTypeMutation.mutateAsync(id);
+};
 </script>
 
 <template>
@@ -48,7 +57,19 @@ const updateCustomTypeValue = (value: string) => {
       bg-color="#fff"
       rounded="lg"
       @update:model-value="updateTypeValue"
-    />
+    >
+      <template #item="{ props: itemProps, item }">
+        <VListItem v-bind="itemProps" class="SelectItem">
+          <VBtn
+            v-if="item.isCustom"
+            icon="mdi-close"
+            variant="text"
+            title="Удалить тип"
+            @click.capture.stop="deleteButtonClickHandler(item.value)"
+          />
+        </VListItem>
+      </template>
+    </VSelect>
 
     <VTextField
       v-if="model.typeValue === 'custom'"
@@ -61,3 +82,13 @@ const updateCustomTypeValue = (value: string) => {
     />
   </div>
 </template>
+
+<style scoped lang="scss">
+.SelectItem {
+  :deep(.v-list-item__content) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+</style>

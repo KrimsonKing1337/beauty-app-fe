@@ -22,3 +22,9 @@ export const createProcedureType = async (payload: CreateProcedureTypePayload): 
 
   return mapProcedureTypeDtoToEntity(data);
 };
+
+export const deleteProcedureType = async (id: string): Promise<{ id: string }> => {
+  return apiClient<{ id: string }>(`/procedure-types/${id}`, {
+    method: 'DELETE',
+  });
+};
