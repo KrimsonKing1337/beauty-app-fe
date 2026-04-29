@@ -13,3 +13,7 @@ export type ProcedureType = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type CreateProcedureTypePayload = {
+  name: string;
+};

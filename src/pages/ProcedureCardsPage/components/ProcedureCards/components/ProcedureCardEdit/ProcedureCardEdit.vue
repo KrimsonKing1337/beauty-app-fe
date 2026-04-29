@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue';
+import { ref } from 'vue';
 
 import { storeToRefs } from 'pinia';
 
@@ -9,7 +9,11 @@ import type { ProcedureDraft } from '@/@types';
 
 import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
 
-import { useSaveProcedureMutation } from '@/composables/mutations/procedures/useSaveProcedureMutation.ts';
+import { useSaveProcedureMutation } from '@/composables/mutations/procedures/useSaveProcedureMutation';
+
+import {
+  useCreateProcedureTypeMutation,
+} from '@/composables/mutations/proceduresTypes/useCreateProcedureTypeMutation';
 
 import { CardActions } from '@/components';
 
@@ -23,6 +27,7 @@ const queryClient = useQueryClient();
 
 const procedureCardsStore = useProcedureCardsStore();
 const saveProcedureMutation = useSaveProcedureMutation();
+const createProcedureTypeMutation = useCreateProcedureTypeMutation();
 
 const { draftCard } = storeToRefs(procedureCardsStore);
 
@@ -63,6 +68,13 @@ const handleSaveClick = async () => {
       invalidateCacheCallback,
       files: imageFilesRef.value,
     });
+
+    if (typeModel.value.customTypeValue) {
+      // если такой уже есть в бд - не добавлять его
+      await createProcedureTypeMutation.mutateAsync({
+        name: typeModel.value.customTypeValue,
+      });
+    }
 
     resetImageFiles();
   } finally {

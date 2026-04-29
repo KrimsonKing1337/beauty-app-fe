@@ -1,4 +1,4 @@
-import type { ProcedureType, ProcedureTypeDto } from '@/@types';
+import type { CreateProcedureTypePayload, ProcedureType, ProcedureTypeDto } from '@/@types';
 
 import { apiClient } from '@/api/client.ts';
 
@@ -12,4 +12,13 @@ export const getProcedureTypes = async (): Promise<ProcedureType[]> => {
   const data = await apiClient<ProcedureTypeDto[]>('/procedure-types');
 
   return data.map(mapProcedureTypeDtoToEntity);
+};
+
+export const createProcedureType = async (payload: CreateProcedureTypePayload): Promise<ProcedureType> => {
+  const data = await apiClient<ProcedureTypeDto>('/procedure-types', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+
+  return mapProcedureTypeDtoToEntity(data);
 };
