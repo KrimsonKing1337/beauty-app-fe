@@ -1,55 +1,47 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 
-import { useProcedureTypesQuery } from '@/composables/queries/procedureTypes/useProcedureTypesQuery.ts';
+import { useProcedureTypesQuery } from '@/composables/queries/procedureTypes/useProcedureTypesQuery';
+
+import { getProcedureTypesOptions } from './utils.ts';
+
+defineProps<{
+  typeValue: string | null;
+  customTypeValue: string;
+}>();
+
+const emit = defineEmits<{
+  (e: 'update:typeValue', value: string | null): void;
+  (e: 'update:customTypeValue', value: string): void;
+}>();
 
 const { data: procedureTypes } = useProcedureTypesQuery();
 
-const procedureTypesMapped = computed(() => {
-  if (!procedureTypes.value) {
-    return [];
-  }
-
-  return procedureTypes.value.map((procedureTypeCur) => {
-    return {
-      title: procedureTypeCur.name,
-      value: procedureTypeCur.id,
-    };
-  });
-});
-
 const procedureTypesOptions = computed(() => {
-  return [
-    ...procedureTypesMapped.value,
-    {
-      title: 'Добавить свой',
-      value: 0,
-    },
-  ];
+  return getProcedureTypesOptions(procedureTypes.value ?? []);
 });
-
-const typeValue = ref(null);
-const customTypeValue = ref('');
 </script>
 
 <template>
-  <div class="ProcedureTypeSelect" :class="{ isActive: typeValue === 0 }">
+  <div class="ProcedureTypeSelect" :class="{ isActive: typeValue === 'custom' }">
     <VSelect
-      v-model="typeValue"
+      :model-value="typeValue"
       :items="procedureTypesOptions"
       label="Тип процедуры"
       variant="outlined"
       bg-color="#fff"
       rounded="lg"
+      @update:model-value="emit('update:typeValue', $event)"
     />
 
     <VTextField
-      v-if="typeValue === 0"
-      v-model="customTypeValue"
+      v-if="typeValue === 'custom'"
+      :model-value="customTypeValue"
       label="Название нового типа"
       variant="outlined"
       bg-color="#fff"
       rounded="lg"
+      @update:model-value="emit('update:customTypeValue', $event)"
     />
   </div>
 </template>

@@ -28,6 +28,9 @@ const { draftCard } = storeToRefs(procedureCardsStore);
 
 const saveButtonIsLoadingRef = ref(false);
 
+const typeValue = ref<string | null>(null);
+const customTypeValue = ref('');
+
 const imageFilesRef = ref<ImageFiles>({
   before: null,
   after: null,
@@ -96,7 +99,12 @@ const updateDraftCard = <K extends keyof NonNullable<ProcedureDraft>>(
         @update:notes="updateDraftCard('notes', $event)"
       />
 
-      <ProcedureTypeSelect />
+      <ProcedureTypeSelect
+        :type-value="typeValue"
+        :custom-type-value="customTypeValue"
+        @update:type-value="typeValue = $event"
+        @update:custom-type-value="customTypeValue = $event"
+      />
 
       <UploadImages
         :before-file="imageFilesRef.before"
