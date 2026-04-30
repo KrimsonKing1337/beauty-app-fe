@@ -19,10 +19,6 @@ import {
   useCreateProcedureTypeMutation,
 } from '@/composables/mutations/proceduresTypes/useCreateProcedureTypeMutation';
 
-import {
-  useCreateTagMutation,
-} from '@/composables/mutations/tags/useCreateTagMutation';
-
 import { CardActions } from '@/components';
 
 import type { ImageFiles } from './@types';
