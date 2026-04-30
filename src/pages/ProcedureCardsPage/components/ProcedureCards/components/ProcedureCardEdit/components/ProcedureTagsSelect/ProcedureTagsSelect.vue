@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 import type { ProcedureTagsModel } from '@/@types';
 
 import { useTagsQuery } from '@/composables/queries/tags/useTagsQuery';
+import { useCreateTagMutation } from '@/composables/mutations/tags/useCreateTagMutation';
 import { useDeleteTagMutation } from '@/composables/mutations/tags/useDeleteTagMutation';
 
 import { getTagsOptions } from './utils';
@@ -13,7 +14,12 @@ const model = defineModel<ProcedureTagsModel>({
 });
 
 const { data: tags } = useTagsQuery();
+
+const createTagMutation = useCreateTagMutation();
 const deleteTagMutation = useDeleteTagMutation();
+
+const isCreateFieldVisible = ref(false);
+const newTagName = ref('');
 
 const tagsOptions = computed(() => {
   return getTagsOptions(tags.value ?? []);
@@ -21,61 +27,121 @@ const tagsOptions = computed(() => {
 
 const updateTagValues = (value: string[]) => {
   model.value = {
-    ...model.value,
     tagValues: value,
   };
 };
 
-const updateCustomTagValue = (value: string) => {
+const showCreateField = () => {
+  isCreateFieldVisible.value = true;
+};
+
+const hideCreateField = () => {
+  isCreateFieldVisible.value = false;
+  newTagName.value = '';
+};
+
+const createTag = async () => {
+  const name = newTagName.value.trim();
+
+  if (!name) {
+    return;
+  }
+
+  const newTag = await createTagMutation.mutateAsync({
+    name,
+  });
+
+  const nextTagValues = [...model.value.tagValues];
+
+  if (!nextTagValues.includes(newTag.id)) {
+    nextTagValues.push(newTag.id);
+  }
+
   model.value = {
-    ...model.value,
-    customTagValue: value,
+    tagValues: nextTagValues,
   };
+
+  hideCreateField();
 };
 
 const deleteButtonClickHandler = async (id: string) => {
   await deleteTagMutation.mutateAsync(id);
 
   updateTagValues(
-    model.value.tagValues.filter((tagId) => tagId !== id),
+    model.value.tagValues.filter((tagId) => {
+      return tagId !== id;
+    }),
   );
 };
 </script>
 
 <template>
   <div class="ProcedureTagsSelect">
-    <VSelect
-      :model-value="model.tagValues"
-      :items="tagsOptions"
-      label="Тэги"
-      variant="outlined"
-      bg-color="#fff"
-      rounded="lg"
-      chips
-      multiple
-      @update:model-value="updateTagValues"
-    >
-      <template #item="{ props: itemProps, item }">
-        <VListItem v-bind="itemProps" class="SelectItem">
-          <VBtn
-            v-if="item.isCustom"
-            icon="mdi-close"
-            variant="text"
-            title="Удалить тэг"
-            @click.capture.stop="deleteButtonClickHandler(item.value)"
-          />
-        </VListItem>
-      </template>
-    </VSelect>
+    <div class="SelectRow">
+      <VSelect
+        class="Select"
+        :model-value="model.tagValues"
+        :items="tagsOptions"
+        label="Тэги"
+        variant="outlined"
+        bg-color="#fff"
+        rounded="lg"
+        chips
+        multiple
+        @update:model-value="updateTagValues"
+      >
+        <template #item="{ props: itemProps, item }">
+          <VListItem v-bind="itemProps" class="SelectItem">
+            <VBtn
+              icon="mdi-close"
+              variant="text"
+              title="Удалить тэг"
+              @click.capture.stop="deleteButtonClickHandler(item.value)"
+            />
+          </VListItem>
+        </template>
+      </VSelect>
 
-    <VTextField
-      :model-value="model.customTagValue"
-      label="Название нового тэга"
-      variant="outlined"
-      bg-color="#fff"
-      rounded="lg"
-      @update:model-value="updateCustomTagValue"
-    />
+      <VBtn
+        class="ButtonNewTag"
+        icon="mdi-plus"
+        rounded="lg"
+        title="Добавить новый тэг"
+        color="pink-lighten-3"
+        :disabled="isCreateFieldVisible"
+        @click="showCreateField"
+      />
+    </div>
+
+    <div v-if="isCreateFieldVisible" class="CreateRow">
+      <VTextField
+        v-model="newTagName"
+        label="Название нового тэга"
+        variant="outlined"
+        bg-color="#fff"
+        rounded="lg"
+        autofocus
+        @keyup.enter="createTag"
+        @keyup.esc="hideCreateField"
+      />
+
+      <VBtn
+        icon="mdi-check"
+        variant="tonal"
+        rounded="lg"
+        title="Сохранить тэг"
+        :loading="createTagMutation.isPending.value"
+        @click="createTag"
+      />
+
+      <VBtn
+        icon="mdi-close"
+        variant="text"
+        rounded="lg"
+        title="Отмена"
+        @click="hideCreateField"
+      />
+    </div>
   </div>
 </template>
 
@@ -84,15 +150,46 @@ const deleteButtonClickHandler = async (id: string) => {
   border: 1px #ccc solid;
   border-radius: 12px;
   padding: 20px;
-  transition: border 0.2s, padding 0.2s;
   margin-top: 32px;
+
+  :deep(.v-sheet) {
+    background-color: red;
+  }
+}
+
+.SelectRow,
+.CreateRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.SelectRow {
+  .v-select {
+    flex: 1;
+  }
+}
+
+.CreateRow {
+  margin-top: 12px;
+
+  .v-input {
+    flex: 1;
+  }
 }
 
 .SelectItem {
+  :deep(.v-list-item) {
+  }
+
   :deep(.v-list-item__content) {
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
+}
+
+.ButtonNewTag {
+  color: #fff;
 }
 </style>

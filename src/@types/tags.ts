@@ -20,5 +20,4 @@ export type CreateTagPayload = {
 
 export type ProcedureTagsModel = {
   tagValues: string[];
-  customTagValue: string;
 };

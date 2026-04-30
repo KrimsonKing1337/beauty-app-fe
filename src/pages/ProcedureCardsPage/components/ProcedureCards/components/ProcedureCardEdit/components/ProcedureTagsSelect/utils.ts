@@ -5,7 +5,6 @@ export const getTagsOptions = (tags: Tag[]) => {
     return {
       title: tagCur.name,
       value: tagCur.id,
-      isCustom: !!tagCur.userId,
     };
   });
 };

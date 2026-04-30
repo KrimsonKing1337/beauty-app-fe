@@ -55,7 +55,6 @@ const procedureTypeModel = ref<ProcedureTypeModel>({
 
 const procedureTagsModel = ref<ProcedureTagsModel>({
   tagValues: draftCard.value?.tagIds ?? [],
-  customTagValue: '',
 });
 
 const imageFilesRef = ref<ImageFiles>({
@@ -88,23 +87,6 @@ const getResolvedTypeId = async (): Promise<string | null> => {
   return newType.id;
 };
 
-const getResolvedTagIds = async (): Promise<string[]> => {
-  const customTagValue = procedureTagsModel.value.customTagValue.trim();
-
-  if (!customTagValue) {
-    return procedureTagsModel.value.tagValues;
-  }
-
-  const newTag = await createTagMutation.mutateAsync({
-    name: customTagValue,
-  });
-
-  return [
-    ...procedureTagsModel.value.tagValues,
-    newTag.id,
-  ];
-};
-
 const handleSaveClick = async () => {
   if (!procedureCardsStore.draftCard) {
     return;
@@ -114,7 +96,7 @@ const handleSaveClick = async () => {
 
   try {
     procedureCardsStore.draftCard.typeId = await getResolvedTypeId();
-    procedureCardsStore.draftCard.tagIds = await getResolvedTagIds();
+    procedureCardsStore.draftCard.tagIds = procedureTagsModel.value.tagValues;
 
     await saveButtonClickHandler({
       store: procedureCardsStore,
