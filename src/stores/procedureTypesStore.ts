@@ -7,7 +7,6 @@ import type { ProcedureTypeModel } from '@/@types';
 export const useProcedureTypesStore = defineStore('procedureTypes', () => {
   const procedureTypeModel = ref<ProcedureTypeModel>({
     typeValue: null,
-    customTypeValue: '',
   });
 
   const procedureTypeName = ref('');
