@@ -76,7 +76,7 @@ const deleteButtonClickHandler = async (id: string) => {
 </script>
 
 <template>
-  <div class="ProcedureTagsSelect">
+  <div class="ProcedureTagsSelect" :class="{ isActive: isCreateFieldVisible }">
     <div class="SelectRow">
       <VSelect
         class="Select"
@@ -147,13 +147,15 @@ const deleteButtonClickHandler = async (id: string) => {
 
 <style scoped lang="scss">
 .ProcedureTagsSelect {
-  border: 1px #ccc solid;
+  border: 0 transparent solid;
   border-radius: 12px;
-  padding: 20px;
+  padding: 0;
+  transition: border 0.2s, padding 0.2s;
   margin-top: 32px;
 
-  :deep(.v-sheet) {
-    background-color: red;
+  &.isActive {
+    border: 1px #ccc solid;
+    padding: 20px;
   }
 }
 
@@ -179,9 +181,6 @@ const deleteButtonClickHandler = async (id: string) => {
 }
 
 .SelectItem {
-  :deep(.v-list-item) {
-  }
-
   :deep(.v-list-item__content) {
     display: flex;
     align-items: center;

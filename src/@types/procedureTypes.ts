@@ -20,5 +20,4 @@ export type CreateProcedureTypePayload = {
 
 export type ProcedureTypeModel = {
   typeValue: string | null;
-  customTypeValue: string;
 };

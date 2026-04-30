@@ -1,7 +1,13 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
+
+import type { ProcedureTypeModel } from '@/@types';
 
 import { useProcedureTypesQuery } from '@/composables/queries/procedureTypes/useProcedureTypesQuery';
+
+import {
+  useCreateProcedureTypeMutation,
+} from '@/composables/mutations/proceduresTypes/useCreateProcedureTypeMutation';
 
 import {
   useDeleteProcedureTypeMutation,
@@ -9,17 +15,17 @@ import {
 
 import { getProcedureTypesOptions } from './utils';
 
-type ProcedureTypeSelectModel = {
-  typeValue: string | null;
-  customTypeValue: string;
-};
-
-const model = defineModel<ProcedureTypeSelectModel>({
+const model = defineModel<ProcedureTypeModel>({
   required: true,
 });
 
 const { data: procedureTypes } = useProcedureTypesQuery();
+
+const createProcedureTypeMutation = useCreateProcedureTypeMutation();
 const deleteProcedureTypeMutation = useDeleteProcedureTypeMutation();
+
+const isCreateFieldVisible = ref(false);
+const newTypeName = ref('');
 
 const procedureTypesOptions = computed(() => {
   return getProcedureTypesOptions(procedureTypes.value ?? []);
@@ -27,61 +33,117 @@ const procedureTypesOptions = computed(() => {
 
 const updateTypeValue = (value: string | null) => {
   model.value = {
-    ...model.value,
     typeValue: value,
   };
 };
 
-const updateCustomTypeValue = (value: string) => {
-  model.value = {
-    ...model.value,
-    customTypeValue: value,
-  };
+const showCreateField = () => {
+  isCreateFieldVisible.value = true;
 };
 
-const deleteButtonClickHandler = (id: string) => {
-  deleteProcedureTypeMutation.mutateAsync(id);
+const hideCreateField = () => {
+  isCreateFieldVisible.value = false;
+  newTypeName.value = '';
+};
 
-  updateTypeValue(null);
+const createProcedureType = async () => {
+  const name = newTypeName.value.trim();
+
+  if (!name) {
+    return;
+  }
+
+  const newType = await createProcedureTypeMutation.mutateAsync({
+    name,
+  });
+
+  model.value = {
+    typeValue: newType.id,
+  };
+
+  hideCreateField();
+};
+
+const deleteButtonClickHandler = async (id: string) => {
+  await deleteProcedureTypeMutation.mutateAsync(id);
+
+  if (model.value.typeValue === id) {
+    updateTypeValue(null);
+  }
 };
 </script>
 
 <template>
   <div
     class="ProcedureTypeSelect"
-    :class="{ isActive: model.typeValue === 'custom' }"
+    :class="{ isActive: isCreateFieldVisible }"
   >
-    <VSelect
-      :model-value="model.typeValue"
-      :items="procedureTypesOptions"
-      label="Тип процедуры"
-      variant="outlined"
-      bg-color="#fff"
-      rounded="lg"
-      @update:model-value="updateTypeValue"
-    >
-      <template #item="{ props: itemProps, item }">
-        <VListItem v-bind="itemProps" class="SelectItem">
-          <VBtn
-            v-if="item.isCustom"
-            icon="mdi-close"
-            variant="text"
-            title="Удалить тип"
-            @click.capture.stop="deleteButtonClickHandler(item.value)"
-          />
-        </VListItem>
-      </template>
-    </VSelect>
+    <div class="SelectWrapper">
+      <VSelect
+        :model-value="model.typeValue"
+        :items="procedureTypesOptions"
+        label="Тип процедуры"
+        variant="outlined"
+        bg-color="#fff"
+        rounded="lg"
+        hide-details
+        @update:model-value="updateTypeValue"
+      >
+        <template #item="{ props: itemProps, item }">
+          <VListItem v-bind="itemProps" class="SelectItem">
+            <VBtn
+              v-if="item.isCustom"
+              icon="mdi-close"
+              variant="text"
+              title="Удалить тип"
+              @click.capture.stop="deleteButtonClickHandler(item.value)"
+            />
+          </VListItem>
+        </template>
+      </VSelect>
 
-    <VTextField
-      v-if="model.typeValue === 'custom'"
-      :model-value="model.customTypeValue"
-      label="Название нового типа"
-      variant="outlined"
-      bg-color="#fff"
-      rounded="lg"
-      @update:model-value="updateCustomTypeValue"
-    />
+      <VBtn
+        class="ButtonNewType"
+        icon="mdi-plus"
+        rounded="lg"
+        title="Добавить новый тип"
+        color="pink-lighten-3"
+        :disabled="isCreateFieldVisible"
+        @click="showCreateField"
+      />
+    </div>
+
+    <div v-if="isCreateFieldVisible" class="CreateWrapper">
+      <VTextField
+        v-model="newTypeName"
+        class="Input"
+        label="Название нового типа"
+        variant="outlined"
+        bg-color="#fff"
+        rounded="lg"
+        autofocus
+        hide-details
+        @keyup.enter="createProcedureType"
+        @keyup.esc="hideCreateField"
+      />
+
+      <VBtn
+        icon="mdi-check"
+        variant="tonal"
+        rounded="lg"
+        title="Сохранить тэг"
+        :loading="createProcedureTypeMutation.isPending.value"
+        @click="createProcedureType"
+      />
+
+      <VBtn
+        icon="mdi-close"
+        variant="text"
+        rounded="lg"
+        title="Отмена"
+        @click="hideCreateField"
+      />
+    </div>
   </div>
 </template>
 
@@ -97,6 +159,32 @@ const deleteButtonClickHandler = (id: string) => {
     border: 1px #ccc solid;
     padding: 20px;
   }
+}
+
+.SelectWrapper,
+.CreateWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.CreateWrapper {
+  margin-top: 18px;
+}
+
+.SelectWrapper {
+  :deep(.v-select) {
+    flex: 1;
+  }
+}
+
+.Input {
+  flex: 1;
+}
+
+.ButtonNewType {
+  color: #fff;
 }
 
 .SelectItem {

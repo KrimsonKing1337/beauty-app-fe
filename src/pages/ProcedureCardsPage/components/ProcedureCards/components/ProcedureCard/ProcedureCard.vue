@@ -87,7 +87,8 @@ const typeName = computed(() => {
 
 <style scoped lang="scss">
 .Type {
-  color: var(--text-secondary);
+  color: var(--text-primary);
+  font-weight: bold;
 }
 
 .ChipGroup {

@@ -42,7 +42,6 @@ const procedureCardsStore = useProcedureCardsStore();
 
 const saveProcedureMutation = useSaveProcedureMutation();
 const createProcedureTypeMutation = useCreateProcedureTypeMutation();
-const createTagMutation = useCreateTagMutation();
 
 const { draftCard } = storeToRefs(procedureCardsStore);
 
@@ -50,7 +49,6 @@ const saveButtonIsLoadingRef = ref(false);
 
 const procedureTypeModel = ref<ProcedureTypeModel>({
   typeValue: draftCard.value?.typeId ?? null,
-  customTypeValue: '',
 });
 
 const procedureTagsModel = ref<ProcedureTagsModel>({
@@ -73,20 +71,6 @@ const invalidateCacheCallback = async () => {
   await queryClient.invalidateQueries({ queryKey: ['procedures'] });
 };
 
-const getResolvedTypeId = async (): Promise<string | null> => {
-  const customTypeValue = procedureTypeModel.value.customTypeValue.trim();
-
-  if (!customTypeValue) {
-    return procedureTypeModel.value.typeValue;
-  }
-
-  const newType = await createProcedureTypeMutation.mutateAsync({
-    name: customTypeValue,
-  });
-
-  return newType.id;
-};
-
 const handleSaveClick = async () => {
   if (!procedureCardsStore.draftCard) {
     return;
@@ -95,7 +79,7 @@ const handleSaveClick = async () => {
   saveButtonIsLoadingRef.value = true;
 
   try {
-    procedureCardsStore.draftCard.typeId = await getResolvedTypeId();
+    procedureCardsStore.draftCard.typeId = procedureTypeModel.value.typeValue;
     procedureCardsStore.draftCard.tagIds = procedureTagsModel.value.tagValues;
 
     await saveButtonClickHandler({
