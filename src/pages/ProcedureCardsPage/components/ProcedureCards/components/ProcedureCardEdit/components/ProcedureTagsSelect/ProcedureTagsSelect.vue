@@ -4,10 +4,7 @@ import { computed } from 'vue';
 import type { ProcedureTagsModel } from '@/@types';
 
 import { useTagsQuery } from '@/composables/queries/tags/useTagsQuery';
-
-import {
-  useDeleteTagMutation,
-} from '@/composables/mutations/tags/useDeleteTagMutation';
+import { useDeleteTagMutation } from '@/composables/mutations/tags/useDeleteTagMutation';
 
 import { getTagsOptions } from './utils';
 
