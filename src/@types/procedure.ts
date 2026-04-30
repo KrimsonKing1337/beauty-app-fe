@@ -10,6 +10,7 @@ export type Procedure = {
   afterImagePaths: string[];
   notes?: string;
   typeId?: string | null;
+  tagIds: string[];
   createdAt: string;
   updatedAt: string;
 };
@@ -26,6 +27,7 @@ export type ProcedureDto = {
   afterImagePaths: string[];
   notes?: string;
   typeId?: string | null;
+  tagIds?: string[];
   createdAt: string;
   updatedAt: string;
 };

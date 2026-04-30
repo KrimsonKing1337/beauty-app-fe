@@ -15,6 +15,8 @@ const createEmptyProcedureCard = (): ProcedureDraft => ({
   beforeImagePaths: [],
   afterImagePaths: [],
   notes: '',
+  typeId: null,
+  tagIds: [],
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
 });
@@ -31,7 +33,10 @@ export const useProcedureCardsStore = defineStore('procedureCard', () => {
 
   const startEditCard = (card: ProcedureDraft) => {
     editingCardId.value = card.id;
-    draftCard.value = { ...card };
+    draftCard.value = {
+      ...card,
+      tagIds: [...card.tagIds],
+    };
   };
 
   const cancelEdit = () => {
@@ -54,6 +59,7 @@ export const useProcedureCardsStore = defineStore('procedureCard', () => {
     const duplicatedCard: ProcedureDraft = {
       ...card,
       id: crypto.randomUUID(),
+      tagIds: [...card.tagIds],
     };
 
     editingCardId.value = null;

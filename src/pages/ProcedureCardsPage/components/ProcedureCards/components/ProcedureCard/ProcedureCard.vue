@@ -3,7 +3,8 @@ import { computed } from 'vue';
 
 import type { Procedure } from '@/@types';
 
-import { useProcedureTypesQuery } from '@/composables/queries/procedureTypes/useProcedureTypesQuery.ts';
+import { useProcedureTypesQuery } from '@/composables/queries/procedureTypes/useProcedureTypesQuery';
+import { useTagsQuery } from '@/composables/queries/tags/useTagsQuery';
 
 import {
   BeforeAfter,
@@ -21,6 +22,7 @@ const beforeImagePaths = getBeforeAfterImagePaths(props.card.beforeImagePaths);
 const afterImagePaths = getBeforeAfterImagePaths(props.card.afterImagePaths);
 
 const { data: procedureTypes } = useProcedureTypesQuery();
+const { data: tags } = useTagsQuery();
 
 const procedureTypesById = computed(() => {
   const types = procedureTypes.value ?? [];
@@ -70,13 +72,14 @@ const typeName = computed(() => {
       {{ props.card.notes }}
     </Notes>
 
-    <VChipGroup class="ChipGroup">
-      <VChip link color="pink-lighten-3">
-        Подмышки
-      </VChip>
-
-      <VChip link color="pink-lighten-3">
-        Дорого
+    <VChipGroup v-if="tags?.length" class="ChipGroup">
+      <VChip
+        v-for="tagCur in tags"
+        :key="tagCur.id"
+        link
+        color="pink-lighten-3"
+      >
+        {{ tagCur.name }}
       </VChip>
     </VChipGroup>
   </Card>

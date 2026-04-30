@@ -96,6 +96,8 @@ export const saveButtonClickHandler = async ({
       beforeImagePaths: [],
       afterImagePaths: [],
       notes: draft.notes,
+      typeId: draft.typeId,
+      tagIds: draft.tagIds,
       updatedAt: new Date().toISOString(),
     };
 

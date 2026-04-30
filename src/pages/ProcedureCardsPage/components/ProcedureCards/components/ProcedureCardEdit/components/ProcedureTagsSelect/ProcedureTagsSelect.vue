@@ -1,90 +1,101 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed } from 'vue';
 
-const model = ref(null);
+import type { ProcedureTagsModel } from '@/@types';
 
-const items = [
-  {
-    title: 'дорого',
-    value: 0,
-  },
-  {
-    title: 'дёшево',
-    value: 1,
-  },
-  {
-    title: 'говно',
-    value: 2,
-  },
-  {
-    title: 'подмышки',
-    value: 3,
-  },
-];
+import { useTagsQuery } from '@/composables/queries/tags/useTagsQuery';
 
-// todo: VTextField через пробел создаёт тэги в чипсах,
-//  дальше это отправляется на сервер в множественном варианте
+import {
+  useDeleteTagMutation,
+} from '@/composables/mutations/tags/useDeleteTagMutation';
+
+import { getTagsOptions } from './utils';
+
+const model = defineModel<ProcedureTagsModel>({
+  required: true,
+});
+
+const { data: tags } = useTagsQuery();
+const deleteTagMutation = useDeleteTagMutation();
+
+const tagsOptions = computed(() => {
+  return getTagsOptions(tags.value ?? []);
+});
+
+const updateTagValues = (value: string[]) => {
+  model.value = {
+    ...model.value,
+    tagValues: value,
+  };
+};
+
+const updateCustomTagValue = (value: string) => {
+  model.value = {
+    ...model.value,
+    customTagValue: value,
+  };
+};
+
+const deleteButtonClickHandler = async (id: string) => {
+  await deleteTagMutation.mutateAsync(id);
+
+  updateTagValues(
+    model.value.tagValues.filter((tagId) => tagId !== id),
+  );
+};
 </script>
 
 <template>
-  <div class="ProcedureTagsSelect isActive">
-    <div class="SelectWrapper">
-      <VSelect
-        v-model="model"
-        :items="items"
-        label="Тэги"
-        variant="outlined"
-        bg-color="#fff"
-        rounded="lg"
-        chips
-        multiple
-        hide-details
-      />
-
-      <VBtn class="Button" color="pink-lighten-3">
-        <VIcon icon="mdi-plus" />
-      </VBtn>
-    </div>
+  <div class="ProcedureTagsSelect">
+    <VSelect
+      :model-value="model.tagValues"
+      :items="tagsOptions"
+      label="Тэги"
+      variant="outlined"
+      bg-color="#fff"
+      rounded="lg"
+      chips
+      multiple
+      @update:model-value="updateTagValues"
+    >
+      <template #item="{ props: itemProps, item }">
+        <VListItem v-bind="itemProps" class="SelectItem">
+          <VBtn
+            v-if="item.isCustom"
+            icon="mdi-close"
+            variant="text"
+            title="Удалить тэг"
+            @click.capture.stop="deleteButtonClickHandler(item.value)"
+          />
+        </VListItem>
+      </template>
+    </VSelect>
 
     <VTextField
-      class="Input"
+      :model-value="model.customTagValue"
       label="Название нового тэга"
       variant="outlined"
       bg-color="#fff"
       rounded="lg"
+      @update:model-value="updateCustomTagValue"
     />
   </div>
 </template>
 
 <style scoped lang="scss">
 .ProcedureTagsSelect {
-  border: 0 transparent solid;
+  border: 1px #ccc solid;
   border-radius: 12px;
-  padding: 0;
+  padding: 20px;
   transition: border 0.2s, padding 0.2s;
   margin-top: 32px;
+}
 
-  &.isActive {
-    border: 1px #ccc solid;
-    padding: 20px;
+.SelectItem {
+  :deep(.v-list-item__content) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
-}
-
-.SelectWrapper {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.Button {
-  border-radius: 16px;
-  color: #fff;
-  height: 32px;
-  min-width: 52px;
-}
-
-.Input {
-  margin-top: 18px;
 }
 </style>

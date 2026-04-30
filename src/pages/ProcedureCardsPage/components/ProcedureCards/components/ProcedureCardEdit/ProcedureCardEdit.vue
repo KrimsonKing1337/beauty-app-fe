@@ -5,7 +5,11 @@ import { storeToRefs } from 'pinia';
 
 import { useQueryClient } from '@tanstack/vue-query';
 
-import type { ProcedureDraft, ProcedureTypeModel } from '@/@types';
+import type {
+  ProcedureDraft,
+  ProcedureTagsModel,
+  ProcedureTypeModel,
+} from '@/@types';
 
 import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
 
@@ -15,11 +19,20 @@ import {
   useCreateProcedureTypeMutation,
 } from '@/composables/mutations/proceduresTypes/useCreateProcedureTypeMutation';
 
+import {
+  useCreateTagMutation,
+} from '@/composables/mutations/tags/useCreateTagMutation';
+
 import { CardActions } from '@/components';
 
 import type { ImageFiles } from './@types';
 
-import { Form, UploadImages, ProcedureTypeSelect, ProcedureTagsSelect } from './components';
+import {
+  Form,
+  UploadImages,
+  ProcedureTypeSelect,
+  ProcedureTagsSelect,
+} from './components';
 
 import { saveButtonClickHandler } from './utils';
 
@@ -29,6 +42,7 @@ const procedureCardsStore = useProcedureCardsStore();
 
 const saveProcedureMutation = useSaveProcedureMutation();
 const createProcedureTypeMutation = useCreateProcedureTypeMutation();
+const createTagMutation = useCreateTagMutation();
 
 const { draftCard } = storeToRefs(procedureCardsStore);
 
@@ -37,6 +51,11 @@ const saveButtonIsLoadingRef = ref(false);
 const procedureTypeModel = ref<ProcedureTypeModel>({
   typeValue: draftCard.value?.typeId ?? null,
   customTypeValue: '',
+});
+
+const procedureTagsModel = ref<ProcedureTagsModel>({
+  tagValues: draftCard.value?.tagIds ?? [],
+  customTagValue: '',
 });
 
 const imageFilesRef = ref<ImageFiles>({
@@ -55,6 +74,37 @@ const invalidateCacheCallback = async () => {
   await queryClient.invalidateQueries({ queryKey: ['procedures'] });
 };
 
+const getResolvedTypeId = async (): Promise<string | null> => {
+  const customTypeValue = procedureTypeModel.value.customTypeValue.trim();
+
+  if (!customTypeValue) {
+    return procedureTypeModel.value.typeValue;
+  }
+
+  const newType = await createProcedureTypeMutation.mutateAsync({
+    name: customTypeValue,
+  });
+
+  return newType.id;
+};
+
+const getResolvedTagIds = async (): Promise<string[]> => {
+  const customTagValue = procedureTagsModel.value.customTagValue.trim();
+
+  if (!customTagValue) {
+    return procedureTagsModel.value.tagValues;
+  }
+
+  const newTag = await createTagMutation.mutateAsync({
+    name: customTagValue,
+  });
+
+  return [
+    ...procedureTagsModel.value.tagValues,
+    newTag.id,
+  ];
+};
+
 const handleSaveClick = async () => {
   if (!procedureCardsStore.draftCard) {
     return;
@@ -63,15 +113,8 @@ const handleSaveClick = async () => {
   saveButtonIsLoadingRef.value = true;
 
   try {
-    if (procedureTypeModel.value.customTypeValue) {
-      const newType = await createProcedureTypeMutation.mutateAsync({
-        name: procedureTypeModel.value.customTypeValue,
-      });
-
-      procedureCardsStore.draftCard.typeId = newType.id;
-    }
-
-    procedureCardsStore.draftCard.typeId = procedureTypeModel.value.typeValue;
+    procedureCardsStore.draftCard.typeId = await getResolvedTypeId();
+    procedureCardsStore.draftCard.tagIds = await getResolvedTagIds();
 
     await saveButtonClickHandler({
       store: procedureCardsStore,
@@ -118,7 +161,7 @@ const updateDraftCard = <K extends keyof NonNullable<ProcedureDraft>>(
       />
 
       <ProcedureTypeSelect v-model="procedureTypeModel" />
-      <ProcedureTagsSelect />
+      <ProcedureTagsSelect v-model="procedureTagsModel" />
 
       <UploadImages
         :before-file="imageFilesRef.before"
