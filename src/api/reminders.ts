@@ -7,9 +7,14 @@ import type {
 
 import { apiClient } from '@/api/client.ts';
 
+import {
+  normalizeReminderNotifications,
+} from '@/pages/RemindersPage/components/Reminders/utils';
+
 const mapReminderDtoToEntity = (dto: ReminderDto): Reminder => ({
   ...dto,
   dateTime: new Date(dto.dateTime),
+  notifications: normalizeReminderNotifications(dto.notifications),
   createdAt: new Date(dto.createdAt),
   updatedAt: new Date(dto.updatedAt),
 });
@@ -19,6 +24,7 @@ const mapCreateReminderPayloadToDto = (
 ) => ({
   ...payload,
   dateTime: payload.dateTime.toISOString(),
+  notifications: normalizeReminderNotifications(payload.notifications),
 });
 
 const mapUpdateReminderPayloadToDto = (
@@ -26,6 +32,9 @@ const mapUpdateReminderPayloadToDto = (
 ) => ({
   ...payload,
   dateTime: payload.dateTime?.toISOString(),
+  notifications: payload.notifications
+    ? normalizeReminderNotifications(payload.notifications)
+    : undefined,
 });
 
 export const getReminders = async (): Promise<Reminder[]> => {

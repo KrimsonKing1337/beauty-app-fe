@@ -1,12 +1,11 @@
 import { Capacitor } from '@capacitor/core';
-import {
-  type LocalNotificationSchema,
-  LocalNotifications,
-} from '@capacitor/local-notifications';
+import { type LocalNotificationSchema, LocalNotifications } from '@capacitor/local-notifications';
 
 import type { Router } from 'vue-router';
 
 import type { Reminder } from '@/@types';
+
+import { getReminderNotificationOffsetMs } from '@/pages/RemindersPage/components/Reminders/utils';
 
 const REMINDERS_CHANNEL_ID = 'reminders';
 
@@ -30,8 +29,8 @@ const getReminderNotificationId = (reminderId: string): number => {
 };
 
 const getReminderNotificationDate = (reminder: Reminder): Date => {
-  const minutesBefore = Math.max(0, reminder.notifications.minutesBefore);
-  const timestamp = reminder.dateTime.getTime() - minutesBefore * 60 * 1000;
+  const timestamp = reminder.dateTime.getTime()
+    - getReminderNotificationOffsetMs(reminder.notifications);
 
   const date = new Date(timestamp);
 

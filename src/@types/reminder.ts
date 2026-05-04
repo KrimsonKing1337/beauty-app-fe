@@ -17,9 +17,9 @@ export type ReminderRepeat = {
 };
 
 export type ReminderNotifications = {
-  minutesBefore: number;
-  hoursBefore: number;
   daysBefore: number;
+  hoursBefore: number;
+  minutesBefore: number;
 };
 
 export type Reminder = {
@@ -40,7 +40,7 @@ export type ReminderDto = {
   description: string;
   dateTime: string;
   repeat: ReminderRepeat;
-  notifications: ReminderNotifications;
+  notifications: Partial<ReminderNotifications>;
   isCompleted: boolean;
   createdAt: string;
   updatedAt: string;

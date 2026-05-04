@@ -1,9 +1,13 @@
-import type { ReminderRepeat, RepeatPreset } from '@/@types';
+import type {
+  ReminderNotifications,
+  ReminderRepeat,
+  RepeatPreset,
+} from '@/@types';
 
 export type FormatReminderDateArgs = {
   date: Date;
   currentNow?: Date;
-  minutesBefore?: number;
+  notifications?: Partial<ReminderNotifications>;
 };
 
 export type ReminderDue = ''
@@ -11,16 +15,51 @@ export type ReminderDue = ''
   | 'isTimeToNotify'
   | 'isPast';
 
+const getSafeNonNegativeNumber = (value: unknown): number => {
+  if (typeof value !== 'number') {
+    return 0;
+  }
+
+  if (!Number.isFinite(value)) {
+    return 0;
+  }
+
+  return Math.max(0, Math.trunc(value));
+};
+
+export const getReminderNotificationOffsetMs = (
+  notifications?: Partial<ReminderNotifications>,
+): number => {
+  const daysBefore = getSafeNonNegativeNumber(notifications?.daysBefore);
+  const hoursBefore = getSafeNonNegativeNumber(notifications?.hoursBefore);
+  const minutesBefore = getSafeNonNegativeNumber(notifications?.minutesBefore);
+
+  return (
+    daysBefore * 24 * 60 * 60 * 1000
+    + hoursBefore * 60 * 60 * 1000
+    + minutesBefore * 60 * 1000
+  );
+};
+
+export const normalizeReminderNotifications = (
+  notifications?: Partial<ReminderNotifications>,
+): ReminderNotifications => {
+  return {
+    daysBefore: getSafeNonNegativeNumber(notifications?.daysBefore),
+    hoursBefore: getSafeNonNegativeNumber(notifications?.hoursBefore),
+    minutesBefore: getSafeNonNegativeNumber(notifications?.minutesBefore),
+  };
+};
+
 export const formatReminderDate = ({
   date,
   currentNow,
-  minutesBefore = 0,
+  notifications,
 }: FormatReminderDateArgs) => {
   const now = currentNow ?? new Date();
-  const safeMinutesBefore = Math.max(0, minutesBefore);
 
   const notificationDate = new Date(
-    date.getTime() - safeMinutesBefore * 60 * 1000,
+    date.getTime() - getReminderNotificationOffsetMs(notifications),
   );
 
   const eventDiffMs = date.getTime() - now.getTime();
@@ -89,18 +128,16 @@ export const formatReminderDate = ({
     } else {
       relativeText = `просрочено на ${absDays} д`;
     }
-  } else {
-    if (isNow) {
-      relativeText = 'сейчас';
-    } else if (diffMinutes < 1) {
-      relativeText = 'меньше минуты';
-    } else if (diffMinutes < 60) {
-      relativeText = `через ${diffMinutes} мин`;
-    } else if (diffHours < 24) {
-      relativeText = `через ${diffHours} ч`;
-    } else if (diffDays < 7) {
-      relativeText = `через ${diffDays} д`;
-    }
+  } else if (isNow) {
+    relativeText = 'сейчас';
+  } else if (diffMinutes < 1) {
+    relativeText = 'меньше минуты';
+  } else if (diffMinutes < 60) {
+    relativeText = `через ${diffMinutes} мин`;
+  } else if (diffHours < 24) {
+    relativeText = `через ${diffHours} ч`;
+  } else if (diffDays < 7) {
+    relativeText = `через ${diffDays} д`;
   }
 
   let due: ReminderDue = '';
