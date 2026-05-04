@@ -22,6 +22,8 @@ const createEmptyReminder = (): Reminder => {
     },
     notifications: {
       minutesBefore: 0,
+      hoursBefore: 0,
+      daysBefore: 0,
     },
     isCompleted: false,
     createdAt: new Date(),

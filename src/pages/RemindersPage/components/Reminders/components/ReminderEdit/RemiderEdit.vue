@@ -19,7 +19,7 @@ import { CardActions } from '@/components';
 
 import { trimSeconds } from '@/utils';
 
-import { ItemRepeat, ItemDateTime, ItemMinutesBefore } from './components';
+import { ItemRepeat, ItemDateTime, ItemUnitsOfTimeBefore } from './components';
 
 const remindersStore = useRemindersStore();
 const updateReminderMutation = useUpdateReminderMutation();
@@ -95,7 +95,7 @@ const cancelButtonClickHandler = () => {
 
     <ItemDateTime v-model="draftReminder!.dateTime" />
     <ItemRepeat v-model="repeatFormRef" />
-    <ItemMinutesBefore v-model="draftReminder!.notifications.minutesBefore" />
+    <ItemUnitsOfTimeBefore v-model="draftReminder!.notifications" />
 
     <div class="BottomNav">
       <CardActions

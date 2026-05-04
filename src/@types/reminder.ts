@@ -18,6 +18,8 @@ export type ReminderRepeat = {
 
 export type ReminderNotifications = {
   minutesBefore: number;
+  hoursBefore: number;
+  daysBefore: number;
 };
 
 export type Reminder = {
