@@ -37,7 +37,6 @@ const queryClient = useQueryClient();
 const procedureCardsStore = useProcedureCardsStore();
 
 const saveProcedureMutation = useSaveProcedureMutation();
-const createProcedureTypeMutation = useCreateProcedureTypeMutation();
 
 const { draftCard } = storeToRefs(procedureCardsStore);
 

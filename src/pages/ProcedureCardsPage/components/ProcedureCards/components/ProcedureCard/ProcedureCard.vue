@@ -14,7 +14,7 @@ import {
 
 import { getBeforeAfterImagePaths } from '@/utils';
 
-import { Header } from './components';
+import { Header, Tags } from './components';
 
 const props = defineProps<{ card: Procedure }>();
 
@@ -53,6 +53,8 @@ const typeName = computed(() => {
 
   return type.name;
 });
+
+const tagsSafe = tags.value ?? [];
 </script>
 
 <template>
@@ -72,16 +74,7 @@ const typeName = computed(() => {
       {{ props.card.notes }}
     </Notes>
 
-    <VChipGroup v-if="tags?.length" class="ChipGroup">
-      <VChip
-        v-for="tagCur in tags"
-        :key="tagCur.id"
-        link
-        color="pink-lighten-3"
-      >
-        {{ tagCur.name }}
-      </VChip>
-    </VChipGroup>
+    <Tags :tags="tagsSafe" :tag-ids="card.tagIds" />
   </Card>
 </template>
 
@@ -89,9 +82,5 @@ const typeName = computed(() => {
 .Type {
   color: var(--text-primary);
   font-weight: bold;
-}
-
-.ChipGroup {
-  margin-top: 10px;
 }
 </style>
