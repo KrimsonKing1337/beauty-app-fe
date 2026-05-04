@@ -15,10 +15,6 @@ import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
 
 import { useSaveProcedureMutation } from '@/composables/mutations/procedures/useSaveProcedureMutation';
 
-import {
-  useCreateProcedureTypeMutation,
-} from '@/composables/mutations/proceduresTypes/useCreateProcedureTypeMutation';
-
 import { CardActions } from '@/components';
 
 import type { ImageFiles } from './@types';
