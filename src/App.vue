@@ -4,11 +4,15 @@ import { watch } from 'vue';
 import { RouterView, useRouter } from 'vue-router';
 
 import { setUnauthorizedHandler } from '@/api/client.ts';
+import { getErrorMessage } from '@/api/errors';
 import { getReminders } from '@/api/reminders';
 
 import { useAuthStore } from '@/stores/authStore';
+import { useNotificationStore } from '@/stores/notificationStore';
 
 import { useMeQuery } from '@/composables/queries/auth/useMeQuery';
+
+import { AppToast } from '@/components';
 
 import {
   clearAllReminderNotifications,
@@ -17,6 +21,7 @@ import {
 
 const router = useRouter();
 const authStore = useAuthStore();
+const notificationStore = useNotificationStore();
 const meQuery = useMeQuery();
 
 setUnauthorizedHandler(() => {
@@ -36,9 +41,13 @@ watch(
 
     authStore.setUser(data.user);
 
-    const reminders = await getReminders();
+    try {
+      const reminders = await getReminders();
 
-    await syncAllReminderNotifications(reminders);
+      await syncAllReminderNotifications(reminders);
+    } catch (error) {
+      notificationStore.showError(getErrorMessage(error));
+    }
   },
   {
     immediate: true,
@@ -65,6 +74,8 @@ watch(
       <Component :is="Component" :key="route.path" />
     </Transition>
   </RouterView>
+
+  <AppToast />
 </template>
 
 <style scoped>

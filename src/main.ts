@@ -6,7 +6,15 @@ import * as directives from 'vuetify/directives';
 
 import { createPinia } from 'pinia';
 
-import { VueQueryPlugin, QueryClient } from '@tanstack/vue-query';
+import {
+  VueQueryPlugin,
+  QueryClient,
+  MutationCache,
+} from '@tanstack/vue-query';
+
+import { getErrorMessage } from '@/api/errors';
+
+import { useNotificationStore } from '@/stores/notificationStore';
 
 import { initReminderNotifications } from '@/utils/reminderNotifications';
 
@@ -21,6 +29,7 @@ import '@mdi/font/css/materialdesignicons.css';
 import './styles/styles.scss';
 
 const app = createApp(App);
+const pinia = createPinia();
 
 const vuetify = createVuetify({
   components,
@@ -31,6 +40,22 @@ const vuetify = createVuetify({
 });
 
 const queryClient = new QueryClient({
+  mutationCache: new MutationCache({
+    onError: (error, _variables, _context, mutation) => {
+      const meta = mutation.options.meta as {
+        showGlobalError?: boolean;
+      } | undefined;
+
+      if (meta?.showGlobalError === false) {
+        return;
+      }
+
+      const notificationStore = useNotificationStore();
+
+      notificationStore.showError(getErrorMessage(error));
+    },
+  }),
+
   defaultOptions: {
     queries: {
       retry: false,
@@ -38,12 +63,13 @@ const queryClient = new QueryClient({
   },
 });
 
+app.use(pinia);
+
 app.use(VueQueryPlugin, {
   queryClient,
 });
 
 app.use(vuetify);
-app.use(createPinia());
 app.use(router);
 
 initReminderNotifications(router);

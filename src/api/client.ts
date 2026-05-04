@@ -3,6 +3,8 @@ import { refreshAccessToken } from './refreshAccessToken';
 
 import { getApiUrl } from './config';
 
+import { createApiError } from './errors';
+
 type RequestHeaders = Record<string, string>;
 
 type ApiClientOptions = Omit<RequestInit, 'headers'> & {
@@ -87,21 +89,21 @@ export const apiClient = async <T>(
       });
 
       if (!retryResponse.ok) {
-        throw new Error(`Request failed with status ${retryResponse.status}`);
+        throw await createApiError(retryResponse);
       }
 
       return parseResponse<T>(retryResponse);
     } catch (error) {
       authTokenStorage.clearTokens();
       onUnauthorized?.();
+
       throw error;
     }
   }
 
   if (!response.ok) {
-    throw new Error(`Request failed with status ${response.status}`);
+    throw await createApiError(response);
   }
 
   return parseResponse<T>(response);
 };
-

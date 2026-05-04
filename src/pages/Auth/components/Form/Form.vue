@@ -3,9 +3,13 @@ import { computed, reactive } from 'vue';
 
 import { useRouter } from 'vue-router';
 
+import { getErrorMessage } from '@/api/errors';
+
 import { useAuthStore } from '@/stores/authStore.ts';
 
 import { useLoginMutation } from '@/composables/mutations/auth/useLoginMutation.ts';
+
+import { AppError } from '@/components';
 
 import { Inputs, RememberMe, Buttons } from './components';
 
@@ -24,11 +28,11 @@ const isSubmitDisabled = computed(() => {
 });
 
 const errorMessage = computed(() => {
-  if (!(loginMutation.error.value instanceof Error)) {
-    return '';
+  if (!loginMutation.error.value) {
+    return null;
   }
 
-  return loginMutation.error.value.message;
+  return getErrorMessage(loginMutation.error.value);
 });
 
 const submitHandler = async () => {
@@ -47,7 +51,7 @@ const submitHandler = async () => {
 
     await router.push('/');
   } catch {
-    // ошибка уже попадёт в loginMutation.error
+    // Ошибка уже попадёт в loginMutation.error
   }
 };
 </script>
@@ -64,9 +68,12 @@ const submitHandler = async () => {
       </button>
     </div>
 
-    <p v-if="errorMessage" class="Error">
-      {{ errorMessage }}
-    </p>
+    <AppError
+      v-if="errorMessage"
+      title="Не удалось войти"
+      :message="errorMessage"
+      @retry="submitHandler"
+    />
 
     <Buttons :is-loading="loginMutation.isPending.value" :is-submit-disabled="isSubmitDisabled" />
   </form>
@@ -97,14 +104,6 @@ const submitHandler = async () => {
   &:hover {
     opacity: 0.8;
   }
-}
-
-.Error {
-  padding: 12px 14px;
-  border: 1px solid rgba(211, 122, 122, 0.28);
-  border-radius: 14px;
-  color: #d37a7a;
-  background: rgba(211, 122, 122, 0.08);
 }
 
 .Login,

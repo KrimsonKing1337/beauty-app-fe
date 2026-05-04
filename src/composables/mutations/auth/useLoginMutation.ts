@@ -9,5 +9,8 @@ export const useLoginMutation = () => {
     mutationFn: (payload: LoginPayload) => {
       return login(payload);
     },
+    meta: {
+      showGlobalError: false,
+    },
   });
 };
