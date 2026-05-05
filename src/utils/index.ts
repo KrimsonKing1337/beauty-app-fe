@@ -1,8 +1,6 @@
-import type { ProcedureDto, Procedure } from '@/@types';
-
 import { getApiOrigin } from '@/api/config.ts';
 
-export const formatDate = (date: string | null) => {
+export const formatDate = (date: Date | string | null) => {
   if (!date) {
     return '';
   }
