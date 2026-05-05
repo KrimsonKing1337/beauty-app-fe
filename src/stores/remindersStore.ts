@@ -25,6 +25,7 @@ const createEmptyReminder = (): Reminder => {
       hoursBefore: 0,
       daysBefore: 0,
     },
+    procedureId: null,
     isCompleted: false,
     createdAt: new Date(),
     updatedAt: new Date(),

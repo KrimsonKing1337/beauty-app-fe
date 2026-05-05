@@ -50,7 +50,7 @@ const remindersWithFormattedDate = computed(() => {
       formattedDate: formatReminderDate({
         date: reminderCur.dateTime,
         currentNow,
-        minutesBefore: reminderCur.notifications.minutesBefore,
+        notifications: reminderCur.notifications,
       }),
     };
   });
