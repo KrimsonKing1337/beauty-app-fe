@@ -8,14 +8,15 @@ import { useQueryClient } from '@tanstack/vue-query';
 import type {
   ProcedureDraft,
   ProcedureTagsModel,
-  ProcedureTypeModel, ReminderNotifications,
+  ProcedureTypeModel,
+  ReminderNotifications,
 } from '@/@types';
 
 import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
 
 import { useSaveProcedureMutation } from '@/composables/mutations/procedures/useSaveProcedureMutation';
 
-import { CardActions, ReminderNotification, RemindFor } from '@/components';
+import { CardActions, RemindFor } from '@/components';
 
 import type { ImageFiles } from './@types';
 
