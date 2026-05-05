@@ -4,6 +4,7 @@ import { computed } from 'vue';
 import type { Procedure } from '@/@types';
 
 import { useProcedureTypesQuery } from '@/composables/queries/procedureTypes/useProcedureTypesQuery';
+import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQuery';
 import { useTagsQuery } from '@/composables/queries/tags/useTagsQuery';
 
 import {
@@ -23,6 +24,41 @@ const afterImagePaths = getBeforeAfterImagePaths(props.card.afterImagePaths);
 
 const { data: procedureTypes } = useProcedureTypesQuery();
 const { data: tags } = useTagsQuery();
+const { data: reminders } = useRemindersQuery();
+
+const procedureReminder = computed(() => {
+  return reminders.value?.find((reminderCur) => {
+    return reminderCur.procedureId === props.card.id;
+  }) ?? null;
+});
+
+const remindForText = computed(() => {
+  const notifications = procedureReminder.value?.notifications;
+
+  if (!notifications) {
+    return null;
+  }
+
+  const parts: string[] = [];
+
+  if (notifications.daysBefore) {
+    parts.push(`${notifications.daysBefore} дн.`);
+  }
+
+  if (notifications.hoursBefore) {
+    parts.push(`${notifications.hoursBefore} ч.`);
+  }
+
+  if (notifications.minutesBefore) {
+    parts.push(`${notifications.minutesBefore} мин.`);
+  }
+
+  if (!parts.length) {
+    return 'В момент процедуры';
+  }
+
+  return `Напомнить за: ${parts.join(' ')}`;
+});
 
 const procedureTypesById = computed(() => {
   const types = procedureTypes.value ?? [];
@@ -63,6 +99,10 @@ const tagsSafe = tags.value ?? [];
 
     <div v-if="typeName" class="Type">
       Тип: {{ typeName }}
+    </div>
+
+    <div v-if="remindForText">
+      {{ remindForText }}
     </div>
 
     <BeforeAfter
