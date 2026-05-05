@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 import { storeToRefs } from 'pinia';
 
@@ -15,6 +15,10 @@ import type {
 import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
 
 import { useSaveProcedureMutation } from '@/composables/mutations/procedures/useSaveProcedureMutation';
+import { useCreateReminderMutation } from '@/composables/mutations/reminders/useCreateReminderMutation';
+import { useUpdateReminderMutation } from '@/composables/mutations/reminders/useUpdateReminderMutation';
+
+import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQuery';
 
 import { CardActions, RemindFor } from '@/components';
 
@@ -34,6 +38,10 @@ const queryClient = useQueryClient();
 const procedureCardsStore = useProcedureCardsStore();
 
 const saveProcedureMutation = useSaveProcedureMutation();
+const createReminderMutation = useCreateReminderMutation();
+const updateReminderMutation = useUpdateReminderMutation();
+
+const { data: reminders } = useRemindersQuery();
 
 const { draftCard } = storeToRefs(procedureCardsStore);
 
@@ -58,6 +66,38 @@ const remindForValuesRef = ref<ReminderNotifications>({
   minutesBefore: 0,
 });
 
+const existingProcedureReminder = computed(() => {
+  const procedureId = procedureCardsStore.editingCardId;
+
+  if (!procedureId) {
+    return null;
+  }
+
+  return reminders.value?.find((reminderCur) => {
+    return reminderCur.procedureId === procedureId;
+  }) ?? null;
+});
+
+watch(
+  existingProcedureReminder,
+  (reminder) => {
+    if (!reminder) {
+      remindForValuesRef.value = {
+        daysBefore: 0,
+        hoursBefore: 0,
+        minutesBefore: 0,
+      };
+
+      return;
+    }
+
+    remindForValuesRef.value = {
+      ...reminder.notifications,
+    };
+  },
+  { immediate: true },
+);
+
 const resetImageFiles = () => {
   imageFilesRef.value = {
     before: null,
@@ -66,7 +106,10 @@ const resetImageFiles = () => {
 };
 
 const invalidateCacheCallback = async () => {
-  await queryClient.invalidateQueries({ queryKey: ['procedures'] });
+  await Promise.all([
+    queryClient.invalidateQueries({ queryKey: ['procedures'] }),
+    queryClient.invalidateQueries({ queryKey: ['reminders'] }),
+  ]);
 };
 
 const handleSaveClick = async () => {
@@ -83,8 +126,12 @@ const handleSaveClick = async () => {
     await saveButtonClickHandler({
       store: procedureCardsStore,
       saveProcedureMutation,
+      createReminderMutation,
+      updateReminderMutation,
       invalidateCacheCallback,
       files: imageFilesRef.value,
+      remindForValues: remindForValuesRef.value,
+      existingProcedureReminder: existingProcedureReminder.value,
     });
 
     resetImageFiles();

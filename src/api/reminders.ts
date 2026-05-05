@@ -15,6 +15,7 @@ const mapReminderDtoToEntity = (dto: ReminderDto): Reminder => ({
   ...dto,
   dateTime: new Date(dto.dateTime),
   notifications: normalizeReminderNotifications(dto.notifications),
+  procedureId: dto.procedureId ?? null,
   createdAt: new Date(dto.createdAt),
   updatedAt: new Date(dto.updatedAt),
 });
@@ -25,6 +26,7 @@ const mapCreateReminderPayloadToDto = (
   ...payload,
   dateTime: payload.dateTime.toISOString(),
   notifications: normalizeReminderNotifications(payload.notifications),
+  procedureId: payload.procedureId ?? null,
 });
 
 const mapUpdateReminderPayloadToDto = (

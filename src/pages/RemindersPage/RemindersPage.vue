@@ -30,7 +30,9 @@ const {
   error,
 } = useRemindersQuery();
 
-const reminders = computed<ReminderType[]>(() => data.value ?? []);
+const reminders = computed<ReminderType[]>(() => {
+  return (data.value ?? []).filter((reminderCur) => !reminderCur.procedureId);
+});
 
 const errorMessage = computed<string | null>(() => {
   if (!isError.value) {
@@ -68,7 +70,3 @@ watch(
     />
   </div>
 </template>
-
-<style scoped lang="scss">
-
-</style>

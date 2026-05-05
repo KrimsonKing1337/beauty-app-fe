@@ -29,6 +29,7 @@ export type Reminder = {
   dateTime: Date;
   repeat: ReminderRepeat;
   notifications: ReminderNotifications;
+  procedureId: string | null;
   isCompleted: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -41,6 +42,7 @@ export type ReminderDto = {
   dateTime: string;
   repeat: ReminderRepeat;
   notifications: Partial<ReminderNotifications>;
+  procedureId: string | null;
   isCompleted: boolean;
   createdAt: string;
   updatedAt: string;
@@ -52,6 +54,7 @@ export type CreateReminderPayload = {
   dateTime: Date;
   repeat: ReminderRepeat;
   notifications: ReminderNotifications;
+  procedureId?: string | null;
   isCompleted?: boolean;
 };
 
@@ -61,5 +64,6 @@ export type UpdateReminderPayload = {
   dateTime?: Date;
   repeat?: ReminderRepeat;
   notifications?: ReminderNotifications;
+  procedureId?: string | null;
   isCompleted?: boolean;
 };
