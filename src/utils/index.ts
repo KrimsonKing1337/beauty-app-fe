@@ -18,23 +18,6 @@ export const formatDate = (date: string | null) => {
     .replace(' г.', '');
 };
 
-export const mapProcedureDtoToModel = (dto: ProcedureDto): Procedure => ({
-  id: dto.id,
-  procedureName: dto.procedureName,
-  dateTime: new Date(dto.dateTime),
-  place: dto.place,
-  durationHours: dto.durationHours,
-  durationMinutes: dto.durationMinutes,
-  price: dto.price,
-  beforeImagePaths: dto.beforeImagePaths,
-  afterImagePaths: dto.afterImagePaths,
-  notes: dto.notes,
-  typeId: dto.typeId,
-  tagIds: dto.tagIds ?? [],
-  createdAt: dto.createdAt,
-  updatedAt: dto.updatedAt,
-});
-
 export const isSameDate = (a: Date, b: Date) => {
   return (
     a.getFullYear() === b.getFullYear()

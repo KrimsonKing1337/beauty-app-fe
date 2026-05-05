@@ -5,9 +5,24 @@ import type {
   UpdateProcedurePayload,
 } from '@/@types';
 
-import { mapProcedureDtoToModel } from '@/utils';
-
 import { apiClient } from './client';
+
+export const mapProcedureDtoToModel = (dto: ProcedureDto): Procedure => ({
+  id: dto.id,
+  procedureName: dto.procedureName,
+  dateTime: new Date(dto.dateTime),
+  place: dto.place,
+  durationHours: dto.durationHours,
+  durationMinutes: dto.durationMinutes,
+  price: dto.price,
+  beforeImagePaths: dto.beforeImagePaths,
+  afterImagePaths: dto.afterImagePaths,
+  notes: dto.notes,
+  typeId: dto.typeId,
+  tagIds: dto.tagIds ?? [],
+  createdAt: dto.createdAt,
+  updatedAt: dto.updatedAt,
+});
 
 const mapCreateProcedurePayloadToDto = (
   payload: CreateProcedurePayload,
