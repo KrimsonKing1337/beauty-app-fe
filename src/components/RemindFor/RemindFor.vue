@@ -5,7 +5,7 @@ const model = defineModel<ReminderNotifications>({ required: true });
 </script>
 
 <template>
-  <div class="ReminderEditItemUnitsOfTimeBefore">
+  <div class="RemindFor">
     <div class="Title">
       Напомнить за
     </div>

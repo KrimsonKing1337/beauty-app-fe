@@ -8,14 +8,14 @@ import { useQueryClient } from '@tanstack/vue-query';
 import type {
   ProcedureDraft,
   ProcedureTagsModel,
-  ProcedureTypeModel,
+  ProcedureTypeModel, ReminderNotifications,
 } from '@/@types';
 
 import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
 
 import { useSaveProcedureMutation } from '@/composables/mutations/procedures/useSaveProcedureMutation';
 
-import { CardActions } from '@/components';
+import { CardActions, ReminderNotification, RemindFor } from '@/components';
 
 import type { ImageFiles } from './@types';
 
@@ -49,6 +49,12 @@ const procedureTagsModel = ref<ProcedureTagsModel>({
 const imageFilesRef = ref<ImageFiles>({
   before: null,
   after: null,
+});
+
+const remindForValuesRef = ref<ReminderNotifications>({
+  daysBefore: 0,
+  hoursBefore: 0,
+  minutesBefore: 0,
 });
 
 const resetImageFiles = () => {
@@ -119,6 +125,7 @@ const updateDraftCard = <K extends keyof NonNullable<ProcedureDraft>>(
 
       <ProcedureTypeSelect v-model="procedureTypeModel" />
       <ProcedureTagsSelect v-model="procedureTagsModel" />
+      <RemindFor v-model="remindForValuesRef" />
 
       <UploadImages
         :before-file="imageFilesRef.before"
