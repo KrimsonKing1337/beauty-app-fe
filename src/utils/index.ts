@@ -19,7 +19,7 @@ export const formatDate = (date: string | null) => {
 export const mapProcedureDtoToModel = (dto: ProcedureDto): Procedure => ({
   id: dto.id,
   procedureName: dto.procedureName,
-  date: new Date(dto.date),
+  dateTime: new Date(dto.dateTime),
   place: dto.place,
   durationHours: dto.durationHours,
   durationMinutes: dto.durationMinutes,

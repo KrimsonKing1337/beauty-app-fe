@@ -3,7 +3,6 @@ import { computed, type Ref } from 'vue';
 import { isSameDate } from '@/utils';
 
 type DateItem = {
-  date?: Date;
   dateTime?: Date;
 };
 
@@ -21,7 +20,7 @@ export const getTodayItems = <T extends DateItem>({
   }
 
   return items.filter((itemCur) => {
-    const itemDate = itemCur.date ?? itemCur.dateTime;
+    const itemDate = itemCur.dateTime;
 
     if (!itemDate) {
       return;

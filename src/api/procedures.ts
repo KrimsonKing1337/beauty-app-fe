@@ -13,14 +13,14 @@ const mapCreateProcedurePayloadToDto = (
   payload: CreateProcedurePayload,
 ) => ({
   ...payload,
-  date: payload.date.toISOString(),
+  dateTime: payload.dateTime.toISOString(),
 });
 
 const mapUpdateProcedurePayloadToDto = (
   payload: UpdateProcedurePayload,
 ) => ({
   ...payload,
-  date: payload.date?.toISOString(),
+  dateTime: payload.dateTime?.toISOString(),
 });
 
 export const getProcedures = async (): Promise<Procedure[]> => {

@@ -15,11 +15,11 @@ import {
 
 import { repeatStoreToUi, repeatUiToStore } from '@/pages/RemindersPage/components/Reminders/utils';
 
-import { CardActions } from '@/components';
+import { CardActions, DateTimeChooser, RemindFor } from '@/components';
 
 import { trimSeconds } from '@/utils';
 
-import { ItemRepeat, ItemDateTime, RemindFor } from './components';
+import { ItemRepeat } from './components';
 
 const remindersStore = useRemindersStore();
 const updateReminderMutation = useUpdateReminderMutation();
@@ -93,7 +93,12 @@ const cancelButtonClickHandler = () => {
       rounded="lg"
     />
 
-    <ItemDateTime v-model="draftReminder!.dateTime" />
+    <DateTimeChooser
+      v-model="draftReminder!.dateTime"
+      placeholder="Дата и время напоминания"
+      :show-value-initially="!!remindersStore.editingReminderId"
+    />
+
     <ItemRepeat v-model="repeatFormRef" />
     <RemindFor v-model="draftReminder!.notifications" />
 

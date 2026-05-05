@@ -22,7 +22,7 @@ export const useGetEvents = ({
   const procedureDays = computed(() => {
     return new Set(
       (procedures.value ?? []).map((procedureCur) => {
-        return getDayKey(new Date(procedureCur.date));
+        return getDayKey(new Date(procedureCur.dateTime));
       }),
     );
   });

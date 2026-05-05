@@ -7,7 +7,7 @@ import type { ProcedureDraft } from '@/@types';
 const createEmptyProcedureCard = (): ProcedureDraft => ({
   id: crypto.randomUUID(),
   procedureName: '',
-  date: new Date(),
+  dateTime: new Date(),
   place: '',
   durationHours: 0,
   durationMinutes: 0,
@@ -35,6 +35,7 @@ export const useProcedureCardsStore = defineStore('procedureCard', () => {
     editingCardId.value = card.id;
     draftCard.value = {
       ...card,
+      dateTime: new Date(card.dateTime),
       tagIds: [...card.tagIds],
     };
   };
@@ -59,6 +60,7 @@ export const useProcedureCardsStore = defineStore('procedureCard', () => {
     const duplicatedCard: ProcedureDraft = {
       ...card,
       id: crypto.randomUUID(),
+      dateTime: new Date(card.dateTime),
       tagIds: [...card.tagIds],
     };
 

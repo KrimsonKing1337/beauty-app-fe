@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-
 import type { ProcedureDraft } from '@/@types';
 
 import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
+
+import { DateTimeChooser } from '@/components';
 
 const props = defineProps<{
   draftCard: ProcedureDraft;
@@ -11,7 +11,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'update:procedureName', value: string): void;
-  (e: 'update:date', value: Date): void;
+  (e: 'update:dateTime', value: Date): void;
   (e: 'update:place', value: string): void;
   (e: 'update:durationHours', value: number): void;
   (e: 'update:durationMinutes', value: number): void;
@@ -20,16 +20,6 @@ const emit = defineEmits<{
 }>();
 
 const procedureCardStore = useProcedureCardsStore();
-
-const firstTouch = ref(false);
-
-const datePickerTitle = computed(() => {
-  if (firstTouch.value || procedureCardStore.editingCardId) {
-    return props.draftCard.date.toLocaleDateString();
-  }
-
-  return 'Дата проведения';
-});
 </script>
 
 <template>
@@ -43,33 +33,12 @@ const datePickerTitle = computed(() => {
       @update:model-value="emit('update:procedureName', $event)"
     />
 
-    <VExpansionPanels class="Spoiler">
-      <VExpansionPanel rounded="lg">
-        <VExpansionPanelTitle>
-          <VIcon icon="mdi-calendar" class="mr-2" />
-
-          <span>
-            {{ datePickerTitle }}
-          </span>
-        </VExpansionPanelTitle>
-
-        <VExpansionPanelText>
-          <VDatePicker
-            :model-value="draftCard.date"
-            label="Дата"
-            variant="outlined"
-            color="pink-lighten-4"
-            width="100%"
-            first-day-of-week="1"
-            header-date-format="normalDateWithWeekday"
-            hide-title
-            rounded="lg"
-            @update:model-value="emit('update:date', $event)"
-            @click="firstTouch = true"
-          />
-        </VExpansionPanelText>
-      </VExpansionPanel>
-    </VExpansionPanels>
+    <DateTimeChooser
+      :model-value="props.draftCard.dateTime"
+      placeholder="Дата и время проведения"
+      :show-value-initially="!!procedureCardStore.editingCardId"
+      @update:model-value="emit('update:dateTime', $event)"
+    />
 
     <VTextField
       :model-value="draftCard.place"
@@ -126,20 +95,6 @@ const datePickerTitle = computed(() => {
 </template>
 
 <style scoped lang="scss">
-.Spoiler {
-  margin-bottom: 25px;
-
-  &:deep(.v-input__details) {
-    display: none;
-  }
-
-  :deep(.v-expansion-panel-text__wrapper) {
-    @media (max-width: 400px) {
-      padding: 5px;
-    }
-  }
-}
-
 .DurationInputs {
   display: flex;
   gap: 10px;

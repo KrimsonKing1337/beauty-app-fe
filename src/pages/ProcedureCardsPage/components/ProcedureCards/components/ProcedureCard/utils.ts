@@ -3,7 +3,7 @@ import type { Procedure } from '@/@types';
 import { formatDate } from '@/utils';
 
 export const getCardInfo = (card: Procedure) => {
-  const date = formatDate(card.date.toISOString());
+  const date = formatDate(card.dateTime.toISOString());
 
   let meta = `${date} - ${card.place}`;
 

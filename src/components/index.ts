@@ -8,6 +8,7 @@ export * from './Notes';
 export * from './BottomNav';
 export * from './Divider';
 export * from './RemindFor';
+export * from './DateTimeChooser';
 export * from './ReminderNotification';
 export * from './RemovingDialog';
 export * from './AppError';

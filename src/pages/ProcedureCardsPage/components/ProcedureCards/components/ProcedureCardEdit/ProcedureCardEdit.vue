@@ -116,7 +116,7 @@ const updateDraftCard = <K extends keyof NonNullable<ProcedureDraft>>(
       <Form
         :draft-card="draftCard"
         @update:procedure-name="updateDraftCard('procedureName', $event)"
-        @update:date="updateDraftCard('date', $event)"
+        @update:date-time="updateDraftCard('dateTime', $event)"
         @update:place="updateDraftCard('place', $event)"
         @update:duration-hours="updateDraftCard('durationHours', $event)"
         @update:duration-minutes="updateDraftCard('durationMinutes', $event)"

@@ -4,6 +4,8 @@ import { uploadFile } from '@/api/uploads.ts';
 
 import { useSaveProcedureMutation } from '@/composables/mutations/procedures/useSaveProcedureMutation.ts';
 
+import { trimSeconds } from '@/utils';
+
 import type { ImageFiles } from './@types';
 
 type UploadImagesArgs = {
@@ -75,6 +77,7 @@ export const saveButtonClickHandler = async ({
     const saved = await saveProcedureMutation.mutateAsync({
       ...draft,
       id: store.editingCardId,
+      dateTime: trimSeconds(draft.dateTime),
     });
 
     await uploadImages({
@@ -88,7 +91,7 @@ export const saveButtonClickHandler = async ({
   } else {
     const payload = {
       procedureName: draft.procedureName,
-      date: draft.date,
+      dateTime: trimSeconds(draft.dateTime),
       place: draft.place,
       durationHours: draft.durationHours,
       durationMinutes: draft.durationMinutes,
