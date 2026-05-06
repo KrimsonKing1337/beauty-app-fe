@@ -144,24 +144,34 @@ const handleYearUpdate = (year: number) => {
     />
 
     <div class="ItemsWrapper">
-      <ProcedureCards
-        v-if="proceduresComputed.length"
-        :cards="proceduresComputed"
-        :is-loading="isProceduresLoading"
-        :error-message="proceduresErrorMessage"
-        :is-editing="isProcedureEditing"
-        :last-touched-card-id="lastTouchedCardId"
-      />
+      <div v-if="proceduresComputed.length" class="ItemWrapper">
+        <div class="ItemLabel">
+          Процедуры
+        </div>
 
-      <Reminders
-        v-if="remindersComputed.length"
-        class="Reminders"
-        :reminders="remindersComputed"
-        :is-loading="isRemindersLoading"
-        :error-message="remindersErrorMessage"
-        :is-editing="isReminderEditing"
-        :last-touched-reminder-id="lastTouchedReminderId"
-      />
+        <ProcedureCards
+          :cards="proceduresComputed"
+          :is-loading="isProceduresLoading"
+          :error-message="proceduresErrorMessage"
+          :is-editing="isProcedureEditing"
+          :last-touched-card-id="lastTouchedCardId"
+        />
+      </div>
+
+      <div v-if="remindersComputed.length" class="ItemWrapper">
+        <div class="ItemLabel">
+          Напоминания
+        </div>
+
+        <Reminders
+          class="Reminders"
+          :reminders="remindersComputed"
+          :is-loading="isRemindersLoading"
+          :error-message="remindersErrorMessage"
+          :is-editing="isReminderEditing"
+          :last-touched-reminder-id="lastTouchedReminderId"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -171,7 +181,16 @@ const handleYearUpdate = (year: number) => {
   margin-top: 20px;
 }
 
-.Reminders {
+.ItemWrapper {
+  border: 1px #ccc solid;
+  border-radius: 12px;
+  padding: 20px;
   margin-top: 32px;
+}
+
+.ItemLabel {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 16px;
 }
 </style>
