@@ -33,7 +33,7 @@ const {
   isLoading: isRemindersLoading,
   isError: isRemindersError,
   error: remindersError,
-} = useRemindersQuery();
+} = useRemindersQuery({ includeProcedureReminders: false });
 
 const { events } = useGetEvents({
   procedures,
