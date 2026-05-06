@@ -50,6 +50,8 @@ export type ProceduresQueryParams = {
   search?: string;
   typeId?: string | null;
   tagIds?: string[];
+  dateFrom?: string;
+  dateTo?: string;
 };
 
 export type Pagination = {

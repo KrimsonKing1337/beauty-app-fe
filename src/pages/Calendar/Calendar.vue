@@ -6,7 +6,6 @@ import { storeToRefs } from 'pinia';
 import type { Reminder as ReminderType, Procedure } from '@/@types';
 
 import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
-
 import { useRemindersStore } from '@/stores/remindersStore.ts';
 
 import { useProceduresQuery } from '@/composables/queries/procedures/useProceduresQuery.ts';
@@ -21,26 +20,70 @@ import {
   useGetEvents,
 } from './utils';
 
+const dateRef = ref(new Date());
+
+const displayedMonthRef = ref(dateRef.value.getMonth());
+const displayedYearRef = ref(dateRef.value.getFullYear());
+
+const monthRange = computed(() => {
+  const dateFrom = new Date(
+    displayedYearRef.value,
+    displayedMonthRef.value,
+    1,
+    0,
+    0,
+    0,
+    0,
+  );
+
+  const dateTo = new Date(
+    displayedYearRef.value,
+    displayedMonthRef.value + 1,
+    1,
+    0,
+    0,
+    0,
+    0,
+  );
+
+  return {
+    dateFrom: dateFrom.toISOString(),
+    dateTo: dateTo.toISOString(),
+  };
+});
+
+const proceduresQueryParams = computed(() => ({
+  page: 1,
+  limit: 100,
+  sortBy: 'dateTime' as const,
+  sortOrder: 'asc' as const,
+  dateFrom: monthRange.value.dateFrom,
+  dateTo: monthRange.value.dateTo,
+}));
+
+const remindersQueryParams = computed(() => ({
+  ...proceduresQueryParams.value,
+  includeProcedureReminders: false,
+}));
+
 const {
   data: procedures,
   isLoading: isProceduresLoading,
   isError: isProceduresError,
   error: proceduresError,
-} = useProceduresQuery();
+} = useProceduresQuery(proceduresQueryParams);
 
 const {
   data: reminders,
   isLoading: isRemindersLoading,
   isError: isRemindersError,
   error: remindersError,
-} = useRemindersQuery({ includeProcedureReminders: false });
+} = useRemindersQuery(remindersQueryParams);
 
 const { events } = useGetEvents({
   procedures,
   reminders,
 });
-
-const dateRef = ref(new Date());
 
 const remindersStore = useRemindersStore();
 const procedureCardStore = useProcedureCardsStore();
@@ -65,8 +108,23 @@ const remindersComputed = computed(() => {
   });
 });
 
-const proceduresErrorMessage = createErrorMessage(isProceduresError, proceduresError);
-const remindersErrorMessage = createErrorMessage(isRemindersError, remindersError);
+const proceduresErrorMessage = createErrorMessage(
+  isProceduresError,
+  proceduresError,
+);
+
+const remindersErrorMessage = createErrorMessage(
+  isRemindersError,
+  remindersError,
+);
+
+const handleMonthUpdate = (month: number) => {
+  displayedMonthRef.value = month;
+};
+
+const handleYearUpdate = (year: number) => {
+  displayedYearRef.value = year;
+};
 </script>
 
 <template>
@@ -81,6 +139,8 @@ const remindersErrorMessage = createErrorMessage(isRemindersError, remindersErro
       header-date-format="normalDateWithWeekday"
       hide-title
       rounded="xl"
+      @update:month="handleMonthUpdate"
+      @update:year="handleYearUpdate"
     />
 
     <div class="ItemsWrapper">
@@ -95,6 +155,7 @@ const remindersErrorMessage = createErrorMessage(isRemindersError, remindersErro
 
       <Reminders
         v-if="remindersComputed.length"
+        class="Reminders"
         :reminders="remindersComputed"
         :is-loading="isRemindersLoading"
         :error-message="remindersErrorMessage"
@@ -108,5 +169,9 @@ const remindersErrorMessage = createErrorMessage(isRemindersError, remindersErro
 <style scoped lang="scss">
 .ItemsWrapper {
   margin-top: 20px;
+}
+
+.Reminders {
+  margin-top: 32px;
 }
 </style>
