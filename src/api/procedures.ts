@@ -81,7 +81,7 @@ export const getProcedures = async (
   params: ProceduresQueryParams = {},
 ): Promise<Procedure[]> => {
   const data = await getProceduresPage({
-    limit: 1000,
+    limit: 100,
     ...params,
   });
 
