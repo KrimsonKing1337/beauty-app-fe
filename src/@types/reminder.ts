@@ -48,6 +48,37 @@ export type ReminderDto = {
   updatedAt: string;
 };
 
+export type ReminderSortBy =
+  | 'dateTime'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'name';
+
+export type ReminderSortOrder = 'asc' | 'desc';
+
+export type RemindersQueryParams = {
+  page?: number;
+  limit?: number;
+  sortBy?: ReminderSortBy;
+  sortOrder?: ReminderSortOrder;
+  search?: string;
+  isCompleted?: boolean | null;
+  procedureId?: string | null;
+  includeProcedureReminders?: boolean;
+};
+
+export type ReminderPagination = {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+};
+
+export type PaginatedRemindersResponse = {
+  items: Reminder[];
+  pagination: ReminderPagination;
+};
+
 export type CreateReminderPayload = {
   name: string;
   description: string;

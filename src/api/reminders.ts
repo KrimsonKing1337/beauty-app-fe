@@ -3,6 +3,8 @@ import type {
   ReminderDto,
   CreateReminderPayload,
   UpdateReminderPayload,
+  RemindersQueryParams,
+  PaginatedRemindersResponse,
 } from '@/@types';
 
 import { apiClient } from '@/api/client.ts';
@@ -19,6 +21,22 @@ const mapReminderDtoToEntity = (dto: ReminderDto): Reminder => ({
   createdAt: new Date(dto.createdAt),
   updatedAt: new Date(dto.updatedAt),
 });
+
+const buildQueryString = (params: RemindersQueryParams = {}) => {
+  const searchParams = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value === undefined || value === null || value === '') {
+      return;
+    }
+
+    searchParams.set(key, String(value));
+  });
+
+  const queryString = searchParams.toString();
+
+  return queryString ? `?${queryString}` : '';
+};
 
 const mapCreateReminderPayloadToDto = (
   payload: CreateReminderPayload,
@@ -39,10 +57,29 @@ const mapUpdateReminderPayloadToDto = (
     : undefined,
 });
 
-export const getReminders = async (): Promise<Reminder[]> => {
-  const data = await apiClient<ReminderDto[]>('/reminders');
+export const getRemindersPage = async (
+  params: RemindersQueryParams = {},
+): Promise<PaginatedRemindersResponse> => {
+  const data = await apiClient<{
+    items: ReminderDto[];
+    pagination: PaginatedRemindersResponse['pagination'];
+  }>(`/reminders${buildQueryString(params)}`);
 
-  return data.map(mapReminderDtoToEntity);
+  return {
+    items: data.items.map(mapReminderDtoToEntity),
+    pagination: data.pagination,
+  };
+};
+
+export const getReminders = async (
+  params: RemindersQueryParams = {},
+): Promise<Reminder[]> => {
+  const data = await getRemindersPage({
+    limit: 1000,
+    ...params,
+  });
+
+  return data.items;
 };
 
 export const getReminderById = async (id: string): Promise<Reminder> => {

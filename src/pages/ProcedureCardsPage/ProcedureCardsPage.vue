@@ -1,9 +1,17 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import {
+  computed,
+  ref,
+  watch,
+} from 'vue';
 
 import { storeToRefs } from 'pinia';
 
-import type { Procedure } from '@/@types';
+import type {
+  Procedure,
+  ProcedureSortBy,
+  SortOrder,
+} from '@/@types';
 
 import { useProcedureCardsStore } from '@/stores/procedureCardsStore';
 
@@ -29,20 +37,79 @@ const search = ref('');
 const typeId = ref<string | null>(null);
 const tagIds = ref<string[]>([]);
 const sort = ref<SortValue>('dateDesc');
+const page = ref(1);
+const limit = ref(20);
+const loadedCards = ref<Procedure[]>([]);
 
 const isEditing = computed(() => draftCard.value !== null);
 
+const sortParams = computed<{
+  sortBy: ProcedureSortBy;
+  sortOrder: SortOrder;
+}>(() => {
+  switch (sort.value) {
+    case 'dateAsc':
+      return {
+        sortBy: 'dateTime',
+        sortOrder: 'asc',
+      };
+
+    case 'nameAsc':
+      return {
+        sortBy: 'procedureName',
+        sortOrder: 'asc',
+      };
+
+    case 'nameDesc':
+      return {
+        sortBy: 'procedureName',
+        sortOrder: 'desc',
+      };
+
+    case 'priceAsc':
+      return {
+        sortBy: 'price',
+        sortOrder: 'asc',
+      };
+
+    case 'priceDesc':
+      return {
+        sortBy: 'price',
+        sortOrder: 'desc',
+      };
+
+    case 'dateDesc':
+    default:
+      return {
+        sortBy: 'dateTime',
+        sortOrder: 'desc',
+      };
+  }
+});
+
+const proceduresQueryParams = computed(() => ({
+  page: page.value,
+  limit: limit.value,
+  sortBy: sortParams.value.sortBy,
+  sortOrder: sortParams.value.sortOrder,
+  search: search.value.trim(),
+  typeId: typeId.value,
+  tagIds: tagIds.value,
+}));
+
 const {
   data,
+  pagination,
   isLoading,
+  isFetching,
   isError,
   error,
-} = useProceduresQuery();
+} = useProceduresQuery(proceduresQueryParams);
 
 const { data: procedureTypes } = useProcedureTypesQuery();
 const { data: tags } = useTagsQuery();
 
-const cards = computed<Procedure[]>(() => data.value ?? []);
+const cards = computed<Procedure[]>(() => loadedCards.value);
 
 const typeOptions = computed(() => {
   return [
@@ -70,46 +137,12 @@ const sortOptions = [
   { title: 'Цена по возрастанию', value: 'priceAsc' },
 ];
 
-const filteredCards = computed<Procedure[]>(() => {
-  const normalizedSearch = search.value.trim().toLowerCase();
-
-  const filtered = cards.value.filter((cardCur) => {
-    const matchesSearch = !normalizedSearch
-      || cardCur.procedureName.toLowerCase().includes(normalizedSearch)
-      || cardCur.place?.toLowerCase().includes(normalizedSearch)
-      || cardCur.notes?.toLowerCase().includes(normalizedSearch);
-
-    const matchesType = !typeId.value || cardCur.typeId === typeId.value;
-
-    const matchesTags = !tagIds.value.length
-      || tagIds.value.every((tagIdCur) => cardCur.tagIds.includes(tagIdCur));
-
-    return matchesSearch && matchesType && matchesTags;
-  });
-
-  return [...filtered].sort((a, b) => {
-    switch (sort.value) {
-      case 'dateAsc':
-        return a.dateTime.getTime() - b.dateTime.getTime();
-
-      case 'nameAsc':
-        return a.procedureName.localeCompare(b.procedureName, 'ru');
-
-      case 'nameDesc':
-        return b.procedureName.localeCompare(a.procedureName, 'ru');
-
-      case 'priceAsc':
-        return (a.price ?? 0) - (b.price ?? 0);
-
-      case 'priceDesc':
-        return (b.price ?? 0) - (a.price ?? 0);
-
-      case 'dateDesc':
-      default:
-        return b.dateTime.getTime() - a.dateTime.getTime();
-    }
-  });
-});
+const limitOptions = [
+  { title: '10 элементов', value: 10 },
+  { title: '20 элементов', value: 20 },
+  { title: '50 элементов', value: 50 },
+  { title: '100 элементов', value: 100 },
+];
 
 const errorMessage = computed<string | null>(() => {
   if (!isError.value) {
@@ -124,21 +157,88 @@ const hasActiveFilters = computed(() => {
 });
 
 const showPlaceholder = computed(() => {
-  return !cards.value.length && !isEditing.value;
+  return !isLoading.value
+    && !hasActiveFilters.value
+    && !cards.value.length
+    && !isEditing.value;
 });
 
 const showFilteredPlaceholder = computed(() => {
-  return cards.value.length > 0
-    && !filteredCards.value.length
+  return !isLoading.value
+    && hasActiveFilters.value
+    && !cards.value.length
     && !isEditing.value;
 });
+
+const total = computed(() => pagination.value.total);
+
+const hasMore = computed(() => {
+  return cards.value.length < total.value;
+});
+
+const loadMoreText = computed(() => {
+  if (isFetching.value) {
+    return 'Загружаем...';
+  }
+
+  return `Загрузить ещё ${limit.value}`;
+});
+
+const resetLoadedCards = () => {
+  loadedCards.value = [];
+  page.value = 1;
+};
 
 const resetFilters = () => {
   search.value = '';
   typeId.value = null;
   tagIds.value = [];
   sort.value = 'dateDesc';
+  limit.value = 20;
+  resetLoadedCards();
 };
+
+const loadMore = () => {
+  if (!hasMore.value || isFetching.value) {
+    return;
+  }
+
+  page.value += 1;
+};
+
+watch(
+  data,
+  (items) => {
+    if (!items) {
+      return;
+    }
+
+    if (page.value === 1) {
+      loadedCards.value = items;
+
+      return;
+    }
+
+    const existingIds = new Set(loadedCards.value.map((cardCur) => cardCur.id));
+
+    loadedCards.value = [
+      ...loadedCards.value,
+      ...items.filter((cardCur) => !existingIds.has(cardCur.id)),
+    ];
+  },
+  { immediate: true },
+);
+
+watch(
+  () => [
+    search.value,
+    typeId.value,
+    tagIds.value.join(','),
+    sort.value,
+    limit.value,
+  ],
+  resetLoadedCards,
+);
 </script>
 
 <template>
@@ -174,17 +274,28 @@ const resetFilters = () => {
         />
       </div>
 
-      <VSelect
-        v-model="tagIds"
-        :items="tagOptions"
-        label="Тэги"
-        density="compact"
-        variant="outlined"
-        hide-details
-        clearable
-        multiple
-        chips
-      />
+      <div class="ToolbarRow">
+        <VSelect
+          v-model="tagIds"
+          :items="tagOptions"
+          label="Тэги"
+          density="compact"
+          variant="outlined"
+          hide-details
+          clearable
+          multiple
+          chips
+        />
+
+        <VSelect
+          v-model="limit"
+          :items="limitOptions"
+          label="Подгружать по"
+          density="compact"
+          variant="outlined"
+          hide-details
+        />
+      </div>
 
       <VBtn
         v-if="hasActiveFilters"
@@ -206,12 +317,31 @@ const resetFilters = () => {
     </CardPlaceholder>
 
     <ProcedureCards
-      :cards="filteredCards"
-      :is-loading="isLoading"
+      :cards="cards"
+      :is-loading="isLoading && !cards.length"
       :error-message="errorMessage"
       :is-editing="isEditing"
       :last-touched-card-id="lastTouchedCardId"
     />
+
+    <div
+      v-if="!isEditing && cards.length"
+      class="LoadMore"
+    >
+      <div class="LoadMoreInfo">
+        Показано {{ cards.length }} из {{ total }}
+      </div>
+
+      <VBtn
+        v-if="hasMore"
+        variant="tonal"
+        :loading="isFetching"
+        :disabled="isFetching"
+        @click="loadMore"
+      >
+        {{ loadMoreText }}
+      </VBtn>
+    </div>
   </div>
 </template>
 
@@ -245,6 +375,19 @@ const resetFilters = () => {
   align-self: flex-start;
   min-height: 32px;
   padding: 0 8px;
+}
+
+.LoadMore {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.LoadMoreInfo {
+  color: var(--text-secondary);
+  font-size: 13px;
 }
 
 @media (max-width: 520px) {

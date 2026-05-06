@@ -3,6 +3,8 @@ import type {
   ProcedureDto,
   CreateProcedurePayload,
   UpdateProcedurePayload,
+  ProceduresQueryParams,
+  PaginatedResponse,
 } from '@/@types';
 
 import { apiClient } from './client';
@@ -24,6 +26,30 @@ export const mapProcedureDtoToModel = (dto: ProcedureDto): Procedure => ({
   updatedAt: dto.updatedAt,
 });
 
+const buildQueryString = (params: ProceduresQueryParams = {}) => {
+  const searchParams = new URLSearchParams();
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (value === undefined || value === null || value === '') {
+      return;
+    }
+
+    if (Array.isArray(value)) {
+      value.forEach((item) => {
+        searchParams.append(key, item);
+      });
+
+      return;
+    }
+
+    searchParams.set(key, String(value));
+  });
+
+  const queryString = searchParams.toString();
+
+  return queryString ? `?${queryString}` : '';
+};
+
 const mapCreateProcedurePayloadToDto = (
   payload: CreateProcedurePayload,
 ) => ({
@@ -38,10 +64,28 @@ const mapUpdateProcedurePayloadToDto = (
   dateTime: payload.dateTime?.toISOString(),
 });
 
-export const getProcedures = async (): Promise<Procedure[]> => {
-  const data = await apiClient<ProcedureDto[]>('/procedures');
+export const getProceduresPage = async (
+  params: ProceduresQueryParams = {},
+): Promise<PaginatedResponse<Procedure>> => {
+  const data = await apiClient<PaginatedResponse<ProcedureDto>>(
+    `/procedures${buildQueryString(params)}`,
+  );
 
-  return data.map(mapProcedureDtoToModel);
+  return {
+    items: data.items.map(mapProcedureDtoToModel),
+    pagination: data.pagination,
+  };
+};
+
+export const getProcedures = async (
+  params: ProceduresQueryParams = {},
+): Promise<Procedure[]> => {
+  const data = await getProceduresPage({
+    limit: 1000,
+    ...params,
+  });
+
+  return data.items;
 };
 
 export const createProcedure = async (
