@@ -49,10 +49,9 @@ const menuActivatorId = useId();
         <VListItem
           v-for="itemCur in props.menuItems"
           :key="itemCur.id"
+          class="ListItem"
           :title="itemCur.label"
           :style="getStyles(itemCur.id)"
-          class="ListItem"
-
           @click="itemCur.action"
         >
           <template #prepend>
@@ -69,24 +68,32 @@ const menuActivatorId = useId();
   position: relative;
   display: flex;
   align-items: flex-start;
-  justify-content: flex-start;
   gap: 12px;
   width: 100%;
   max-width: 100%;
+  padding-right: 32px;
 }
 
 .Left {
   display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
   gap: 4px;
-  width: 70%;
+  min-width: 0;
+}
 
-  @media (max-width: 480px) {
-    width: 50%;
-  }
+.Right {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  margin-left: auto;
+  white-space: nowrap;
 }
 
 .Title {
+  max-width: 100%;
   margin: 0;
   font-weight: 600;
   overflow: hidden;
@@ -95,18 +102,10 @@ const menuActivatorId = useId();
 }
 
 .SubTitle {
+  max-width: 100%;
   color: var(--text-secondary);
-}
-
-.Right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
-  margin-left: auto;
-  margin-right: 25px;
-  min-width: 100px;
-  width: 30%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .MenuTrigger {
@@ -117,7 +116,6 @@ const menuActivatorId = useId();
   display: flex;
   align-items: center;
   justify-content: center;
-  align-self: flex-start;
 }
 
 .ListItem {
