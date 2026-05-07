@@ -19,9 +19,7 @@ import { useRemindersStore } from '@/stores/remindersStore';
 
 import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQuery';
 
-import { CardPlaceholder } from '@/components';
-
-import FiltersToolbar from '@/components/FiltersToolbar/FiltersToolbar.vue';
+import { CardPlaceholder, FiltersToolbar } from '@/components';
 
 import { Reminders } from './components';
 

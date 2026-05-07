@@ -13,3 +13,4 @@ export * from './ReminderNotification';
 export * from './RemovingDialog';
 export * from './AppError';
 export * from './AppToast';
+export * from './FiltersToolbar';

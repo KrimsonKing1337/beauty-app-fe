@@ -19,11 +19,7 @@ import { useProceduresQuery } from '@/composables/queries/procedures/useProcedur
 import { useProcedureTypesQuery } from '@/composables/queries/procedureTypes/useProcedureTypesQuery';
 import { useTagsQuery } from '@/composables/queries/tags/useTagsQuery';
 
-import {
-  CardPlaceholder,
-} from '@/components';
-
-import FiltersToolbar from '@/components/FiltersToolbar/FiltersToolbar.vue';
+import { CardPlaceholder, FiltersToolbar } from '@/components';
 
 import { ProcedureCards } from './components';
 
