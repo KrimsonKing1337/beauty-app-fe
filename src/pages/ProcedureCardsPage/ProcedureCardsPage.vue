@@ -19,7 +19,11 @@ import { useProceduresQuery } from '@/composables/queries/procedures/useProcedur
 import { useProcedureTypesQuery } from '@/composables/queries/procedureTypes/useProcedureTypesQuery';
 import { useTagsQuery } from '@/composables/queries/tags/useTagsQuery';
 
-import { CardPlaceholder } from '@/components';
+import {
+  CardPlaceholder,
+} from '@/components';
+
+import FiltersToolbar from '@/components/FiltersToolbar/FiltersToolbar.vue';
 
 import { ProcedureCards } from './components';
 
@@ -40,8 +44,6 @@ const sort = ref<SortValue>('dateDesc');
 const page = ref(1);
 const limit = ref(20);
 const loadedCards = ref<Procedure[]>([]);
-
-const isToolbarOpened = ref(false);
 
 const isEditing = computed(() => draftCard.value !== null);
 
@@ -158,22 +160,6 @@ const hasActiveFilters = computed(() => {
   return Boolean(search.value.trim() || typeId.value || tagIds.value.length);
 });
 
-const toolbarButtonText = computed(() => {
-  if (isToolbarOpened.value) {
-    return 'Скрыть фильтры';
-  }
-
-  if (hasActiveFilters.value) {
-    return 'Фильтры применены';
-  }
-
-  return 'Фильтры и сортировка';
-});
-
-const toolbarIcon = computed(() => {
-  return isToolbarOpened.value ? 'mdi-chevron-up' : 'mdi-tune';
-});
-
 const showPlaceholder = computed(() => {
   return !isLoading.value
     && !hasActiveFilters.value
@@ -214,10 +200,6 @@ const resetFilters = () => {
   sort.value = 'dateDesc';
   limit.value = 20;
   resetLoadedCards();
-};
-
-const toggleToolbar = () => {
-  isToolbarOpened.value = !isToolbarOpened.value;
 };
 
 const loadMore = () => {
@@ -265,85 +247,64 @@ watch(
 
 <template>
   <div class="ProcedureCardsPage">
-    <div v-if="!isEditing" class="ToolbarToggle">
-      <VBtn
-        variant="tonal"
-        color="pink-lighten-3"
-        :prepend-icon="toolbarIcon"
-        @click="toggleToolbar"
-      >
-        {{ toolbarButtonText }}
-      </VBtn>
+    <FiltersToolbar
+      :has-active-filters="hasActiveFilters"
+      :disabled="isEditing"
+      @reset="resetFilters"
+    >
+      <VTextField
+        v-model="search"
+        label="Поиск"
+        placeholder="Название, место, заметки"
+        density="compact"
+        variant="outlined"
+        hide-details
+        clearable
+      />
 
-      <VBtn
-        v-if="hasActiveFilters"
-        variant="text"
-        color="pink-lighten-3"
-        @click="resetFilters"
-      >
-        Сбросить
-      </VBtn>
-    </div>
+      <div class="ToolbarRow">
+        <VSelect
+          v-model="typeId"
+          :items="typeOptions"
+          label="Тип"
+          density="compact"
+          variant="outlined"
+          hide-details
+        />
 
-    <Transition name="toolbar">
-      <div
-        v-if="!isEditing && isToolbarOpened"
-        class="Toolbar"
-      >
-        <VTextField
-          v-model="search"
-          label="Поиск"
-          placeholder="Название, место, заметки"
+        <VSelect
+          v-model="sort"
+          :items="sortOptions"
+          label="Сортировка"
+          density="compact"
+          variant="outlined"
+          hide-details
+        />
+      </div>
+
+      <div class="ToolbarRow">
+        <VSelect
+          v-model="tagIds"
+          :items="tagOptions"
+          label="Тэги"
           density="compact"
           variant="outlined"
           hide-details
           clearable
+          multiple
+          chips
         />
 
-        <div class="ToolbarRow">
-          <VSelect
-            v-model="typeId"
-            :items="typeOptions"
-            label="Тип"
-            density="compact"
-            variant="outlined"
-            hide-details
-          />
-
-          <VSelect
-            v-model="sort"
-            :items="sortOptions"
-            label="Сортировка"
-            density="compact"
-            variant="outlined"
-            hide-details
-          />
-        </div>
-
-        <div class="ToolbarRow">
-          <VSelect
-            v-model="tagIds"
-            :items="tagOptions"
-            label="Тэги"
-            density="compact"
-            variant="outlined"
-            hide-details
-            clearable
-            multiple
-            chips
-          />
-
-          <VSelect
-            v-model="limit"
-            :items="limitOptions"
-            label="Подгружать по"
-            density="compact"
-            variant="outlined"
-            hide-details
-          />
-        </div>
+        <VSelect
+          v-model="limit"
+          :items="limitOptions"
+          label="Подгружать по"
+          density="compact"
+          variant="outlined"
+          hide-details
+        />
       </div>
-    </Transition>
+    </FiltersToolbar>
 
     <CardPlaceholder v-if="showPlaceholder">
       Здесь будут процедуры
@@ -387,33 +348,6 @@ watch(
   width: 100%;
 }
 
-.ToolbarToggle {
-  position: sticky;
-  top: 0;
-  z-index: 6;
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 12px;
-  padding: 8px 0;
-  background: var(--background);
-}
-
-.Toolbar {
-  position: sticky;
-  top: 56px;
-  z-index: 5;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 16px;
-  padding: 12px;
-  background: rgba(248, 246, 247, 0.92);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  backdrop-filter: blur(14px);
-}
-
 .ToolbarRow {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -431,29 +365,6 @@ watch(
 .LoadMoreInfo {
   color: var(--text-secondary);
   font-size: 13px;
-}
-
-.toolbar-enter-active,
-.toolbar-leave-active {
-  overflow: hidden;
-  transition:
-    opacity 0.18s ease,
-    transform 0.18s ease,
-    max-height 0.18s ease;
-}
-
-.toolbar-enter-from,
-.toolbar-leave-to {
-  max-height: 0;
-  opacity: 0;
-  transform: translateY(-6px);
-}
-
-.toolbar-enter-to,
-.toolbar-leave-from {
-  max-height: 360px;
-  opacity: 1;
-  transform: translateY(0);
 }
 
 @media (max-width: 520px) {
