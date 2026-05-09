@@ -17,6 +17,7 @@ import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
 import { useSaveProcedureMutation } from '@/composables/mutations/procedures/useSaveProcedureMutation';
 import { useCreateReminderMutation } from '@/composables/mutations/reminders/useCreateReminderMutation';
 import { useUpdateReminderMutation } from '@/composables/mutations/reminders/useUpdateReminderMutation';
+import { useDeleteReminderMutation } from '@/composables/mutations/reminders/useDeleteReminderMutation';
 
 import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQuery';
 
@@ -40,12 +41,14 @@ const procedureCardsStore = useProcedureCardsStore();
 const saveProcedureMutation = useSaveProcedureMutation();
 const createReminderMutation = useCreateReminderMutation();
 const updateReminderMutation = useUpdateReminderMutation();
+const deleteReminderMutation = useDeleteReminderMutation();
 
 const { data: reminders } = useRemindersQuery();
 
 const { draftCard } = storeToRefs(procedureCardsStore);
 
 const saveButtonIsLoadingRef = ref(false);
+const shouldRemindRef = ref(false);
 
 const procedureTypeModel = ref<ProcedureTypeModel>({
   typeValue: draftCard.value?.typeId ?? null,
@@ -82,6 +85,8 @@ watch(
   existingProcedureReminder,
   (reminder) => {
     if (!reminder) {
+      shouldRemindRef.value = false;
+
       remindForValuesRef.value = {
         daysBefore: 0,
         hoursBefore: 0,
@@ -90,6 +95,8 @@ watch(
 
       return;
     }
+
+    shouldRemindRef.value = true;
 
     remindForValuesRef.value = {
       ...reminder.notifications,
@@ -128,8 +135,10 @@ const handleSaveClick = async () => {
       saveProcedureMutation,
       createReminderMutation,
       updateReminderMutation,
+      deleteReminderMutation,
       invalidateCacheCallback,
       files: imageFilesRef.value,
+      shouldRemind: shouldRemindRef.value,
       remindForValues: remindForValuesRef.value,
       existingProcedureReminder: existingProcedureReminder.value,
     });
@@ -173,7 +182,21 @@ const updateDraftCard = <K extends keyof NonNullable<ProcedureDraft>>(
 
       <ProcedureTypeSelect v-model="procedureTypeModel" />
       <ProcedureTagsSelect v-model="procedureTagsModel" />
-      <RemindFor v-model="remindForValuesRef" />
+
+      <div class="ReminderBlock">
+        <VCheckbox
+          v-model="shouldRemindRef"
+          label="Напомнить"
+          hide-details
+        />
+
+        <VExpandTransition>
+          <RemindFor
+            v-if="shouldRemindRef"
+            v-model="remindForValuesRef"
+          />
+        </VExpandTransition>
+      </div>
 
       <UploadImages
         :before-file="imageFilesRef.before"
@@ -218,5 +241,9 @@ const updateDraftCard = <K extends keyof NonNullable<ProcedureDraft>>(
       margin-top: 8px;
     }
   }
+}
+
+.ReminderBlock {
+  margin: 8px 0 16px;
 }
 </style>

@@ -12,6 +12,7 @@ import { uploadFile } from '@/api/uploads.ts';
 import { useSaveProcedureMutation } from '@/composables/mutations/procedures/useSaveProcedureMutation.ts';
 import { useCreateReminderMutation } from '@/composables/mutations/reminders/useCreateReminderMutation.ts';
 import { useUpdateReminderMutation } from '@/composables/mutations/reminders/useUpdateReminderMutation.ts';
+import { useDeleteReminderMutation } from '@/composables/mutations/reminders/useDeleteReminderMutation.ts';
 
 import { trimSeconds } from '@/utils';
 
@@ -64,6 +65,7 @@ export const uploadImages = async ({
 type SaveProcedureMutation = ReturnType<typeof useSaveProcedureMutation>;
 type CreateReminderMutation = ReturnType<typeof useCreateReminderMutation>;
 type UpdateReminderMutation = ReturnType<typeof useUpdateReminderMutation>;
+type DeleteReminderMutation = ReturnType<typeof useDeleteReminderMutation>;
 
 type ProcedureCardsStore = {
   draftCard: ProcedureDraft | null;
@@ -138,8 +140,10 @@ type SaveButtonClickHandlerArgs = {
   saveProcedureMutation: SaveProcedureMutation;
   createReminderMutation: CreateReminderMutation;
   updateReminderMutation: UpdateReminderMutation;
+  deleteReminderMutation: DeleteReminderMutation;
   invalidateCacheCallback: () => Promise<void>;
   files: ImageFiles;
+  shouldRemind: boolean;
   remindForValues: ReminderNotifications;
   existingProcedureReminder: Reminder | null;
 };
@@ -149,8 +153,10 @@ export const saveButtonClickHandler = async ({
   saveProcedureMutation,
   createReminderMutation,
   updateReminderMutation,
+  deleteReminderMutation,
   invalidateCacheCallback,
   files,
+  shouldRemind,
   remindForValues,
   existingProcedureReminder,
 }: SaveButtonClickHandlerArgs): Promise<void> => {
@@ -167,14 +173,18 @@ export const saveButtonClickHandler = async ({
       dateTime: trimSeconds(draft.dateTime),
     });
 
-    await syncProcedureReminder({
-      procedure: draft,
-      procedureId: saved.id,
-      notifications: remindForValues,
-      existingReminder: existingProcedureReminder,
-      createReminderMutation,
-      updateReminderMutation,
-    });
+    if (shouldRemind) {
+      await syncProcedureReminder({
+        procedure: draft,
+        procedureId: saved.id,
+        notifications: remindForValues,
+        existingReminder: existingProcedureReminder,
+        createReminderMutation,
+        updateReminderMutation,
+      });
+    } else if (existingProcedureReminder) {
+      await deleteReminderMutation.mutateAsync(existingProcedureReminder.id);
+    }
 
     await uploadImages({
       procedureId: store.editingCardId,
@@ -202,17 +212,19 @@ export const saveButtonClickHandler = async ({
 
     const saved = await saveProcedureMutation.mutateAsync(payload);
 
-    await syncProcedureReminder({
-      procedure: {
-        ...draft,
-        id: saved.id,
-      },
-      procedureId: saved.id,
-      notifications: remindForValues,
-      existingReminder: null,
-      createReminderMutation,
-      updateReminderMutation,
-    });
+    if (shouldRemind) {
+      await syncProcedureReminder({
+        procedure: {
+          ...draft,
+          id: saved.id,
+        },
+        procedureId: saved.id,
+        notifications: remindForValues,
+        existingReminder: null,
+        createReminderMutation,
+        updateReminderMutation,
+      });
+    }
 
     store.setLastTouchedCardId(saved.id);
 
