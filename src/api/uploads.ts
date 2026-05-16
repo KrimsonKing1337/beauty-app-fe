@@ -1,5 +1,4 @@
 import { apiClient } from '@/api/client.ts';
-import { getUploadsUrl } from '@/api/config.ts';
 
 export type UploadFileArgs = {
   file: File;
@@ -12,11 +11,15 @@ export const uploadFile = async ({
   procedureId,
   type,
 }: UploadFileArgs) => {
+  if (!procedureId) {
+    throw new Error('procedureId is required for image upload');
+  }
+
   const formData = new FormData();
 
   formData.append('files', file);
 
-  return apiClient(getUploadsUrl(`/${procedureId}/${type}`), {
+  return apiClient(`/uploads/${procedureId}/${type}`, {
     method: 'POST',
     body: formData,
   });

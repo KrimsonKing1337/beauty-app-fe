@@ -1,4 +1,4 @@
-import { getApiOrigin } from '@/api/config.ts';
+import { getPublicFileUrl } from '@/api/config.ts';
 
 export const formatDate = (date: Date | string | null) => {
   if (!date) {
@@ -33,9 +33,7 @@ export const trimSeconds = (date: Date): Date => {
 };
 
 export const getBeforeAfterImagePaths = (imagePaths: string[] | undefined) => {
-  const apiOrigin = getApiOrigin();
-
   const imagePathsSafe = imagePaths ?? [];
 
-  return imagePathsSafe.map((c: string) => `${apiOrigin}/${c}`);
+  return imagePathsSafe.map(getPublicFileUrl);
 };
