@@ -6,6 +6,6 @@ export const compressImage = async (file: File): Promise<File> => {
     maxWidthOrHeight: 1920,
     useWebWorker: true,
     initialQuality: 0.85,
-    fileType: 'image/webp',
+    fileType: 'image/jpeg',
   });
 };
