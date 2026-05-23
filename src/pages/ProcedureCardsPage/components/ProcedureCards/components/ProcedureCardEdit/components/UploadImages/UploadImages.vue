@@ -26,7 +26,7 @@ const emit = defineEmits<{
 const MAX_IMAGES_COUNT = 10;
 
 const selectedFilesRef = ref<File[] | null>(null);
-const objectUrlsById = ref<Record<string, string>>({});
+const objectUrlsByLocalId = ref<Record<string, string>>({});
 
 const imagesCount = computed(() => {
   return props.images.length + props.pendingImages.length;
@@ -41,12 +41,12 @@ const remainingImagesCount = computed(() => {
 const pendingImageViewModels = computed<PendingImageViewModel[]>(() => {
   return props.pendingImages.map((image) => ({
     ...image,
-    url: objectUrlsById.value[image.id] ?? '',
+    url: objectUrlsByLocalId.value[image.localId] ?? '',
   }));
 });
 
-const revokeObjectUrl = (id: string) => {
-  const url = objectUrlsById.value[id];
+const revokeObjectUrl = (localId: string) => {
+  const url = objectUrlsByLocalId.value[localId];
 
   if (!url) {
     return;
@@ -54,15 +54,15 @@ const revokeObjectUrl = (id: string) => {
 
   URL.revokeObjectURL(url);
 
-  const nextUrls = { ...objectUrlsById.value };
+  const nextUrls = { ...objectUrlsByLocalId.value };
 
-  delete nextUrls[id];
+  delete nextUrls[localId];
 
-  objectUrlsById.value = nextUrls;
+  objectUrlsByLocalId.value = nextUrls;
 };
 
 const createPendingImage = (file: File): PendingProcedureImageFile => ({
-  id: crypto.randomUUID(),
+  localId: crypto.randomUUID(),
   file,
   label: '',
 });
@@ -77,13 +77,13 @@ const addFiles = (files: File[] | File | null) => {
   const availableSlotsCount = remainingImagesCount.value;
   const filesToAdd = fileList.slice(0, availableSlotsCount);
   const newImages = filesToAdd.map(createPendingImage);
-  const nextUrls = { ...objectUrlsById.value };
+  const nextUrls = { ...objectUrlsByLocalId.value };
 
   newImages.forEach((image) => {
-    nextUrls[image.id] = URL.createObjectURL(image.file);
+    nextUrls[image.localId] = URL.createObjectURL(image.file);
   });
 
-  objectUrlsById.value = nextUrls;
+  objectUrlsByLocalId.value = nextUrls;
 
   emit('update:pendingImages', [
     ...props.pendingImages,
@@ -114,11 +114,11 @@ const updateExistingImageLabel = (id: string, label: string) => {
   );
 };
 
-const updatePendingImageLabel = (id: string, label: string) => {
+const updatePendingImageLabel = (localId: string, label: string) => {
   emit(
     'update:pendingImages',
     props.pendingImages.map((image) => {
-      if (image.id !== id) {
+      if (image.localId !== localId) {
         return image;
       }
 
@@ -143,30 +143,30 @@ const removeExistingImage = (id: string) => {
   );
 };
 
-const removePendingImage = (id: string) => {
-  revokeObjectUrl(id);
+const removePendingImage = (localId: string) => {
+  revokeObjectUrl(localId);
 
   emit(
     'update:pendingImages',
-    props.pendingImages.filter((image) => image.id !== id),
+    props.pendingImages.filter((image) => image.localId !== localId),
   );
 };
 
 watch(
-  () => props.pendingImages.map((image) => image.id),
-  (ids) => {
-    const idsSet = new Set(ids);
+  () => props.pendingImages.map((image) => image.localId),
+  (localIds) => {
+    const localIdsSet = new Set(localIds);
 
-    Object.keys(objectUrlsById.value).forEach((id) => {
-      if (!idsSet.has(id)) {
-        revokeObjectUrl(id);
+    Object.keys(objectUrlsByLocalId.value).forEach((localId) => {
+      if (!localIdsSet.has(localId)) {
+        revokeObjectUrl(localId);
       }
     });
   },
 );
 
 onBeforeUnmount(() => {
-  Object.values(objectUrlsById.value).forEach((url) => {
+  Object.values(objectUrlsByLocalId.value).forEach((url) => {
     URL.revokeObjectURL(url);
   });
 });
@@ -192,26 +192,26 @@ onBeforeUnmount(() => {
 
     <div v-if="images.length || pendingImages.length" class="ImagesGrid">
       <div
-        v-for="image in images"
-        :key="image.id"
+        v-for="imageCur in images"
+        :key="imageCur.id"
         class="ImageCard"
       >
         <div class="Preview">
           <img
-            :src="image.url"
-            :alt="image.label || 'Фото процедуры'"
+            :src="imageCur.url"
+            :alt="imageCur.label || 'Фото процедуры'"
           />
         </div>
 
         <VTextField
-          :model-value="image.label"
+          :model-value="imageCur.label"
           label="Подпись"
           variant="outlined"
           bg-color="#fff"
           rounded="lg"
           density="compact"
           hide-details
-          @update:model-value="updateExistingImageLabel(image.id, $event)"
+          @update:model-value="updateExistingImageLabel(imageCur.id, $event)"
         />
 
         <VBtn
@@ -220,33 +220,33 @@ onBeforeUnmount(() => {
           variant="tonal"
           size="small"
           block
-          @click="removeExistingImage(image.id)"
+          @click="removeExistingImage(imageCur.id)"
         >
           Удалить
         </VBtn>
       </div>
 
       <div
-        v-for="image in pendingImageViewModels"
-        :key="image.id"
+        v-for="imageCur in pendingImageViewModels"
+        :key="imageCur.localId"
         class="ImageCard"
       >
         <div class="Preview">
           <img
-            :src="image.url"
-            :alt="image.label || 'Новое фото процедуры'"
+            :src="imageCur.url"
+            :alt="imageCur.label || 'Новое фото процедуры'"
           />
         </div>
 
         <VTextField
-          :model-value="image.label"
+          :model-value="imageCur.label"
           label="Подпись"
           variant="outlined"
           bg-color="#fff"
           rounded="lg"
           density="compact"
           hide-details
-          @update:model-value="updatePendingImageLabel(image.id, $event)"
+          @update:model-value="updatePendingImageLabel(imageCur.localId, $event)"
         />
 
         <VBtn
@@ -255,7 +255,7 @@ onBeforeUnmount(() => {
           variant="tonal"
           size="small"
           block
-          @click="removePendingImage(image.id)"
+          @click="removePendingImage(imageCur.localId)"
         >
           Удалить
         </VBtn>

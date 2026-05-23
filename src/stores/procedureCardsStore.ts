@@ -2,10 +2,9 @@ import { ref } from 'vue';
 
 import { defineStore } from 'pinia';
 
-import type { ProcedureDraft } from '@/@types';
+import type { Procedure, ProcedureDraft } from '@/@types';
 
 const createEmptyProcedureCard = (): ProcedureDraft => ({
-  id: crypto.randomUUID(),
   procedureName: '',
   dateTime: new Date(),
   place: '',
@@ -30,8 +29,9 @@ export const useProcedureCardsStore = defineStore('procedureCard', () => {
     draftCard.value = createEmptyProcedureCard();
   };
 
-  const startEditCard = (card: ProcedureDraft) => {
+  const startEditCard = (card: Procedure) => {
     editingCardId.value = card.id;
+
     draftCard.value = {
       ...card,
       dateTime: new Date(card.dateTime),
@@ -56,14 +56,13 @@ export const useProcedureCardsStore = defineStore('procedureCard', () => {
     lastTouchedCardId.value = id;
   };
 
-  const duplicateCardDraft = (card: ProcedureDraft) => {
+  const duplicateCardDraft = (card: Procedure) => {
     const duplicatedCard: ProcedureDraft = {
       ...card,
-      id: crypto.randomUUID(),
       dateTime: new Date(card.dateTime),
       images: card.images.map((image) => ({
-        ...image,
-        id: crypto.randomUUID(),
+        path: image.path,
+        label: image.label,
       })),
       tagIds: [...card.tagIds],
     };

@@ -4,6 +4,12 @@ export type ProcedureImage = {
   label: string;
 };
 
+export type ProcedureDraftImage = {
+  id?: string;
+  path: string;
+  label: string;
+};
+
 export type Procedure = {
   id: string;
   procedureName: string;
@@ -81,4 +87,6 @@ export type UpdateProcedurePayload = Partial<
   id: string;
 };
 
-export type ProcedureDraft = Procedure;
+export type ProcedureDraft = Omit<Procedure, 'id' | 'images'> & {
+  images: ProcedureDraftImage[];
+};

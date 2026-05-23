@@ -1,10 +1,12 @@
 import type {
+  CreateProcedurePayload,
   CreateReminderPayload,
   ProcedureDraft,
   ProcedureImage,
   Reminder,
   ReminderNotifications,
   ReminderRepeat,
+  UpdateProcedurePayload,
   UpdateReminderPayload,
 } from '@/@types';
 
@@ -31,6 +33,50 @@ const PROCEDURE_REMINDER_REPEAT: ReminderRepeat = {
   unit: 'day',
   daysOfWeek: [],
 };
+
+const getExistingProcedureImages = (
+  procedure: ProcedureDraft,
+): ProcedureImage[] => {
+  return procedure.images
+    .filter((image): image is ProcedureImage => Boolean(image.id))
+    .map((image) => ({
+      id: image.id,
+      path: image.path,
+      label: image.label,
+    }));
+};
+
+const buildCreateProcedurePayload = (
+  draft: ProcedureDraft,
+): CreateProcedurePayload => ({
+  procedureName: draft.procedureName,
+  dateTime: trimSeconds(draft.dateTime),
+  place: draft.place,
+  durationHours: draft.durationHours,
+  durationMinutes: draft.durationMinutes,
+  price: draft.price,
+  images: [],
+  notes: draft.notes,
+  typeId: draft.typeId,
+  tagIds: draft.tagIds,
+});
+
+const buildUpdateProcedurePayload = (
+  draft: ProcedureDraft,
+  id: string,
+): UpdateProcedurePayload => ({
+  id,
+  procedureName: draft.procedureName,
+  dateTime: trimSeconds(draft.dateTime),
+  place: draft.place,
+  durationHours: draft.durationHours,
+  durationMinutes: draft.durationMinutes,
+  price: draft.price,
+  images: getExistingProcedureImages(draft),
+  notes: draft.notes,
+  typeId: draft.typeId,
+  tagIds: draft.tagIds,
+});
 
 export const uploadNewImages = async ({
   procedureId,
@@ -62,7 +108,7 @@ type DeleteReminderMutation = ReturnType<typeof useDeleteReminderMutation>;
 type ProcedureCardsStore = {
   draftCard: ProcedureDraft | null;
   editingCardId: string | null;
-  setLastTouchedCardId: (id: string) => void;
+  setLastTouchedCardId: (id: string | null) => void;
   clearDraft: () => void;
 };
 
@@ -159,11 +205,9 @@ export const saveButtonClickHandler = async ({
   const draft = store.draftCard;
 
   if (store.editingCardId) {
-    const savedWithoutNewImages = await saveProcedureMutation.mutateAsync({
-      ...draft,
-      id: store.editingCardId,
-      dateTime: trimSeconds(draft.dateTime),
-    });
+    const savedWithoutNewImages = await saveProcedureMutation.mutateAsync(
+      buildUpdateProcedurePayload(draft, store.editingCardId),
+    );
 
     const uploadedImages = await uploadNewImages({
       procedureId: savedWithoutNewImages.id,
@@ -173,9 +217,7 @@ export const saveButtonClickHandler = async ({
 
     const saved = uploadedImages.length
       ? await saveProcedureMutation.mutateAsync({
-        ...draft,
-        id: savedWithoutNewImages.id,
-        dateTime: trimSeconds(draft.dateTime),
+        ...buildUpdateProcedurePayload(draft, savedWithoutNewImages.id),
         images: [
           ...savedWithoutNewImages.images,
           ...uploadedImages,
@@ -200,21 +242,9 @@ export const saveButtonClickHandler = async ({
 
     store.setLastTouchedCardId(saved.id);
   } else {
-    const payload = {
-      procedureName: draft.procedureName,
-      dateTime: trimSeconds(draft.dateTime),
-      place: draft.place,
-      durationHours: draft.durationHours,
-      durationMinutes: draft.durationMinutes,
-      price: draft.price,
-      images: [],
-      notes: draft.notes,
-      typeId: draft.typeId,
-      tagIds: draft.tagIds,
-      updatedAt: new Date().toISOString(),
-    };
-
-    const savedWithoutImages = await saveProcedureMutation.mutateAsync(payload);
+    const savedWithoutImages = await saveProcedureMutation.mutateAsync(
+      buildCreateProcedurePayload(draft),
+    );
 
     const uploadedImages = await uploadNewImages({
       procedureId: savedWithoutImages.id,
@@ -224,7 +254,7 @@ export const saveButtonClickHandler = async ({
 
     const saved = uploadedImages.length
       ? await saveProcedureMutation.mutateAsync({
-        ...savedWithoutImages,
+        id: savedWithoutImages.id,
         dateTime: trimSeconds(savedWithoutImages.dateTime),
         images: uploadedImages,
       })
@@ -232,10 +262,7 @@ export const saveButtonClickHandler = async ({
 
     if (shouldRemind) {
       await syncProcedureReminder({
-        procedure: {
-          ...draft,
-          id: saved.id,
-        },
+        procedure: draft,
         procedureId: saved.id,
         notifications: remindForValues,
         existingReminder: null,

@@ -1,5 +1,5 @@
 export type PendingProcedureImageFile = {
-  id: string;
+  localId: string;
   file: File;
   label: string;
 };
