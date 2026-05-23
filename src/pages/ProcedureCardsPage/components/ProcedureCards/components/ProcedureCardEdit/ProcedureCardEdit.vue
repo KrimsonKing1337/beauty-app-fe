@@ -7,10 +7,13 @@ import { useQueryClient } from '@tanstack/vue-query';
 
 import type {
   ProcedureDraft,
+  ProcedureImage,
   ProcedureTagsModel,
   ProcedureTypeModel,
   ReminderNotifications,
 } from '@/@types';
+
+import { getPublicFileUrl } from '@/api/config';
 
 import { useProcedureCardsStore } from '@/stores/procedureCardsStore.ts';
 
@@ -23,7 +26,8 @@ import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQ
 
 import { CardActions, RemindFor } from '@/components';
 
-import type { ImageFiles } from './@types';
+
+import type { PendingProcedureImageFile } from './@types';
 
 import {
   Form,
@@ -49,6 +53,7 @@ const { draftCard } = storeToRefs(procedureCardsStore);
 
 const saveButtonIsLoadingRef = ref(false);
 const shouldRemindRef = ref(false);
+const pendingImagesRef = ref<PendingProcedureImageFile[]>([]);
 
 const procedureTypeModel = ref<ProcedureTypeModel>({
   typeValue: draftCard.value?.typeId ?? null,
@@ -58,15 +63,17 @@ const procedureTagsModel = ref<ProcedureTagsModel>({
   tagValues: draftCard.value?.tagIds ?? [],
 });
 
-const imageFilesRef = ref<ImageFiles>({
-  before: null,
-  after: null,
-});
-
 const remindForValuesRef = ref<ReminderNotifications>({
   daysBefore: 0,
   hoursBefore: 0,
   minutesBefore: 0,
+});
+
+const existingImages = computed(() => {
+  return draftCard.value?.images.map((image) => ({
+    ...image,
+    url: getPublicFileUrl(image.path),
+  })) ?? [];
 });
 
 const existingProcedureReminder = computed(() => {
@@ -105,11 +112,8 @@ watch(
   { immediate: true },
 );
 
-const resetImageFiles = () => {
-  imageFilesRef.value = {
-    before: null,
-    after: null,
-  };
+const resetPendingImages = () => {
+  pendingImagesRef.value = [];
 };
 
 const invalidateCacheCallback = async () => {
@@ -117,6 +121,14 @@ const invalidateCacheCallback = async () => {
     queryClient.invalidateQueries({ queryKey: ['procedures'] }),
     queryClient.invalidateQueries({ queryKey: ['reminders'] }),
   ]);
+};
+
+const updateDraftImages = (images: ProcedureImage[]) => {
+  if (!procedureCardsStore.draftCard) {
+    return;
+  }
+
+  procedureCardsStore.draftCard.images = images;
 };
 
 const handleSaveClick = async () => {
@@ -137,20 +149,20 @@ const handleSaveClick = async () => {
       updateReminderMutation,
       deleteReminderMutation,
       invalidateCacheCallback,
-      files: imageFilesRef.value,
+      pendingImages: pendingImagesRef.value,
       shouldRemind: shouldRemindRef.value,
       remindForValues: remindForValuesRef.value,
       existingProcedureReminder: existingProcedureReminder.value,
     });
 
-    resetImageFiles();
+    resetPendingImages();
   } finally {
     saveButtonIsLoadingRef.value = false;
   }
 };
 
 const handleCancelClick = () => {
-  resetImageFiles();
+  resetPendingImages();
   procedureCardsStore.cancelEdit();
 };
 
@@ -199,10 +211,10 @@ const updateDraftCard = <K extends keyof NonNullable<ProcedureDraft>>(
       </div>
 
       <UploadImages
-        :before-file="imageFilesRef.before"
-        :after-file="imageFilesRef.after"
-        @update:before-file="imageFilesRef.before = $event"
-        @update:after-file="imageFilesRef.after = $event"
+        :images="existingImages"
+        :pending-images="pendingImagesRef"
+        @update:images="updateDraftImages"
+        @update:pending-images="pendingImagesRef = $event"
       />
 
       <CardActions

@@ -1,3 +1,9 @@
+export type ProcedureImage = {
+  id: string;
+  path: string;
+  label: string;
+};
+
 export type Procedure = {
   id: string;
   procedureName: string;
@@ -6,8 +12,7 @@ export type Procedure = {
   durationHours?: number;
   durationMinutes?: number;
   price?: number;
-  beforeImagePaths: string[];
-  afterImagePaths: string[];
+  images: ProcedureImage[];
   notes?: string;
   typeId?: string | null;
   tagIds: string[];
@@ -23,8 +28,7 @@ export type ProcedureDto = {
   durationHours?: number;
   durationMinutes?: number;
   price?: number;
-  beforeImagePaths: string[];
-  afterImagePaths: string[];
+  images?: ProcedureImage[];
   notes?: string;
   typeId?: string | null;
   tagIds?: string[];

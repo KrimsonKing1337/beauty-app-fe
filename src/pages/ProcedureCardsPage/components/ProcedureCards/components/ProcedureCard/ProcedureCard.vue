@@ -13,14 +13,13 @@ import {
   Card,
 } from '@/components';
 
-import { getBeforeAfterImagePaths } from '@/utils';
+import { getProcedureImageUrls } from '@/utils';
 
 import { Header, Tags } from './components';
 
 const props = defineProps<{ card: Procedure }>();
 
-const beforeImagePaths = getBeforeAfterImagePaths(props.card.beforeImagePaths);
-const afterImagePaths = getBeforeAfterImagePaths(props.card.afterImagePaths);
+const images = computed(() => getProcedureImageUrls(props.card.images));
 
 const { data: procedureTypes } = useProcedureTypesQuery();
 const { data: tags } = useTagsQuery();
@@ -105,10 +104,7 @@ const tagsSafe = tags.value ?? [];
       {{ remindForText }}
     </div>
 
-    <BeforeAfter
-      :before-image-paths="beforeImagePaths"
-      :after-image-paths="afterImagePaths"
-    />
+    <BeforeAfter :images="images" />
 
     <Notes v-if="props.card.notes">
       {{ props.card.notes }}

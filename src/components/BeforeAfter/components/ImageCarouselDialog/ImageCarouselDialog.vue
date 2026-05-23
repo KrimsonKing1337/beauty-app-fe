@@ -5,7 +5,6 @@ type Slide = {
   id: string;
   label: string;
   imagePath: string;
-  type: 'before' | 'after';
 };
 
 const props = defineProps<{

@@ -1,3 +1,5 @@
+import type { ProcedureImage } from '@/@types';
+
 import { getPublicFileUrl } from '@/api/config.ts';
 
 export const formatDate = (date: Date | string | null) => {
@@ -32,8 +34,13 @@ export const trimSeconds = (date: Date): Date => {
   return nextDate;
 };
 
-export const getBeforeAfterImagePaths = (imagePaths: string[] | undefined) => {
-  const imagePathsSafe = imagePaths ?? [];
+export const getProcedureImageUrl = (image: ProcedureImage) => ({
+  ...image,
+  path: getPublicFileUrl(image.path),
+});
 
-  return imagePathsSafe.map(getPublicFileUrl);
+export const getProcedureImageUrls = (
+  images: ProcedureImage[] | undefined,
+) => {
+  return (images ?? []).map(getProcedureImageUrl);
 };

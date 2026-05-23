@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 
+import type { ProcedureImage } from '@/@types';
+
 import { ImageCarouselDialog } from './components';
 
 type Props = {
-  beforeImagePaths: string[];
-  afterImagePaths: string[];
+  images: ProcedureImage[];
 };
 
 const props = defineProps<Props>();
@@ -14,41 +15,23 @@ type Slide = {
   id: string;
   label: string;
   imagePath: string;
-  type: 'before' | 'after';
 };
 
 const isDialogOpen = ref(false);
 const activeSlideIndex = ref(0);
 
-const beforeImagePath = computed(() => props.beforeImagePaths[0] ?? null);
-const afterImagePath = computed(() => props.afterImagePaths[0] ?? null);
-
 const slides = computed<Slide[]>(() => {
-  const result: Slide[] = [];
-
-  if (beforeImagePath.value) {
-    result.push({
-      id: 'before',
-      label: 'До',
-      imagePath: beforeImagePath.value,
-      type: 'before',
-    });
-  }
-
-  if (afterImagePath.value) {
-    result.push({
-      id: 'after',
-      label: 'После',
-      imagePath: afterImagePath.value,
-      type: 'after',
-    });
-  }
-
-  return result;
+  return props.images.map((image, index) => ({
+    id: image.id,
+    label: image.label || `Фото ${index + 1}`,
+    imagePath: image.path,
+  }));
 });
 
-const openSlide = (type: 'before' | 'after') => {
-  const index = slides.value.findIndex((slide) => slide.type === type);
+const hasImages = computed(() => slides.value.length > 0);
+
+const openFullScreen = (imageId: string) => {
+  const index = slides.value.findIndex((slide) => slide.id === imageId);
 
   if (index === -1) {
     return;
@@ -58,21 +41,13 @@ const openSlide = (type: 'before' | 'after') => {
   isDialogOpen.value = true;
 };
 
-const openBeforeFullScreen = () => {
-  openSlide('before');
-};
-
-const openAfterFullScreen = () => {
-  openSlide('after');
-};
-
 const closeFullScreen = () => {
   isDialogOpen.value = false;
 };
 </script>
 
 <template>
-  <div class="BeforeAfter">
+  <div class="ProcedureImages">
     <ImageCarouselDialog
       v-model="isDialogOpen"
       v-model:index="activeSlideIndex"
@@ -80,50 +55,38 @@ const closeFullScreen = () => {
       @close="closeFullScreen"
     />
 
-    <div class="Item">
-      <div class="Label">
-        До
-      </div>
-
-      <div class="Image">
-        <div v-if="!beforeImagePath" class="ImagePlaceholder">
-          Фото до
-        </div>
-
-        <img
-          v-else
-          :src="beforeImagePath"
-          alt="Фото до"
-          @click="openBeforeFullScreen"
-        />
-      </div>
+    <div v-if="!hasImages" class="EmptyState">
+      Фотографии не добавлены
     </div>
 
-    <div class="Item">
-      <div class="Label">
-        После
-      </div>
-
-      <div class="Image">
-        <div v-if="!afterImagePath" class="ImagePlaceholder">
-          Фото после
-        </div>
-
+    <div
+      v-for="image in images"
+      v-else
+      :key="image.id"
+      class="Item"
+    >
+      <button
+        class="ImageButton"
+        type="button"
+        @click="openFullScreen(image.id)"
+      >
         <img
-          v-else
-          :src="afterImagePath"
-          alt="Фото после"
-          @click="openAfterFullScreen"
+          :src="image.path"
+          :alt="image.label || 'Фото процедуры'"
         />
+      </button>
+
+      <div class="Label">
+        {{ image.label || 'Без подписи' }}
       </div>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-.BeforeAfter {
+.ProcedureImages {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 12px;
   margin-top: 16px;
 }
@@ -132,35 +95,44 @@ const closeFullScreen = () => {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-width: 0;
 }
 
-.Label {
-  font-size: 13px;
-  color: var(--text-secondary);
-}
-
-.Image {
+.ImageButton {
+  width: 100%;
   aspect-ratio: 4 / 5;
+  padding: 0;
+  border: 1px solid var(--border);
   border-radius: 18px;
   overflow: hidden;
   background: var(--surface-muted);
-  border: 1px solid var(--border);
+  cursor: pointer;
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
-    cursor: pointer;
   }
 }
 
-.ImagePlaceholder {
-  width: 100%;
-  height: 100%;
+.Label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.EmptyState {
+  grid-column: 1 / -1;
   display: grid;
+  min-height: 120px;
   place-items: center;
+  border: 1px dashed var(--border);
+  border-radius: 18px;
   color: var(--text-tertiary);
   font-size: 13px;
+  background: var(--surface-muted);
 }
 </style>

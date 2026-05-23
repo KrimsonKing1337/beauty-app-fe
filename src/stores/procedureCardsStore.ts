@@ -12,8 +12,7 @@ const createEmptyProcedureCard = (): ProcedureDraft => ({
   durationHours: 0,
   durationMinutes: 0,
   price: 0,
-  beforeImagePaths: [],
-  afterImagePaths: [],
+  images: [],
   notes: '',
   typeId: null,
   tagIds: [],
@@ -36,6 +35,7 @@ export const useProcedureCardsStore = defineStore('procedureCard', () => {
     draftCard.value = {
       ...card,
       dateTime: new Date(card.dateTime),
+      images: card.images.map((image) => ({ ...image })),
       tagIds: [...card.tagIds],
     };
   };
@@ -61,6 +61,10 @@ export const useProcedureCardsStore = defineStore('procedureCard', () => {
       ...card,
       id: crypto.randomUUID(),
       dateTime: new Date(card.dateTime),
+      images: card.images.map((image) => ({
+        ...image,
+        id: crypto.randomUUID(),
+      })),
       tagIds: [...card.tagIds],
     };
 

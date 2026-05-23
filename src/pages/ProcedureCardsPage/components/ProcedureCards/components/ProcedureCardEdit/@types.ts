@@ -1,4 +1,5 @@
-export type ImageFiles = {
-  before: File | File[] | null;
-  after: File | File[] | null;
+export type PendingProcedureImageFile = {
+  id: string;
+  file: File;
+  label: string;
 };

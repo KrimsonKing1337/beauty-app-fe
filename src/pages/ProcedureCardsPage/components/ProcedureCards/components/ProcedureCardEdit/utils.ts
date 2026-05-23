@@ -1,13 +1,14 @@
 import type {
   CreateReminderPayload,
   ProcedureDraft,
+  ProcedureImage,
   Reminder,
   ReminderNotifications,
   ReminderRepeat,
   UpdateReminderPayload,
 } from '@/@types';
 
-import { uploadFile } from '@/api/uploads.ts';
+import { uploadImages as uploadProcedureImages } from '@/api/uploads.ts';
 
 import { useSaveProcedureMutation } from '@/composables/mutations/procedures/useSaveProcedureMutation.ts';
 import { useCreateReminderMutation } from '@/composables/mutations/reminders/useCreateReminderMutation.ts';
@@ -16,11 +17,12 @@ import { useDeleteReminderMutation } from '@/composables/mutations/reminders/use
 
 import { trimSeconds } from '@/utils';
 
-import type { ImageFiles } from './@types';
+import type { PendingProcedureImageFile } from './@types';
 
-type UploadImagesArgs = {
+type UploadNewImagesArgs = {
   procedureId: string;
-  files: ImageFiles;
+  pendingImages: PendingProcedureImageFile[];
+  existingImages: ProcedureImage[];
 };
 
 const PROCEDURE_REMINDER_REPEAT: ReminderRepeat = {
@@ -30,36 +32,26 @@ const PROCEDURE_REMINDER_REPEAT: ReminderRepeat = {
   daysOfWeek: [],
 };
 
-const getSingleFile = (value: File | File[] | null): File | null => {
-  if (!value) {
-    return null;
-  }
-
-  return Array.isArray(value) ? (value[0] ?? null) : value;
-};
-
-export const uploadImages = async ({
+export const uploadNewImages = async ({
   procedureId,
-  files,
-}: UploadImagesArgs): Promise<void> => {
-  const beforeFile = getSingleFile(files.before);
-  const afterFile = getSingleFile(files.after);
-
-  if (beforeFile) {
-    await uploadFile({
-      file: beforeFile,
-      procedureId,
-      type: 'before',
-    });
+  pendingImages,
+  existingImages,
+}: UploadNewImagesArgs): Promise<ProcedureImage[]> => {
+  if (!pendingImages.length) {
+    return [];
   }
 
-  if (afterFile) {
-    await uploadFile({
-      file: afterFile,
-      procedureId,
-      type: 'after',
-    });
-  }
+  const existingImageIds = new Set(existingImages.map((image) => image.id));
+
+  const procedureImagesAfterUpload = await uploadProcedureImages({
+    procedureId,
+    files: pendingImages.map((image) => image.file),
+    labels: pendingImages.map((image) => image.label),
+  });
+
+  return procedureImagesAfterUpload.filter((image) => {
+    return !existingImageIds.has(image.id);
+  });
 };
 
 type SaveProcedureMutation = ReturnType<typeof useSaveProcedureMutation>;
@@ -142,7 +134,7 @@ type SaveButtonClickHandlerArgs = {
   updateReminderMutation: UpdateReminderMutation;
   deleteReminderMutation: DeleteReminderMutation;
   invalidateCacheCallback: () => Promise<void>;
-  files: ImageFiles;
+  pendingImages: PendingProcedureImageFile[];
   shouldRemind: boolean;
   remindForValues: ReminderNotifications;
   existingProcedureReminder: Reminder | null;
@@ -155,7 +147,7 @@ export const saveButtonClickHandler = async ({
   updateReminderMutation,
   deleteReminderMutation,
   invalidateCacheCallback,
-  files,
+  pendingImages,
   shouldRemind,
   remindForValues,
   existingProcedureReminder,
@@ -167,11 +159,29 @@ export const saveButtonClickHandler = async ({
   const draft = store.draftCard;
 
   if (store.editingCardId) {
-    const saved = await saveProcedureMutation.mutateAsync({
+    const savedWithoutNewImages = await saveProcedureMutation.mutateAsync({
       ...draft,
       id: store.editingCardId,
       dateTime: trimSeconds(draft.dateTime),
     });
+
+    const uploadedImages = await uploadNewImages({
+      procedureId: savedWithoutNewImages.id,
+      pendingImages,
+      existingImages: savedWithoutNewImages.images,
+    });
+
+    const saved = uploadedImages.length
+      ? await saveProcedureMutation.mutateAsync({
+        ...draft,
+        id: savedWithoutNewImages.id,
+        dateTime: trimSeconds(draft.dateTime),
+        images: [
+          ...savedWithoutNewImages.images,
+          ...uploadedImages,
+        ],
+      })
+      : savedWithoutNewImages;
 
     if (shouldRemind) {
       await syncProcedureReminder({
@@ -186,11 +196,6 @@ export const saveButtonClickHandler = async ({
       await deleteReminderMutation.mutateAsync(existingProcedureReminder.id);
     }
 
-    await uploadImages({
-      procedureId: store.editingCardId,
-      files,
-    });
-
     await invalidateCacheCallback();
 
     store.setLastTouchedCardId(saved.id);
@@ -202,15 +207,28 @@ export const saveButtonClickHandler = async ({
       durationHours: draft.durationHours,
       durationMinutes: draft.durationMinutes,
       price: draft.price,
-      beforeImagePaths: [],
-      afterImagePaths: [],
+      images: [],
       notes: draft.notes,
       typeId: draft.typeId,
       tagIds: draft.tagIds,
       updatedAt: new Date().toISOString(),
     };
 
-    const saved = await saveProcedureMutation.mutateAsync(payload);
+    const savedWithoutImages = await saveProcedureMutation.mutateAsync(payload);
+
+    const uploadedImages = await uploadNewImages({
+      procedureId: savedWithoutImages.id,
+      pendingImages,
+      existingImages: savedWithoutImages.images,
+    });
+
+    const saved = uploadedImages.length
+      ? await saveProcedureMutation.mutateAsync({
+        ...savedWithoutImages,
+        dateTime: trimSeconds(savedWithoutImages.dateTime),
+        images: uploadedImages,
+      })
+      : savedWithoutImages;
 
     if (shouldRemind) {
       await syncProcedureReminder({
@@ -227,11 +245,6 @@ export const saveButtonClickHandler = async ({
     }
 
     store.setLastTouchedCardId(saved.id);
-
-    await uploadImages({
-      procedureId: saved.id,
-      files,
-    });
   }
 
   await invalidateCacheCallback();
