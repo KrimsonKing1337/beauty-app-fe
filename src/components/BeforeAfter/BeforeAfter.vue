@@ -21,14 +21,12 @@ const isDialogOpen = ref(false);
 const activeSlideIndex = ref(0);
 
 const slides = computed<Slide[]>(() => {
-  return props.images.map((image, index) => ({
+  return props.images.map((image) => ({
     id: image.id,
-    label: image.label || `Фото ${index + 1}`,
+    label: image.label,
     imagePath: image.path,
   }));
 });
-
-const hasImages = computed(() => slides.value.length > 0);
 
 const openFullScreen = (imageId: string) => {
   const index = slides.value.findIndex((slide) => slide.id === imageId);
@@ -55,13 +53,8 @@ const closeFullScreen = () => {
       @close="closeFullScreen"
     />
 
-    <div v-if="!hasImages" class="EmptyState">
-      Фотографии не добавлены
-    </div>
-
     <div
       v-for="image in images"
-      v-else
       :key="image.id"
       class="Item"
     >
@@ -77,7 +70,7 @@ const closeFullScreen = () => {
       </button>
 
       <div class="Label">
-        {{ image.label || 'Без подписи' }}
+        {{ image.label }}
       </div>
     </div>
   </div>
@@ -122,17 +115,5 @@ const closeFullScreen = () => {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.EmptyState {
-  grid-column: 1 / -1;
-  display: grid;
-  min-height: 120px;
-  place-items: center;
-  border: 1px dashed var(--border);
-  border-radius: 18px;
-  color: var(--text-tertiary);
-  font-size: 13px;
-  background: var(--surface-muted);
 }
 </style>
