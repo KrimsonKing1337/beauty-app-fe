@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import { nextTick, watch } from 'vue';
+import {
+  type VNodeRef,
+  computed,
+  nextTick,
+  ref,
+  watch,
+} from 'vue';
+
+import { useVirtualizer } from '@tanstack/vue-virtual';
 
 import type { Reminder as ReminderType } from '@/@types';
 
@@ -14,6 +22,29 @@ type Props = {
 };
 
 const props = defineProps<Props>();
+
+const REMINDER_ESTIMATED_HEIGHT = 94;
+const REMINDER_GAP = 16;
+
+const remindersWrapperRef = ref<HTMLElement | null>(null);
+
+const virtualizerOptions = computed(() => ({
+  count: props.reminders.length,
+  getScrollElement: () => remindersWrapperRef.value,
+  estimateSize: () => REMINDER_ESTIMATED_HEIGHT + REMINDER_GAP,
+  overscan: 5,
+  measureElement: (element: Element) => element.getBoundingClientRect().height,
+}));
+
+const virtualizer = useVirtualizer(virtualizerOptions);
+
+const measureElement: VNodeRef = (element) => {
+  if (!(element instanceof Element)) {
+    return;
+  }
+
+  virtualizer.value.measureElement(element);
+};
 
 watch(
   [() => props.lastTouchedReminderId, () => props.reminders],
@@ -35,7 +66,7 @@ watch(
 </script>
 
 <template>
-  <div class="Reminders FullWidth">
+  <div class="Reminders">
     <div v-if="isLoading">
       Loading...
     </div>
@@ -45,14 +76,22 @@ watch(
     </div>
 
     <Transition name="fade" mode="out-in">
-      <div v-if="!isEditing" class="RemindersWrapper">
+      <div v-if="!isEditing" ref="remindersWrapperRef" class="RemindersWrapper">
         <div
-          v-for="reminderCur in reminders"
-          :id="`reminder-${reminderCur.id}`"
-          :key="reminderCur.id"
-          class="FullWidth"
+          class="RemindersVirtualInner"
+          :style="{ height: `${virtualizer.getTotalSize()}px` }"
         >
-          <Reminder :key="reminderCur.id" :reminder="reminderCur" />
+          <div
+            v-for="virtualRowCur in virtualizer.getVirtualItems()"
+            :id="`reminder-${reminders[virtualRowCur.index]!.id}`"
+            :key="reminders[virtualRowCur.index]!.id"
+            :ref="measureElement"
+            :data-index="virtualRowCur.index"
+            class="RemindersVirtualItem"
+            :style="{ transform: `translateY(${virtualRowCur.start}px)` }"
+          >
+            <Reminder :reminder="reminders[virtualRowCur.index]!" />
+          </div>
         </div>
       </div>
 
@@ -63,20 +102,29 @@ watch(
 
 <style scoped lang="scss">
 .Reminders {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
   height: 100%;
+  width: 100%;
+  flex-grow: 1;
 }
 
 .RemindersWrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
   width: 100%;
 }
 
-.FullWidth {
+.RemindersVirtualInner {
+  position: relative;
   width: 100%;
+}
+
+.RemindersVirtualItem {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding-bottom: 16px;
 }
 
 .fade-enter-active {

@@ -82,11 +82,7 @@ watch(
     </div>
 
     <Transition name="fade" mode="out-in">
-      <div
-        v-if="!isEditing"
-        ref="cardsWrapperRef"
-        class="ProcedureCardsWrapper"
-      >
+      <div v-if="!isEditing" ref="cardsWrapperRef" class="ProcedureCardsWrapper">
         <div
           class="ProcedureCardsVirtualInner"
           :style="{ height: `${virtualizer.getTotalSize()}px` }"
@@ -122,8 +118,6 @@ watch(
 
 .ProcedureCardsWrapper {
   width: 100%;
-  height: 100%;
-  overflow-y: auto;
 }
 
 .ProcedureCardsVirtualInner {

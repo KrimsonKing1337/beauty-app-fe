@@ -341,13 +341,7 @@ watch(
 
 <style scoped lang="scss">
 .ProcedureCardsPage {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: stretch;
-  width: 100%;
-  height: 100%;
-  flex-grow: 1;
+
 }
 
 .ToolbarRow {
