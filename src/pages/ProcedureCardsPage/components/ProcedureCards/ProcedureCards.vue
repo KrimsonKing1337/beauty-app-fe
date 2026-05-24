@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import { nextTick, watch } from 'vue';
+import {
+  type VNodeRef,
+  computed,
+  nextTick,
+  ref,
+  watch,
+} from 'vue';
+
+import { useVirtualizer } from '@tanstack/vue-virtual';
 
 import type { Procedure } from '@/@types';
 
@@ -15,18 +23,47 @@ type Props = {
 
 const props = defineProps<Props>();
 
+const CARD_ESTIMATED_HEIGHT = 340;
+const CARD_GAP = 16;
+
+const cardsWrapperRef = ref<HTMLElement | null>(null);
+
+const virtualizerOptions = computed(() => ({
+  count: props.cards.length,
+  getScrollElement: () => cardsWrapperRef.value,
+  estimateSize: () => CARD_ESTIMATED_HEIGHT + CARD_GAP,
+  overscan: 5,
+  measureElement: (element: Element) => element.getBoundingClientRect().height,
+}));
+
+const virtualizer = useVirtualizer(virtualizerOptions);
+
+const measureElement: VNodeRef = (element) => {
+  if (!(element instanceof Element)) {
+    return;
+  }
+
+  virtualizer.value.measureElement(element);
+};
+
 watch(
   () => props.lastTouchedCardId,
   (id) => {
-    if (!id) {
+    if (!id || props.isEditing) {
       return;
     }
 
     nextTick(() => {
       setTimeout(() => {
-        document.querySelector(`#card-${id}`)?.scrollIntoView({
+        const cardIndex = props.cards.findIndex((cardCur) => cardCur.id === id);
+
+        if (cardIndex === -1) {
+          return;
+        }
+
+        virtualizer.value.scrollToIndex(cardIndex, {
+          align: 'start',
           behavior: 'smooth',
-          block: 'start',
         });
       }, 300); // animation time
     });
@@ -35,7 +72,7 @@ watch(
 </script>
 
 <template>
-  <div class="FullWidth">
+  <div class="ProcedureCards">
     <div v-if="isLoading">
       Loading...
     </div>
@@ -45,14 +82,26 @@ watch(
     </div>
 
     <Transition name="fade" mode="out-in">
-      <div v-if="!isEditing" class="ProcedureCardsWrapper">
+      <div
+        v-if="!isEditing"
+        ref="cardsWrapperRef"
+        class="ProcedureCardsWrapper"
+      >
         <div
-          v-for="cardCur in cards"
-          :id="`card-${cardCur.id}`"
-          :key="cardCur.id"
-          class="FullWidth"
+          class="ProcedureCardsVirtualInner"
+          :style="{ height: `${virtualizer.getTotalSize()}px` }"
         >
-          <ProcedureCard :card="cardCur" />
+          <div
+            v-for="virtualRowCur in virtualizer.getVirtualItems()"
+            :id="`card-${cards[virtualRowCur.index]!.id}`"
+            :key="cards[virtualRowCur.index]!.id"
+            :ref="measureElement"
+            :data-index="virtualRowCur.index"
+            class="ProcedureCardsVirtualItem"
+            :style="{ transform: `translateY(${virtualRowCur.start}px)` }"
+          >
+            <ProcedureCard :card="cards[virtualRowCur.index]!" />
+          </div>
         </div>
       </div>
 
@@ -62,13 +111,32 @@ watch(
 </template>
 
 <style scoped lang="scss">
-.ProcedureCardsWrapper {
+.ProcedureCards {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
-  gap: 16px;
+  height: 100%;
   width: 100%;
+  flex-grow: 1;
+}
+
+.ProcedureCardsWrapper {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.ProcedureCardsVirtualInner {
+  position: relative;
+  width: 100%;
+}
+
+.ProcedureCardsVirtualItem {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding-bottom: 16px;
 }
 
 .FullWidth {
