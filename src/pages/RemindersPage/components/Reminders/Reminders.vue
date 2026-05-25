@@ -11,7 +11,7 @@ import { useVirtualizer } from '@tanstack/vue-virtual';
 
 import type { Reminder as ReminderType } from '@/@types';
 
-import { AppError } from '@/components';
+import { AppError, Loader } from '@/components';
 
 import { Reminder, ReminderEdit } from './components';
 
@@ -69,9 +69,7 @@ watch(
 
 <template>
   <div class="Reminders">
-    <div v-if="isLoading">
-      Loading...
-    </div>
+    <Loader v-if="isLoading" text="Загрузка напоминаний..." />
 
     <AppError
       v-if="errorMessage"

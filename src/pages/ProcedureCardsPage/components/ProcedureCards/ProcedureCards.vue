@@ -11,7 +11,7 @@ import { useVirtualizer } from '@tanstack/vue-virtual';
 
 import type { Procedure } from '@/@types';
 
-import { AppError } from '@/components';
+import { AppError, Loader } from '@/components';
 
 import { ProcedureCard, ProcedureCardEdit } from './components';
 
@@ -75,9 +75,7 @@ watch(
 
 <template>
   <div class="ProcedureCards">
-    <div v-if="isLoading">
-      Loading...
-    </div>
+    <Loader v-if="isLoading" text="Загрузка процедур..." />
 
     <AppError
       v-if="errorMessage"
@@ -114,8 +112,9 @@ watch(
 <style scoped lang="scss">
 .ProcedureCards {
   display: flex;
-  align-items: stretch;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  justify-content: stretch;
   height: 100%;
   width: 100%;
   flex-grow: 1;
