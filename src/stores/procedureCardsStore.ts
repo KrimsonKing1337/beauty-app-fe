@@ -60,9 +60,10 @@ export const useProcedureCardsStore = defineStore('procedureCard', () => {
     const duplicatedCard: ProcedureDraft = {
       ...card,
       dateTime: new Date(card.dateTime),
-      images: card.images.map((image) => ({
-        path: image.path,
-        label: image.label,
+      images: card.images.map((imageCur) => ({
+        id: '',
+        path: imageCur.path,
+        label: imageCur.label,
       })),
       tagIds: [...card.tagIds],
     };
