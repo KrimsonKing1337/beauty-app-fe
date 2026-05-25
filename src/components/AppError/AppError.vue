@@ -2,11 +2,13 @@
 type Props = {
   title?: string;
   message?: string | null;
+  withRetry?: boolean;
 };
 
 withDefaults(defineProps<Props>(), {
   title: 'Не удалось загрузить данные',
   message: 'Попробуйте обновить страницу или повторить действие позже',
+  withRetry: true,
 });
 
 const emit = defineEmits<{
@@ -32,6 +34,7 @@ const emit = defineEmits<{
       </div>
 
       <VBtn
+        v-if="withRetry"
         class="Button"
         variant="tonal"
         rounded="lg"

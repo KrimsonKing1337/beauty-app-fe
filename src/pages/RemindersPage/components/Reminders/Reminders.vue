@@ -11,6 +11,8 @@ import { useVirtualizer } from '@tanstack/vue-virtual';
 
 import type { Reminder as ReminderType } from '@/@types';
 
+import { AppError } from '@/components';
+
 import { Reminder, ReminderEdit } from './components';
 
 type Props = {
@@ -71,9 +73,12 @@ watch(
       Loading...
     </div>
 
-    <div v-if="errorMessage">
-      Ошибка: {{ errorMessage }}
-    </div>
+    <AppError
+      v-if="errorMessage"
+      title="Не удалось загрузить напоминания"
+      :message="errorMessage"
+      :with-retry="false"
+    />
 
     <Transition name="fade" mode="out-in">
       <div v-if="!isEditing" ref="remindersWrapperRef" class="RemindersWrapper">
@@ -103,11 +108,16 @@ watch(
 <style scoped lang="scss">
 .Reminders {
   display: flex;
-  align-items: stretch;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  justify-content: stretch;
   height: 100%;
   width: 100%;
   flex-grow: 1;
+}
+
+.AppError {
+  margin-bottom: 20px;
 }
 
 .RemindersWrapper {

@@ -11,6 +11,8 @@ import { useVirtualizer } from '@tanstack/vue-virtual';
 
 import type { Procedure } from '@/@types';
 
+import { AppError } from '@/components';
+
 import { ProcedureCard, ProcedureCardEdit } from './components';
 
 type Props = {
@@ -77,9 +79,12 @@ watch(
       Loading...
     </div>
 
-    <div v-if="errorMessage">
-      Ошибка: {{ errorMessage }}
-    </div>
+    <AppError
+      v-if="errorMessage"
+      title="Не удалось загрузить процедуры"
+      :message="errorMessage"
+      :with-retry="false"
+    />
 
     <Transition name="fade" mode="out-in">
       <div v-if="!isEditing" ref="cardsWrapperRef" class="ProcedureCardsWrapper">

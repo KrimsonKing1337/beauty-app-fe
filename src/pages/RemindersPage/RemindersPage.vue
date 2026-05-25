@@ -178,6 +178,7 @@ const resetFilters = () => {
   status.value = 'all';
   sort.value = 'dateAsc';
   limit.value = 20;
+
   resetLoadedReminders();
 };
 
@@ -202,9 +203,9 @@ watch(
       return;
     }
 
-    const existingIds = new Set(
-      loadedReminders.value.map((reminderCur) => reminderCur.id),
-    );
+    const newSetValue = loadedReminders.value.map((reminderCur) => reminderCur.id);
+
+    const existingIds = new Set(newSetValue);
 
     loadedReminders.value = [
       ...loadedReminders.value,
