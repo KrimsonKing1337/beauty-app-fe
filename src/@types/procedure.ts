@@ -5,7 +5,7 @@ export type ProcedureImage = {
 };
 
 export type ProcedureDraftImage = {
-  id?: string;
+  id: string;
   path: string;
   label: string;
 };

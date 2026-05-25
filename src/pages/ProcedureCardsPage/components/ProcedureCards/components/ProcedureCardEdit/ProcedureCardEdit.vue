@@ -70,10 +70,16 @@ const remindForValuesRef = ref<ReminderNotifications>({
 });
 
 const existingImages = computed(() => {
-  return draftCard.value?.images.map((image) => ({
-    ...image,
-    url: getPublicFileUrl(image.path),
-  })) ?? [];
+  return draftCard.value?.images.map((imageCur) => {
+    console.log('___ imageCur', imageCur);
+
+    const url = getPublicFileUrl(imageCur.path);
+
+    return {
+      ...imageCur,
+      url,
+    };
+  }) ?? [];
 });
 
 const existingProcedureReminder = computed(() => {
