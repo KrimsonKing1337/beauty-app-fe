@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, inject, ref } from 'vue';
 
 import type { Procedure } from '@/@types';
 
@@ -9,7 +9,7 @@ import {
   useDeleteProcedureMutation,
 } from '@/composables/mutations/procedures/useDeleteProcedureMutation';
 
-import { useProceduresQuery } from '@/composables/queries/procedures/useProceduresQuery';
+import { procedureCardsContextKey } from '@/pages/ProcedureCardsPage/procedureCardsContext';
 
 import { CardHeader, RemovingDialog } from '@/components';
 
@@ -18,23 +18,24 @@ import { getCardInfo } from '../../utils';
 const props = defineProps<{ card: Procedure }>();
 
 const deleteProcedureMutation = useDeleteProcedureMutation();
-const proceduresQuery = useProceduresQuery();
 const procedureCardsStore = useProcedureCardsStore();
 
 const cardInfo = computed(() => getCardInfo(props.card));
 const meta = computed(() => cardInfo.value.meta);
 const price = computed(() => cardInfo.value.price);
 
+const procedureCardsContext = inject(procedureCardsContextKey);
+const cards = computed(() => procedureCardsContext?.cards.value ?? []);
+
 const handleRemoveCard = async (id: string) => {
-  const cards = proceduresQuery.data.value ?? [];
-  const index = cards.findIndex((card) => card.id === id);
+  const index = cards.value.findIndex((card) => card.id === id);
 
   if (index === -1) {
     return;
   }
 
-  const prevId = cards[index - 1]?.id ?? null;
-  const nextId = cards[index + 1]?.id ?? null;
+  const prevId = cards.value[index - 1]?.id ?? null;
+  const nextId = cards.value[index + 1]?.id ?? null;
 
   await deleteProcedureMutation.mutateAsync(id);
 

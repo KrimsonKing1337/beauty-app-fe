@@ -6,5 +6,7 @@ export const useTagsQuery = () => {
   return useQuery({
     queryKey: ['tags'],
     queryFn: getTags,
+    staleTime: Infinity,
+    gcTime: Infinity,
   });
 };

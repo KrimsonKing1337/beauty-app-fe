@@ -15,6 +15,10 @@ import { getRemindersPage } from '@/api/reminders';
 
 type MaybeRef<T> = T | Ref<T>;
 
+type UseRemindersQueryArgs = MaybeRef<RemindersQueryParams> & {
+  enabled?: boolean;
+};
+
 const defaultPagination: ReminderPagination = {
   page: 1,
   limit: 100,
@@ -23,7 +27,7 @@ const defaultPagination: ReminderPagination = {
 };
 
 export const useRemindersQuery = (
-  params?: MaybeRef<RemindersQueryParams>,
+  params?: UseRemindersQueryArgs,
 ) => {
   const queryParams = computed<RemindersQueryParams>(() => {
     return {
@@ -42,6 +46,7 @@ export const useRemindersQuery = (
       queryParams.value,
     ]),
     queryFn: () => getRemindersPage(queryParams.value),
+    enabled: params?.enabled ?? true,
   });
 
   const data = computed(() => {

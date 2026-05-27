@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {
   computed,
+  provide,
   ref,
   watch,
 } from 'vue';
@@ -20,6 +21,8 @@ import { useProcedureTypesQuery } from '@/composables/queries/procedureTypes/use
 import { useTagsQuery } from '@/composables/queries/tags/useTagsQuery';
 
 import { CardPlaceholder, FiltersToolbar } from '@/components';
+
+import { procedureCardsContextKey } from './procedureCardsContext';
 
 import { ProcedureCards } from './components';
 
@@ -110,6 +113,8 @@ const { data: procedureTypes } = useProcedureTypesQuery();
 const { data: tags } = useTagsQuery();
 
 const cards = computed<Procedure[]>(() => loadedCards.value);
+
+provide(procedureCardsContextKey, { cards });
 
 const typeOptions = computed(() => {
   return [

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { watch } from 'vue';
 
+import { Capacitor } from '@capacitor/core';
+
 import { RouterView, useRouter } from 'vue-router';
 
 import { setUnauthorizedHandler } from '@/api/client.ts';
@@ -40,6 +42,11 @@ watch(
     }
 
     authStore.setUser(data.user);
+
+    // синкаем нотификации только если это натив
+    if (!Capacitor.isNativePlatform()) {
+      return;
+    }
 
     try {
       const reminders = await getReminders();

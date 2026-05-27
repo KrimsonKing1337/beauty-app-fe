@@ -47,9 +47,11 @@ const createReminderMutation = useCreateReminderMutation();
 const updateReminderMutation = useUpdateReminderMutation();
 const deleteReminderMutation = useDeleteReminderMutation();
 
-const { data: reminders } = useRemindersQuery();
+const { draftCard, editingCardId } = storeToRefs(procedureCardsStore);
 
-const { draftCard } = storeToRefs(procedureCardsStore);
+const shouldLoadReminders = computed(() => Boolean(editingCardId.value));
+
+const { data: reminders } = useRemindersQuery({ enabled: shouldLoadReminders.value });
 
 const saveButtonIsLoadingRef = ref(false);
 const shouldRemindRef = ref(false);
@@ -71,8 +73,6 @@ const remindForValuesRef = ref<ReminderNotifications>({
 
 const existingImages = computed(() => {
   return draftCard.value?.images.map((imageCur) => {
-    console.log('___ imageCur', imageCur);
-
     const url = getPublicFileUrl(imageCur.path);
 
     return {
@@ -122,13 +122,6 @@ const resetPendingImages = () => {
   pendingImagesRef.value = [];
 };
 
-const invalidateCacheCallback = async () => {
-  await Promise.all([
-    queryClient.invalidateQueries({ queryKey: ['procedures'] }),
-    queryClient.invalidateQueries({ queryKey: ['reminders'] }),
-  ]);
-};
-
 const updateDraftImages = (images: ProcedureImage[]) => {
   if (!procedureCardsStore.draftCard) {
     return;
@@ -154,7 +147,6 @@ const handleSaveClick = async () => {
       createReminderMutation,
       updateReminderMutation,
       deleteReminderMutation,
-      invalidateCacheCallback,
       pendingImages: pendingImagesRef.value,
       shouldRemind: shouldRemindRef.value,
       remindForValues: remindForValuesRef.value,

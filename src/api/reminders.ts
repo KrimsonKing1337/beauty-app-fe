@@ -75,7 +75,7 @@ export const getReminders = async (
   params: RemindersQueryParams = {},
 ): Promise<Reminder[]> => {
   const data = await getRemindersPage({
-    limit: 100,
+    limit: 20,
     ...params,
   });
 

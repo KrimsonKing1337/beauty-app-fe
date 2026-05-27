@@ -179,7 +179,6 @@ type SaveButtonClickHandlerArgs = {
   createReminderMutation: CreateReminderMutation;
   updateReminderMutation: UpdateReminderMutation;
   deleteReminderMutation: DeleteReminderMutation;
-  invalidateCacheCallback: () => Promise<void>;
   pendingImages: PendingProcedureImageFile[];
   shouldRemind: boolean;
   remindForValues: ReminderNotifications;
@@ -192,7 +191,6 @@ export const saveButtonClickHandler = async ({
   createReminderMutation,
   updateReminderMutation,
   deleteReminderMutation,
-  invalidateCacheCallback,
   pendingImages,
   shouldRemind,
   remindForValues,
@@ -238,8 +236,6 @@ export const saveButtonClickHandler = async ({
       await deleteReminderMutation.mutateAsync(existingProcedureReminder.id);
     }
 
-    await invalidateCacheCallback();
-
     store.setLastTouchedCardId(saved.id);
   } else {
     const savedWithoutImages = await saveProcedureMutation.mutateAsync(
@@ -273,8 +269,6 @@ export const saveButtonClickHandler = async ({
 
     store.setLastTouchedCardId(saved.id);
   }
-
-  await invalidateCacheCallback();
 
   store.clearDraft();
 };

@@ -15,7 +15,7 @@ import { ReminderNotification } from '@/components';
 
 const router = useRouter();
 
-const { data } = useRemindersQuery();
+const { data } = useRemindersQuery({ limit: 20 });
 const updateReminderMutation = useUpdateReminderMutation();
 
 const { now } = useNow();
