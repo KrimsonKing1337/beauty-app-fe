@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {
-  computed,
+  computed, provide,
   ref,
   watch,
 } from 'vue';
@@ -18,6 +18,8 @@ import type {
 import { useRemindersStore } from '@/stores/remindersStore';
 
 import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQuery';
+
+import { procedureCardsContextKey, reminderCardsContextKey } from '@/pages/RemindersPage/reminderCardsContext.js';
 
 import { CardPlaceholder, FiltersToolbar } from '@/components';
 
@@ -107,6 +109,8 @@ const {
 const reminders = computed<ReminderType[]>(() => {
   return loadedReminders.value;
 });
+
+provide(reminderCardsContextKey, { cards: reminders });
 
 const statusOptions = [
   { title: 'Все', value: 'all' },

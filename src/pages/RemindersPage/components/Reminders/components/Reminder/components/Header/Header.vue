@@ -1,22 +1,21 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, inject, ref } from 'vue';
 
 import type { Reminder } from '@/@types';
 
-
-import { useRemindersStore } from '@/stores/remindersStore.ts';
+import { useRemindersStore } from '@/stores/remindersStore';
 
 import {
   useDeleteReminderMutation,
-} from '@/composables/mutations/reminders/useDeleteReminderMutation.ts';
+} from '@/composables/mutations/reminders/useDeleteReminderMutation';
 
 import {
   useUpdateReminderMutation,
-} from '@/composables/mutations/reminders/useUpdateReminderMutation.ts';
-
-import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQuery.ts';
+} from '@/composables/mutations/reminders/useUpdateReminderMutation';
 
 import { getToggleReminderCompletePayload } from '@/pages/RemindersPage/components/Reminders/utils';
+
+import { reminderCardsContextKey } from '@/pages/RemindersPage/reminderCardsContext';
 
 import { CardHeader, RemovingDialog } from '@/components';
 
@@ -29,8 +28,7 @@ const props = defineProps<{
 }>();
 
 const remindersStore = useRemindersStore();
-const proceduresQuery = useRemindersQuery();
-const deleteProcedureMutation = useDeleteReminderMutation();
+const deleteReminderMutation = useDeleteReminderMutation();
 const updateReminderMutation = useUpdateReminderMutation();
 
 const completed = computed(() => {
@@ -40,6 +38,9 @@ const completed = computed(() => {
   };
 });
 
+const reminderCardsContext = inject(reminderCardsContextKey);
+const cards = computed(() => reminderCardsContext?.cards.value ?? []);
+
 const handlerToggleReminderComplete = async (reminder: Reminder) => {
   await updateReminderMutation.mutateAsync({
     id: reminder.id,
@@ -48,17 +49,16 @@ const handlerToggleReminderComplete = async (reminder: Reminder) => {
 };
 
 const handleRemoveReminder = async (id: string) => {
-  const cards = proceduresQuery.data.value ?? [];
-  const index = cards.findIndex((reminder) => reminder.id === id);
+  const index = cards.value.findIndex((reminder) => reminder.id === id);
 
   if (index === -1) {
     return;
   }
 
-  const prevId = cards[index - 1]?.id ?? null;
-  const nextId = cards[index + 1]?.id ?? null;
+  const prevId = cards.value[index - 1]?.id ?? null;
+  const nextId = cards.value[index + 1]?.id ?? null;
 
-  await deleteProcedureMutation.mutateAsync(id);
+  await deleteReminderMutation.mutateAsync(id);
 
   if (remindersStore.editingReminderId === id) {
     remindersStore.clearDraft();
