@@ -4,7 +4,7 @@ import { computed } from 'vue';
 import type { Procedure } from '@/@types';
 
 import { useProcedureTypesQuery } from '@/composables/queries/procedureTypes/useProcedureTypesQuery';
-// import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQuery';
+import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQuery';
 import { useTagsQuery } from '@/composables/queries/tags/useTagsQuery';
 
 import {
@@ -23,10 +23,12 @@ const images = computed(() => getProcedureImageUrls(props.card.images));
 
 const { data: procedureTypes } = useProcedureTypesQuery();
 const { data: tags } = useTagsQuery();
-// const { data: reminders } = useRemindersQuery();
+const { data: reminders } = useRemindersQuery();
 
 const procedureReminder = computed(() => {
-  return null;
+  return reminders.value?.find((reminderCur) => {
+    return reminderCur.procedureId === props.card.id;
+  }) ?? null;
 });
 
 const remindForText = computed(() => {

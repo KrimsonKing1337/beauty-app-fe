@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {
-  computed, provide,
+  computed,
+  provide,
   ref,
   watch,
 } from 'vue';
@@ -19,7 +20,7 @@ import { useRemindersStore } from '@/stores/remindersStore';
 
 import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQuery';
 
-import { procedureCardsContextKey, reminderCardsContextKey } from '@/pages/RemindersPage/reminderCardsContext.js';
+import { reminderCardsContextKey } from '@/pages/RemindersPage/reminderCardsContext.js';
 
 import { CardPlaceholder, FiltersToolbar } from '@/components';
 
