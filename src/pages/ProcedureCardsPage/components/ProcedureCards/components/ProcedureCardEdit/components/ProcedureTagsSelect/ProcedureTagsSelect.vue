@@ -78,7 +78,7 @@ const deleteButtonClickHandler = async (id: string) => {
 <template>
   <div class="ProcedureTagsSelect" :class="{ isActive: isCreateFieldVisible }">
     <div class="SelectRow">
-      <VSelect
+      <VAutocomplete
         class="Select"
         :model-value="model.tagValues"
         :items="tagsOptions"
@@ -100,7 +100,7 @@ const deleteButtonClickHandler = async (id: string) => {
             />
           </VListItem>
         </template>
-      </VSelect>
+      </VAutocomplete>
 
       <VBtn
         class="ButtonNewTag"

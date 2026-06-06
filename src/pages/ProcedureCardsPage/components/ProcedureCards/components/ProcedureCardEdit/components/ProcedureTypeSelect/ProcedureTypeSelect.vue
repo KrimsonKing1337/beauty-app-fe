@@ -79,7 +79,7 @@ const deleteButtonClickHandler = async (id: string) => {
     :class="{ isActive: isCreateFieldVisible }"
   >
     <div class="SelectWrapper">
-      <VSelect
+      <VAutocomplete
         :model-value="model.typeValue"
         :items="procedureTypesOptions"
         label="Тип процедуры"
@@ -100,7 +100,7 @@ const deleteButtonClickHandler = async (id: string) => {
             />
           </VListItem>
         </template>
-      </VSelect>
+      </VAutocomplete>
 
       <VBtn
         class="ButtonNewType"

@@ -3,8 +3,6 @@ import { computed, ref, watch } from 'vue';
 
 import { storeToRefs } from 'pinia';
 
-import { useQueryClient } from '@tanstack/vue-query';
-
 import type {
   ProcedureDraft,
   ProcedureImage,
@@ -26,7 +24,6 @@ import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQ
 
 import { CardActions, RemindFor } from '@/components';
 
-
 import type { PendingProcedureImageFile } from './@types';
 
 import {
@@ -37,8 +34,6 @@ import {
 } from './components';
 
 import { saveButtonClickHandler } from './utils';
-
-const queryClient = useQueryClient();
 
 const procedureCardsStore = useProcedureCardsStore();
 
