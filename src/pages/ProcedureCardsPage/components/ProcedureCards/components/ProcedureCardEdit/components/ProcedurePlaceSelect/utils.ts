@@ -1,0 +1,12 @@
+import type { ProcedurePlace } from '@/@types';
+
+export const getProcedurePlacesOptions = (procedurePlaces: ProcedurePlace[]) => {
+  return procedurePlaces.map((procedurePlaceCur) => {
+    return {
+      title: procedurePlaceCur.name,
+      value: procedurePlaceCur.name,
+      id: procedurePlaceCur.id,
+      isCustom: !!procedurePlaceCur.userId,
+    };
+  });
+};

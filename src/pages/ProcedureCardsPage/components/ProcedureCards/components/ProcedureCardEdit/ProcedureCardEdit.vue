@@ -8,6 +8,7 @@ import type {
   ProcedureImage,
   ProcedureTagsModel,
   ProcedureTypeModel,
+  ProcedurePlaceModel,
   ReminderNotifications,
 } from '@/@types';
 
@@ -30,6 +31,7 @@ import {
   Form,
   UploadImages,
   ProcedureTypeSelect,
+  ProcedurePlaceSelect,
   ProcedureTagsSelect,
 } from './components';
 
@@ -54,6 +56,10 @@ const pendingImagesRef = ref<PendingProcedureImageFile[]>([]);
 
 const procedureTypeModel = ref<ProcedureTypeModel>({
   typeValue: draftCard.value?.typeId ?? null,
+});
+
+const procedurePlaceModel = ref<ProcedurePlaceModel>({
+  placeValue: draftCard.value?.place ?? null,
 });
 
 const procedureTagsModel = ref<ProcedureTagsModel>({
@@ -134,6 +140,7 @@ const handleSaveClick = async () => {
 
   try {
     procedureCardsStore.draftCard.typeId = procedureTypeModel.value.typeValue;
+    procedureCardsStore.draftCard.place = procedurePlaceModel.value.placeValue ?? '';
     procedureCardsStore.draftCard.tagIds = procedureTagsModel.value.tagValues;
 
     await saveButtonClickHandler({
@@ -178,13 +185,13 @@ const updateDraftCard = <K extends keyof NonNullable<ProcedureDraft>>(
         :draft-card="draftCard"
         @update:procedure-name="updateDraftCard('procedureName', $event)"
         @update:date-time="updateDraftCard('dateTime', $event)"
-        @update:place="updateDraftCard('place', $event)"
         @update:duration-hours="updateDraftCard('durationHours', $event)"
         @update:duration-minutes="updateDraftCard('durationMinutes', $event)"
         @update:price="updateDraftCard('price', $event)"
         @update:notes="updateDraftCard('notes', $event)"
       />
 
+      <ProcedurePlaceSelect v-model="procedurePlaceModel" />
       <ProcedureTypeSelect v-model="procedureTypeModel" />
       <ProcedureTagsSelect v-model="procedureTagsModel" />
 

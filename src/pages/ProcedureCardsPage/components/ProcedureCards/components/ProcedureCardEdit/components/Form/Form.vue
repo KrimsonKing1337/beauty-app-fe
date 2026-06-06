@@ -12,7 +12,6 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'update:procedureName', value: string): void;
   (e: 'update:dateTime', value: Date): void;
-  (e: 'update:place', value: string): void;
   (e: 'update:durationHours', value: number): void;
   (e: 'update:durationMinutes', value: number): void;
   (e: 'update:price', value: number): void;
@@ -40,14 +39,6 @@ const procedureCardStore = useProcedureCardsStore();
       @update:model-value="emit('update:dateTime', $event)"
     />
 
-    <VTextField
-      :model-value="draftCard.place"
-      label="Место проведения"
-      variant="outlined"
-      bg-color="#fff"
-      rounded="lg"
-      @update:model-value="emit('update:place', $event)"
-    />
 
     <div class="DurationInputs">
       <VNumberInput
