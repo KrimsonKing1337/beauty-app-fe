@@ -7,7 +7,7 @@ import type { Procedure, ProcedureDraft } from '@/@types';
 const createEmptyProcedureCard = (): ProcedureDraft => ({
   procedureName: '',
   dateTime: new Date(),
-  place: '',
+  placeId: null,
   durationHours: 0,
   durationMinutes: 0,
   price: 0,

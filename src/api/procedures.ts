@@ -13,7 +13,7 @@ export const mapProcedureDtoToModel = (dto: ProcedureDto): Procedure => ({
   id: dto.id,
   procedureName: dto.procedureName,
   dateTime: new Date(dto.dateTime),
-  place: dto.place,
+  placeId: dto.placeId,
   durationHours: dto.durationHours,
   durationMinutes: dto.durationMinutes,
   price: dto.price,

@@ -2,7 +2,7 @@ import type {
   CreateProcedurePayload,
   CreateReminderPayload,
   ProcedureDraft,
-  ProcedureImage,
+  ProcedureImage, ProcedurePlace,
   Reminder,
   ReminderNotifications,
   ReminderRepeat,
@@ -51,7 +51,7 @@ const buildCreateProcedurePayload = (
 ): CreateProcedurePayload => ({
   procedureName: draft.procedureName,
   dateTime: trimSeconds(draft.dateTime),
-  place: draft.place,
+  placeId: draft.placeId,
   durationHours: draft.durationHours,
   durationMinutes: draft.durationMinutes,
   price: draft.price,
@@ -68,7 +68,7 @@ const buildUpdateProcedurePayload = (
   id,
   procedureName: draft.procedureName,
   dateTime: trimSeconds(draft.dateTime),
-  place: draft.place,
+  placeId: draft.placeId,
   durationHours: draft.durationHours,
   durationMinutes: draft.durationMinutes,
   price: draft.price,
@@ -116,14 +116,16 @@ type BuildProcedureReminderPayloadArgs = {
   procedure: ProcedureDraft;
   procedureId: string;
   notifications: ReminderNotifications;
+  placeName: string;
 };
 
 const buildProcedureReminderPayload = ({
   procedure,
   procedureId,
   notifications,
+  placeName,
 }: BuildProcedureReminderPayloadArgs): CreateReminderPayload => {
-  const placeText = procedure.place ? `Место: ${procedure.place}` : '';
+  const placeText = placeName ? `Место: ${placeName}` : '';
 
   return {
     name: procedure.procedureName || 'Процедура',
@@ -143,6 +145,7 @@ type SyncProcedureReminderArgs = {
   existingReminder: Reminder | null;
   createReminderMutation: CreateReminderMutation;
   updateReminderMutation: UpdateReminderMutation;
+  placeName: string;
 };
 
 const syncProcedureReminder = async ({
@@ -152,11 +155,13 @@ const syncProcedureReminder = async ({
   existingReminder,
   createReminderMutation,
   updateReminderMutation,
+  placeName,
 }: SyncProcedureReminderArgs): Promise<void> => {
   const payload = buildProcedureReminderPayload({
     procedure,
     procedureId,
     notifications,
+    placeName,
   });
 
   if (existingReminder) {
@@ -183,6 +188,7 @@ type SaveButtonClickHandlerArgs = {
   shouldRemind: boolean;
   remindForValues: ReminderNotifications;
   existingProcedureReminder: Reminder | null;
+  placeName: string;
 };
 
 export const saveButtonClickHandler = async ({
@@ -195,6 +201,7 @@ export const saveButtonClickHandler = async ({
   shouldRemind,
   remindForValues,
   existingProcedureReminder,
+  placeName,
 }: SaveButtonClickHandlerArgs): Promise<void> => {
   if (!store.draftCard) {
     return;
@@ -231,6 +238,7 @@ export const saveButtonClickHandler = async ({
         existingReminder: existingProcedureReminder,
         createReminderMutation,
         updateReminderMutation,
+        placeName,
       });
     } else if (existingProcedureReminder) {
       await deleteReminderMutation.mutateAsync(existingProcedureReminder.id);
@@ -264,6 +272,7 @@ export const saveButtonClickHandler = async ({
         existingReminder: null,
         createReminderMutation,
         updateReminderMutation,
+        placeName,
       });
     }
 
@@ -271,4 +280,16 @@ export const saveButtonClickHandler = async ({
   }
 
   store.clearDraft();
+};
+
+export const getProcedurePlaceNameById = (places: ProcedurePlace[] | undefined, id: string | null)=> {
+  if (!places || !id) {
+    return '';
+  }
+
+  const place = places.find((placeCur) => {
+    return placeCur.id === id;
+  });
+
+  return place?.name ?? '';
 };

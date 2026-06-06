@@ -14,7 +14,7 @@ export type Procedure = {
   id: string;
   procedureName: string;
   dateTime: Date;
-  place?: string;
+  placeId: string | null;
   durationHours?: number;
   durationMinutes?: number;
   price?: number;
@@ -30,7 +30,7 @@ export type ProcedureDto = {
   id: string;
   procedureName: string;
   dateTime: string;
-  place?: string;
+  placeId: string | null;
   durationHours?: number;
   durationMinutes?: number;
   price?: number;

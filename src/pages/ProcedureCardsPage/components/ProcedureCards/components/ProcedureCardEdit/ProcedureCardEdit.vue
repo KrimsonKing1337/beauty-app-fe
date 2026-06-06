@@ -23,6 +23,8 @@ import { useDeleteReminderMutation } from '@/composables/mutations/reminders/use
 
 import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQuery';
 
+import { useProcedurePlacesQuery } from '@/composables/queries/procedurePlaces/useProcedurePlacesQuery.ts';
+
 import { CardActions, RemindFor } from '@/components';
 
 import type { PendingProcedureImageFile } from './@types';
@@ -35,7 +37,7 @@ import {
   ProcedureTagsSelect,
 } from './components';
 
-import { saveButtonClickHandler } from './utils';
+import { getProcedurePlaceNameById, saveButtonClickHandler } from './utils';
 
 const procedureCardsStore = useProcedureCardsStore();
 
@@ -49,6 +51,7 @@ const { draftCard, editingCardId } = storeToRefs(procedureCardsStore);
 const shouldLoadReminders = computed(() => Boolean(editingCardId.value));
 
 const { data: reminders } = useRemindersQuery({ enabled: shouldLoadReminders.value });
+const { data: procedurePlaces } = useProcedurePlacesQuery();
 
 const saveButtonIsLoadingRef = ref(false);
 const shouldRemindRef = ref(false);
@@ -59,7 +62,7 @@ const procedureTypeModel = ref<ProcedureTypeModel>({
 });
 
 const procedurePlaceModel = ref<ProcedurePlaceModel>({
-  placeValue: draftCard.value?.place ?? null,
+  placeValue: draftCard.value?.placeId ?? null,
 });
 
 const procedureTagsModel = ref<ProcedureTagsModel>({
@@ -138,9 +141,11 @@ const handleSaveClick = async () => {
 
   saveButtonIsLoadingRef.value = true;
 
+  const placeName = getProcedurePlaceNameById(procedurePlaces?.value, procedurePlaceModel.value.placeValue);
+
   try {
     procedureCardsStore.draftCard.typeId = procedureTypeModel.value.typeValue;
-    procedureCardsStore.draftCard.place = procedurePlaceModel.value.placeValue ?? '';
+    procedureCardsStore.draftCard.placeId = procedurePlaceModel.value.placeValue ?? '';
     procedureCardsStore.draftCard.tagIds = procedureTagsModel.value.tagValues;
 
     await saveButtonClickHandler({
@@ -153,6 +158,7 @@ const handleSaveClick = async () => {
       shouldRemind: shouldRemindRef.value,
       remindForValues: remindForValuesRef.value,
       existingProcedureReminder: existingProcedureReminder.value,
+      placeName,
     });
 
     resetPendingImages();
@@ -191,7 +197,7 @@ const updateDraftCard = <K extends keyof NonNullable<ProcedureDraft>>(
         @update:notes="updateDraftCard('notes', $event)"
       />
 
-      <ProcedurePlaceSelect v-model="procedurePlaceModel" />
+      <ProcedurePlaceSelect v-model="procedurePlaceModel" :procedure-places="procedurePlaces ?? []" />
       <ProcedureTypeSelect v-model="procedureTypeModel" />
       <ProcedureTagsSelect v-model="procedureTagsModel" />
 

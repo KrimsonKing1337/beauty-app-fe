@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 
-import type { ProcedurePlaceModel } from '@/@types';
-
-import { useProcedurePlacesQuery } from '@/composables/queries/procedurePlaces/useProcedurePlacesQuery';
+import type { ProcedurePlace, ProcedurePlaceModel } from '@/@types';
 
 import {
   useCreateProcedurePlaceMutation,
@@ -15,11 +13,13 @@ import {
 
 import { getProcedurePlacesOptions } from './utils';
 
+const props = defineProps<{
+  procedurePlaces: ProcedurePlace[],
+}>();
+
 const model = defineModel<ProcedurePlaceModel>({
   required: true,
 });
-
-const { data: procedurePlaces } = useProcedurePlacesQuery();
 
 const createProcedurePlaceMutation = useCreateProcedurePlaceMutation();
 const deleteProcedurePlaceMutation = useDeleteProcedurePlaceMutation();
@@ -28,7 +28,7 @@ const isCreateFieldVisible = ref(false);
 const newPlaceName = ref('');
 
 const procedurePlacesOptions = computed(() => {
-  return getProcedurePlacesOptions(procedurePlaces.value ?? []);
+  return getProcedurePlacesOptions(props.procedurePlaces ?? []);
 });
 
 const updatePlaceValue = (value: string | null) => {
@@ -58,7 +58,7 @@ const createProcedurePlace = async () => {
   });
 
   model.value = {
-    placeValue: newPlace.name,
+    placeValue: newPlace.id,
   };
 
   hideCreateField();
