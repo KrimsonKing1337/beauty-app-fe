@@ -9,7 +9,11 @@ import {
   useDeleteProcedureMutation,
 } from '@/composables/mutations/procedures/useDeleteProcedureMutation';
 
-import { procedureCardsContextKey } from '@/pages/ProcedureCardsPage/procedureCardsContext';
+import { useProcedurePlacesQuery } from '@/composables/queries/procedurePlaces/useProcedurePlacesQuery.ts';
+
+import { procedureCardsContextKey } from '@/pages/ProcedureCardsPage/utils/procedureCardsContext';
+
+import { getProcedurePlaceNameById } from '@/pages/ProcedureCardsPage/utils';
 
 import { CardHeader, RemovingDialog } from '@/components';
 
@@ -20,7 +24,10 @@ const props = defineProps<{ card: Procedure }>();
 const deleteProcedureMutation = useDeleteProcedureMutation();
 const procedureCardsStore = useProcedureCardsStore();
 
-const cardInfo = computed(() => getCardInfo(props.card));
+const { data: procedurePlaces } = useProcedurePlacesQuery();
+
+const placeName = computed(() => getProcedurePlaceNameById(procedurePlaces.value, props.card.placeId));
+const cardInfo = computed(() => getCardInfo(props.card, placeName.value));
 const meta = computed(() => cardInfo.value.meta);
 const price = computed(() => cardInfo.value.price);
 

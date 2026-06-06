@@ -22,7 +22,7 @@ import { useTagsQuery } from '@/composables/queries/tags/useTagsQuery';
 
 import { CardPlaceholder, FiltersToolbar } from '@/components';
 
-import { procedureCardsContextKey } from './procedureCardsContext';
+import { procedureCardsContextKey } from './utils/procedureCardsContext';
 
 import { ProcedureCards } from './components';
 

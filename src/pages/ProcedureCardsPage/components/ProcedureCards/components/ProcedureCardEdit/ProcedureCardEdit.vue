@@ -25,6 +25,8 @@ import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQ
 
 import { useProcedurePlacesQuery } from '@/composables/queries/procedurePlaces/useProcedurePlacesQuery.ts';
 
+import { getProcedurePlaceNameById } from '@/pages/ProcedureCardsPage/utils';
+
 import { CardActions, RemindFor } from '@/components';
 
 import type { PendingProcedureImageFile } from './@types';
@@ -37,7 +39,7 @@ import {
   ProcedureTagsSelect,
 } from './components';
 
-import { getProcedurePlaceNameById, saveButtonClickHandler } from './utils';
+import { saveButtonClickHandler } from './utils';
 
 const procedureCardsStore = useProcedureCardsStore();
 

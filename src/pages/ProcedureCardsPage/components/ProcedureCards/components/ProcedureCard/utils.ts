@@ -2,10 +2,14 @@ import type { Procedure } from '@/@types';
 
 import { formatDate } from '@/utils';
 
-export const getCardInfo = (card: Procedure) => {
+export const getCardInfo = (card: Procedure, placeName: string) => {
   const date = formatDate(card.dateTime);
 
-  let meta = `${date} - ${card.place}`;
+  let meta = `${date}`;
+
+  if (placeName) {
+    meta += ` - ${placeName}`;
+  }
 
   if (card.durationHours && card.durationMinutes) {
     meta += ` - ${card.durationHours}ч ${card.durationMinutes}мин`;
