@@ -41,6 +41,8 @@ export const useProceduresQuery = (
       queryParams.value,
     ]),
     queryFn: () => getProceduresPage(queryParams.value),
+    staleTime: Infinity,
+    gcTime: 1000 * 60 * 10,
   });
 
   const data = computed(() => {

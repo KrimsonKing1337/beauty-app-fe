@@ -7,6 +7,6 @@ export const useProcedureTypesQuery = () => {
     queryKey: ['procedureTypes'],
     queryFn: getProcedureTypes,
     staleTime: Infinity,
-    gcTime: Infinity,
+    gcTime: 1000 * 60 * 10,
   });
 };

@@ -5,14 +5,17 @@ import { Capacitor } from '@capacitor/core';
 
 import { RouterView, useRouter } from 'vue-router';
 
+import { useQueryClient } from '@tanstack/vue-query';
+
 import { setUnauthorizedHandler } from '@/api/client.ts';
 import { getErrorMessage } from '@/api/errors';
-import { getReminders } from '@/api/reminders';
+import { getRemindersPage } from '@/api/reminders';
 
 import { useAuthStore } from '@/stores/authStore';
 import { useNotificationStore } from '@/stores/notificationStore';
 
 import { useMeQuery } from '@/composables/queries/auth/useMeQuery';
+import { buildRemindersQueryParams } from '@/composables/queries/reminders/buildRemindersQueryParams.ts';
 
 import { AppToast } from '@/components';
 
@@ -22,6 +25,7 @@ import {
 } from '@/utils/reminderNotifications';
 
 const router = useRouter();
+const queryClient = useQueryClient();
 const authStore = useAuthStore();
 const notificationStore = useNotificationStore();
 const meQuery = useMeQuery();
@@ -49,9 +53,12 @@ watch(
     }
 
     try {
-      const reminders = await getReminders();
+      const { items } = await queryClient.fetchQuery({
+        queryKey: ['reminders', buildRemindersQueryParams({ isCompleted: false })],
+        queryFn: () => getRemindersPage(buildRemindersQueryParams({ isCompleted: false })),
+      });
 
-      await syncAllReminderNotifications(reminders);
+      await syncAllReminderNotifications(items);
     } catch (error) {
       notificationStore.showError(getErrorMessage(error));
     }

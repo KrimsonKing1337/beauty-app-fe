@@ -13,6 +13,8 @@ import type {
 
 import { getRemindersPage } from '@/api/reminders';
 
+import { buildRemindersQueryParams } from './buildRemindersQueryParams';
+
 type MaybeRef<T> = T | Ref<T>;
 
 type UseRemindersQueryArgs = MaybeRef<RemindersQueryParams> & {
@@ -29,16 +31,11 @@ const defaultPagination: ReminderPagination = {
 export const useRemindersQuery = (
   params?: UseRemindersQueryArgs,
 ) => {
-  const queryParams = computed<RemindersQueryParams>(() => {
-    return {
-      page: 1,
-      limit: params ? 20 : 100,
-      sortBy: 'dateTime',
-      sortOrder: 'asc',
-      includeProcedureReminders: true,
-      ...(params ? unref(params) : {}),
-    };
-  });
+  const safeParams = params ? unref(params) : {};
+
+  const queryParams = computed(() =>
+    buildRemindersQueryParams(safeParams),
+  );
 
   const query = useQuery({
     queryKey: computed(() => [
@@ -47,6 +44,8 @@ export const useRemindersQuery = (
     ]),
     queryFn: () => getRemindersPage(queryParams.value),
     enabled: params?.enabled ?? true,
+    staleTime: Infinity,
+    gcTime: 1000 * 60 * 10,
   });
 
   const data = computed(() => {

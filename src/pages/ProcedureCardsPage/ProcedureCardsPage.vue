@@ -117,12 +117,14 @@ const cards = computed<Procedure[]>(() => loadedCards.value);
 provide(procedureCardsContextKey, { cards });
 
 const typeOptions = computed(() => {
+  const types = (procedureTypes.value ?? []).map((typeCur) => ({
+    title: typeCur.name,
+    value: typeCur.id,
+  }));
+
   return [
     { title: 'Все типы', value: null },
-    ...(procedureTypes.value ?? []).map((typeCur) => ({
-      title: typeCur.name,
-      value: typeCur.id,
-    })),
+    ...types,
   ];
 });
 

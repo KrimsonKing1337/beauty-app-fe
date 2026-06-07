@@ -7,6 +7,6 @@ export const useProcedurePlacesQuery = () => {
     queryKey: ['procedurePlaces'],
     queryFn: getProcedurePlaces,
     staleTime: Infinity,
-    gcTime: Infinity,
+    gcTime: 1000 * 60 * 10,
   });
 };

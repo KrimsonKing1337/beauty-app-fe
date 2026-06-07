@@ -23,7 +23,7 @@ const images = computed(() => getProcedureImageUrls(props.card.images));
 
 const { data: procedureTypes } = useProcedureTypesQuery();
 const { data: tags } = useTagsQuery();
-const { data: reminders } = useRemindersQuery();
+const { data: reminders } = useRemindersQuery({ isCompleted: false });
 
 const procedureReminder = computed(() => {
   return reminders.value?.find((reminderCur) => {
