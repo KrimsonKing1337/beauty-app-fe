@@ -57,6 +57,7 @@ const buildCreateProcedurePayload = (
   price: draft.price,
   images: [],
   notes: draft.notes,
+  reminder: draft.reminder,
   typeId: draft.typeId,
   tagIds: draft.tagIds,
 });
@@ -74,6 +75,7 @@ const buildUpdateProcedurePayload = (
   price: draft.price,
   images: getExistingProcedureImages(draft),
   notes: draft.notes,
+  reminder: draft.reminder,
   typeId: draft.typeId,
   tagIds: draft.tagIds,
 });

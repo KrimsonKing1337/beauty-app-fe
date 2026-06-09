@@ -19,6 +19,7 @@ export const mapProcedureDtoToModel = (dto: ProcedureDto): Procedure => ({
   price: dto.price,
   images: dto.images ?? [],
   notes: dto.notes,
+  reminder: dto.reminder,
   typeId: dto.typeId,
   tagIds: dto.tagIds ?? [],
   createdAt: dto.createdAt,

@@ -4,12 +4,14 @@ import {
   computed,
   nextTick,
   ref,
-  watch,
+  watch, watchEffect,
 } from 'vue';
 
 import { useVirtualizer } from '@tanstack/vue-virtual';
 
-import type { Procedure } from '@/@types';
+import type { Procedure, Reminder } from '@/@types';
+
+import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQuery.ts';
 
 import { AppError, Loader } from '@/components';
 
@@ -24,6 +26,28 @@ type Props = {
 };
 
 const props = defineProps<Props>();
+
+const { data: reminders } = useRemindersQuery({ isCompleted: false });
+
+const remindersByProcedureId = computed(() => {
+  if (!reminders.value) {
+    return {};
+  }
+
+  console.log('reminders', reminders.value.filter((reminderCur) => reminderCur.procedureId));
+
+  const entries = reminders.value
+    .filter((reminderCur) => reminderCur.procedureId)
+    .map((reminderCur) => [reminderCur.procedureId!, reminderCur]);
+
+  console.log(entries);
+
+  return Object.fromEntries(entries) as Record<string, Reminder>;
+});
+
+watchEffect(() => {
+  // console.log('reminders', reminders.value);
+});
 
 const CARD_ESTIMATED_HEIGHT = 340;
 const CARD_GAP = 16;
@@ -99,7 +123,10 @@ watch(
             class="ProcedureCardsVirtualItem"
             :style="{ transform: `translateY(${virtualRowCur.start}px)` }"
           >
-            <ProcedureCard :card="cards[virtualRowCur.index]!" />
+            <ProcedureCard
+              :card="cards[virtualRowCur.index]!"
+              :reminder="remindersByProcedureId[cards[virtualRowCur.index]!.id]"
+            />
           </div>
         </div>
       </div>

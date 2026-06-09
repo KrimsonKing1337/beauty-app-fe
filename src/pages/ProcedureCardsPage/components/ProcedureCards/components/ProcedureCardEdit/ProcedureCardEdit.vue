@@ -21,8 +21,6 @@ import { useCreateReminderMutation } from '@/composables/mutations/reminders/use
 import { useUpdateReminderMutation } from '@/composables/mutations/reminders/useUpdateReminderMutation';
 import { useDeleteReminderMutation } from '@/composables/mutations/reminders/useDeleteReminderMutation';
 
-import { useRemindersQuery } from '@/composables/queries/reminders/useRemindersQuery';
-
 import { useProcedurePlacesQuery } from '@/composables/queries/procedurePlaces/useProcedurePlacesQuery.ts';
 
 import { getProcedurePlaceNameById } from '@/pages/ProcedureCardsPage/utils';
@@ -43,17 +41,14 @@ import { saveButtonClickHandler } from './utils';
 
 const procedureCardsStore = useProcedureCardsStore();
 
+const { data: procedurePlaces } = useProcedurePlacesQuery();
+
 const saveProcedureMutation = useSaveProcedureMutation();
 const createReminderMutation = useCreateReminderMutation();
 const updateReminderMutation = useUpdateReminderMutation();
 const deleteReminderMutation = useDeleteReminderMutation();
 
-const { draftCard, editingCardId } = storeToRefs(procedureCardsStore);
-
-const shouldLoadReminders = computed(() => Boolean(editingCardId.value));
-
-const { data: reminders } = useRemindersQuery({ enabled: shouldLoadReminders.value });
-const { data: procedurePlaces } = useProcedurePlacesQuery();
+const { draftCard } = storeToRefs(procedureCardsStore);
 
 const saveButtonIsLoadingRef = ref(false);
 const shouldRemindRef = ref(false);
@@ -95,9 +90,7 @@ const existingProcedureReminder = computed(() => {
     return null;
   }
 
-  return reminders.value?.find((reminderCur) => {
-    return reminderCur.procedureId === procedureId;
-  }) ?? null;
+  return draftCard.value?.reminder ?? null;
 });
 
 watch(

@@ -13,6 +13,7 @@ const createEmptyProcedureCard = (): ProcedureDraft => ({
   price: 0,
   images: [],
   notes: '',
+  reminder: null,
   typeId: null,
   tagIds: [],
   createdAt: new Date().toISOString(),

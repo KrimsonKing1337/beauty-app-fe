@@ -1,3 +1,5 @@
+import type { Reminder } from '@/@types/reminder.ts';
+
 export type ProcedureImage = {
   id: string;
   path: string;
@@ -19,6 +21,7 @@ export type Procedure = {
   durationMinutes?: number;
   price?: number;
   images: ProcedureImage[];
+  reminder: Reminder | null;
   notes?: string;
   typeId?: string | null;
   tagIds: string[];
@@ -35,6 +38,7 @@ export type ProcedureDto = {
   durationMinutes?: number;
   price?: number;
   images?: ProcedureImage[];
+  reminder: Reminder | null;
   notes?: string;
   typeId?: string | null;
   tagIds?: string[];
